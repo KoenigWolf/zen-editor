@@ -252,6 +252,7 @@ export const en = {
     title: 'Files',
   },
   tabMenu: {
+    target: 'Target Tab',
     close: 'Close Tab',
     closeLeft: 'Close Tabs to the Left',
     closeRight: 'Close Tabs to the Right',

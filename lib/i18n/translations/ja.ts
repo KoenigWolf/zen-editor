@@ -249,6 +249,7 @@ export const ja = {
     title: 'ファイル',
   },
   tabMenu: {
+    target: '対象タブ',
     close: 'タブを閉じる',
     closeLeft: '左側のタブを閉じる',
     closeRight: '右側のタブを閉じる',

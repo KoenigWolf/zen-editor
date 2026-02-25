@@ -29,6 +29,7 @@ const browserDocument = typeof document === 'undefined' ? undefined : document;
 export const TabContextMenu = memo(function TabContextMenu({
   isOpen,
   position,
+  fileName,
   onClose,
   onCloseTab,
   onCloseLeftTabs,
@@ -83,34 +84,44 @@ export const TabContextMenu = memo(function TabContextMenu({
   useGlobalKeydown({ enabled: isOpen, target: browserDocument, handler: handleEscape });
 
   const menuItems = [
-    { icon: X, label: t('tabMenu.close'), action: onCloseTab },
+    {
+      icon: X,
+      label: t('tabMenu.close'),
+      action: onCloseTab,
+      shortcut: 'Cmd+W',
+      kind: 'destructive' as const,
+    },
     {
       icon: ChevronsLeft,
       label: t('tabMenu.closeLeft'),
       action: onCloseLeftTabs,
       disabled: !canCloseLeftTabs,
+      kind: 'destructive' as const,
     },
     {
       icon: ChevronsRight,
       label: t('tabMenu.closeRight'),
       action: onCloseRightTabs,
       disabled: !canCloseRightTabs,
+      kind: 'destructive' as const,
     },
     {
       icon: XCircle,
       label: t('tabMenu.closeOthers'),
       action: onCloseOtherTabs,
       disabled: !canCloseOtherTabs,
+      kind: 'destructive' as const,
     },
     {
       icon: XCircle,
       label: t('tabMenu.closeAll'),
       action: onCloseAllTabs,
       disabled: !canCloseAllTabs,
+      kind: 'destructive' as const,
     },
     { type: 'divider' as const },
-    { icon: Copy, label: t('tabMenu.duplicate'), action: onDuplicate },
-    { icon: Pencil, label: t('tabMenu.rename'), action: onRename },
+    { icon: Copy, label: t('tabMenu.duplicate'), action: onDuplicate, shortcut: 'Alt+Drag' },
+    { icon: Pencil, label: t('tabMenu.rename'), action: onRename, shortcut: 'F2' },
   ];
 
   const enabledItemIndexes = menuItems
@@ -219,6 +230,14 @@ export const TabContextMenu = memo(function TabContextMenu({
         onKeyDown={handleMenuKeyDown}
         aria-label={t('tabMenu.close')}
       >
+        <div className="px-3 py-2 border-b border-border/60">
+          <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+            {t('tabMenu.target')}
+          </div>
+          <div className="text-xs font-medium text-foreground truncate" title={fileName}>
+            {fileName}
+          </div>
+        </div>
         {menuItems.map((item, index) => {
           if ('type' in item && item.type === 'divider') {
             return (
@@ -231,6 +250,7 @@ export const TabContextMenu = memo(function TabContextMenu({
           }
 
           const Icon = item.icon;
+          const isDestructive = item.kind === 'destructive';
           return (
             <button
               key={item.label}
@@ -242,15 +262,22 @@ export const TabContextMenu = memo(function TabContextMenu({
               disabled={item.disabled}
               tabIndex={item.disabled ? -1 : 0}
               aria-disabled={item.disabled}
-              className="mochi-mobile-menu-item w-full text-left disabled:opacity-40 disabled:pointer-events-none"
+              className={`mochi-mobile-menu-item w-full text-left disabled:opacity-40 disabled:pointer-events-none ${isDestructive ? 'text-red-600 dark:text-red-400' : ''}`}
               onClick={() => {
                 if (item.disabled) return;
                 item.action();
                 onClose();
               }}
             >
-              {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
-              <span className="text-sm">{item.label}</span>
+              {Icon && (
+                <Icon
+                  className={`h-4 w-4 ${isDestructive ? 'text-red-500 dark:text-red-400' : 'text-muted-foreground'}`}
+                />
+              )}
+              <span className="text-sm flex-1">{item.label}</span>
+              {'shortcut' in item && item.shortcut && (
+                <span className="text-[10px] text-muted-foreground ml-2">{item.shortcut}</span>
+              )}
             </button>
           );
         })}
