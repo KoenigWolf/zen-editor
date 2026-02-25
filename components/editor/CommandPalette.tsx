@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { useMobileDetection } from '@/hooks/use-mobile-detection';
 import { Command, ArrowRight } from 'lucide-react';
+import { useGlobalKeydown } from '@/hooks/use-global-keydown';
 
 interface CommandItem {
   id: string;
@@ -80,10 +81,8 @@ export function CommandPalette({ open, onOpenChange, commands }: CommandPaletteP
     setSelectedIndex(0);
   }, [query]);
 
-  useEffect(() => {
-    if (!open) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
@@ -104,11 +103,11 @@ export function CommandPalette({ open, onOpenChange, commands }: CommandPaletteP
           onOpenChange(false);
           break;
       }
-    };
+    },
+    [flatCommands, selectedIndex, executeCommand, onOpenChange]
+  );
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [open, selectedIndex, flatCommands, executeCommand, onOpenChange]);
+  useGlobalKeydown({ enabled: open, handler: handleKeyDown });
 
   useEffect(() => {
     if (!listRef.current) return;

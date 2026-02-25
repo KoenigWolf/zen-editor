@@ -1,6 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback } from 'react';
+import { useMouseDrag } from '@/hooks/use-mouse-drag';
 
 type Position = { x: number; y: number };
 
@@ -17,46 +18,30 @@ export const useDialogDrag = ({
   onPositionChange,
   clamp,
 }: UseDialogDragOptions) => {
-  const [isDragging, setIsDragging] = useState(false);
-  const dragOffset = useRef<Position>({ x: 0, y: 0 });
-
-  const startDrag = useCallback(
-    (event: React.MouseEvent) => {
-      if (!enabled) return;
-      setIsDragging(true);
-      dragOffset.current = {
-        x: event.clientX - position.x,
-        y: event.clientY - position.y,
-      };
-    },
-    [enabled, position]
-  );
-
-  useEffect(() => {
-    if (!isDragging) return;
-
-    const handleMove = (event: MouseEvent) => {
+  const { isDragging, startDrag: startMouseDrag } = useMouseDrag<Position>({
+    enabled,
+    onMove: (event, offset) => {
       let next = {
-        x: event.clientX - dragOffset.current.x,
-        y: event.clientY - dragOffset.current.y,
+        x: event.clientX - offset.x,
+        y: event.clientY - offset.y,
       };
       if (clamp) {
         next = clamp(next);
       }
       onPositionChange(next);
-    };
+    },
+  });
 
-    const handleUp = () => {
-      setIsDragging(false);
-    };
-
-    document.addEventListener('mousemove', handleMove);
-    document.addEventListener('mouseup', handleUp);
-    return () => {
-      document.removeEventListener('mousemove', handleMove);
-      document.removeEventListener('mouseup', handleUp);
-    };
-  }, [isDragging, clamp, onPositionChange]);
+  const startDrag = useCallback(
+    (event: React.MouseEvent) => {
+      const offset = {
+        x: event.clientX - position.x,
+        y: event.clientY - position.y,
+      };
+      startMouseDrag(event, offset);
+    },
+    [position, startMouseDrag]
+  );
 
   return { isDragging, startDrag };
 };

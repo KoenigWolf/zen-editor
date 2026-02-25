@@ -20,6 +20,8 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePWA } from '@/hooks/usePWA';
+import { useMounted } from '@/hooks/use-mounted';
+import { safeLocalStorageGet, safeLocalStorageSet } from '@/lib/storage-utils';
 
 declare global {
   interface Navigator {
@@ -38,21 +40,17 @@ export const PWAInstallPrompt = () => {
   const [showInstructions, setShowInstructions] = useState(false);
   const [installStep, setInstallStep] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
 
   const isIOS = platform === 'ios';
   const isMac = platform === 'macos';
   const isDesktop = platform === 'windows' || platform === 'macos' || platform === 'linux';
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
     if (!mounted || isInstalled) return;
 
     // 前回非表示にしてから24時間経過していなければ表示しない
-    const lastDismissed = localStorage.getItem('pwa-prompt-dismissed');
+    const lastDismissed = safeLocalStorageGet('pwa-prompt-dismissed');
     if (lastDismissed) {
       const dismissedTime = parseInt(lastDismissed, 10);
       if (Date.now() - dismissedTime < 24 * 60 * 60 * 1000) {
@@ -70,7 +68,7 @@ export const PWAInstallPrompt = () => {
     }
 
     // iOS/Safariの場合、初回訪問時にインストール案内を表示
-    if (isIOS && browser === 'safari' && !localStorage.getItem('ios-install-shown')) {
+    if (isIOS && browser === 'safari' && !safeLocalStorageGet('ios-install-shown')) {
       const timer = setTimeout(() => {
         setShowPrompt(true);
         setIsAnimating(true);
@@ -82,7 +80,7 @@ export const PWAInstallPrompt = () => {
   const handleInstall = useCallback(async () => {
     if (isIOS || (isMac && browser === 'safari')) {
       setShowInstructions(true);
-      localStorage.setItem('ios-install-shown', 'true');
+      safeLocalStorageSet('ios-install-shown', 'true');
       return;
     }
 
@@ -98,7 +96,7 @@ export const PWAInstallPrompt = () => {
       setShowPrompt(false);
       setShowInstructions(false);
     }, 200);
-    localStorage.setItem('pwa-prompt-dismissed', Date.now().toString());
+    safeLocalStorageSet('pwa-prompt-dismissed', Date.now().toString());
   }, []);
 
   const handleNextStep = useCallback(() => {
@@ -362,12 +360,8 @@ export const OfflineIndicator = () => {
   const { t } = useTranslation();
   const { isOnline } = usePWA();
   const [showReconnected, setShowReconnected] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const isOnlineRef = useRef(isOnline);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (!mounted) return;

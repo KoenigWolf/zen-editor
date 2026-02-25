@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { BREAKPOINTS, DEBOUNCE } from '@/lib/constants/breakpoints';
+import { useMounted } from '@/hooks/use-mounted';
 
 interface MobileDetectionOptions {
   mobileBreakpoint?: number;
@@ -23,7 +24,7 @@ export const useMobileDetection = (options: MobileDetectionOptions = {}): Mobile
     debounceMs = DEBOUNCE.RESIZE,
   } = options;
 
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
 
@@ -34,7 +35,6 @@ export const useMobileDetection = (options: MobileDetectionOptions = {}): Mobile
   }, [mobileBreakpoint, tabletBreakpoint]);
 
   useEffect(() => {
-    setMounted(true);
     checkDevice();
 
     let timeoutId: ReturnType<typeof setTimeout>;

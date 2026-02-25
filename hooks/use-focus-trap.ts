@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useCallback } from 'react';
+import { useGlobalKeydown } from '@/hooks/use-global-keydown';
 
 const FOCUSABLE_SELECTORS = [
   'button:not([disabled])',
@@ -71,17 +72,17 @@ export const useFocusTrap = <T extends HTMLElement>(options: UseFocusTrapOptions
     };
 
     const timeoutId = setTimeout(focusInitial, 0);
-    document.addEventListener('keydown', handleKeyDown);
 
     return () => {
       clearTimeout(timeoutId);
-      document.removeEventListener('keydown', handleKeyDown);
 
       if (returnFocusOnDeactivate && previousActiveElementRef.current) {
         previousActiveElementRef.current.focus();
       }
     };
-  }, [enabled, initialFocusRef, returnFocusOnDeactivate, getFocusableElements, handleKeyDown]);
+  }, [enabled, initialFocusRef, returnFocusOnDeactivate, getFocusableElements]);
+
+  useGlobalKeydown({ enabled, target: document, handler: handleKeyDown });
 
   return containerRef;
 };

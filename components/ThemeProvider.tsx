@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { ThemeProvider as NextThemesProvider, useTheme } from 'next-themes';
 import { type ThemeProviderProps } from 'next-themes/dist/types';
 import { useEditorStore } from '@/lib/store';
 import { CUSTOM_THEMES, type EditorTheme } from '@/lib/themes';
+import { useMounted } from '@/hooks/use-mounted';
 
 const camelToKebab = (str: string): string => {
   return str.replace(/([A-Z])/g, '-$1').toLowerCase();
@@ -40,12 +41,8 @@ const resetThemeColors = () => {
 const ThemeInitializer = ({ children }: { children: ReactNode }) => {
   const editorTheme = useEditorStore((state) => state.settings.theme);
   const { setTheme, resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const prevThemeRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (!mounted) return;

@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { useFocusTrap } from '@/hooks/use-focus-trap';
 import { useSearchLogic, type SearchOptions } from '@/hooks/use-search-logic';
 import { useDialogDrag } from '@/hooks/use-dialog-drag';
+import { useGlobalKeydown } from '@/hooks/use-global-keydown';
 import {
   X,
   ChevronDown,
@@ -181,10 +182,8 @@ export const SearchDialog = memo(
       [handleReplaceAll, query, replacement]
     );
 
-    useEffect(() => {
-      if (!open) return;
-
-      const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = useCallback(
+      (e: KeyboardEvent) => {
         if (e.key === 'Escape') {
           e.preventDefault();
           onOpenChange(false);
@@ -231,24 +230,23 @@ export const SearchDialog = memo(
           performSearch(query, true);
           return;
         }
-      };
+      },
+      [
+        onOpenChange,
+        onNextMatch,
+        onPreviousMatch,
+        isCaseSensitive,
+        isRegex,
+        isWholeWord,
+        setIsCaseSensitive,
+        setIsRegex,
+        setIsWholeWord,
+        performSearch,
+        query,
+      ]
+    );
 
-      window.addEventListener('keydown', handleKeyDown);
-      return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [
-      open,
-      onOpenChange,
-      onNextMatch,
-      onPreviousMatch,
-      isCaseSensitive,
-      isRegex,
-      isWholeWord,
-      setIsCaseSensitive,
-      setIsRegex,
-      setIsWholeWord,
-      performSearch,
-      query,
-    ]);
+    useGlobalKeydown({ enabled: open, handler: handleKeyDown });
 
     const handleDragStart = useCallback(
       (e: React.MouseEvent) => {

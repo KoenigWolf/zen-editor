@@ -9,9 +9,13 @@ import {
   ToastViewport,
 } from '@/components/ui/toast';
 import { useToast } from '@/components/ui/use-toast';
+import { useMounted } from '@/hooks/use-mounted';
 
 export function Toaster() {
   const { toasts } = useToast();
+  const mounted = useMounted();
+
+  if (!mounted) return null;
 
   return (
     <ToastProvider>
