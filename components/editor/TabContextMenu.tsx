@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useEffect, useRef, useCallback } from 'react';
+import { memo, useEffect, useRef, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, Copy, Pencil, XCircle, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { useGlobalKeydown } from '@/hooks/use-global-keydown';
@@ -45,6 +45,7 @@ export const TabContextMenu = memo(function TabContextMenu({
   const { t } = useTranslation();
   const menuRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const [menuPosition, setMenuPosition] = useState(position);
 
   // 外側クリックで閉じる
   useEffect(() => {
@@ -132,6 +133,35 @@ export const TabContextMenu = memo(function TabContextMenu({
     }
   }, [isOpen, enabledItemIndexes, focusItemByIndex]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    setMenuPosition(position);
+
+    const adjustPosition = () => {
+      const menuEl = menuRef.current;
+      if (!menuEl || typeof window === 'undefined') return;
+
+      const safeMargin = 8;
+      const menuRect = menuEl.getBoundingClientRect();
+      const maxX = Math.max(safeMargin, window.innerWidth - menuRect.width - safeMargin);
+      const maxY = Math.max(safeMargin, window.innerHeight - menuRect.height - safeMargin);
+
+      setMenuPosition({
+        x: Math.min(Math.max(position.x, safeMargin), maxX),
+        y: Math.min(Math.max(position.y, safeMargin), maxY),
+      });
+    };
+
+    const rafId = requestAnimationFrame(adjustPosition);
+    window.addEventListener('resize', adjustPosition);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', adjustPosition);
+    };
+  }, [isOpen, position]);
+
   const handleMenuKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (enabledItemIndexes.length === 0) return;
@@ -172,11 +202,6 @@ export const TabContextMenu = memo(function TabContextMenu({
 
   if (!isOpen) return null;
 
-  const adjustedPosition = {
-    x: Math.min(position.x, window.innerWidth - 200),
-    y: Math.min(position.y, window.innerHeight - 250),
-  };
-
   return (
     <>
       {/* バックドロップ */}
@@ -187,8 +212,8 @@ export const TabContextMenu = memo(function TabContextMenu({
         ref={menuRef}
         className="mochi-context-menu"
         style={{
-          left: adjustedPosition.x,
-          top: adjustedPosition.y,
+          left: menuPosition.x,
+          top: menuPosition.y,
         }}
         role="menu"
         onKeyDown={handleMenuKeyDown}
