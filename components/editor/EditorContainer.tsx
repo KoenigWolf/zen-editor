@@ -380,19 +380,33 @@ export const EditorContainer = memo(function EditorContainer() {
   );
 
   const showMobileUI = mounted && isMobile;
-  const contextMenuTargetIndex = files.findIndex((file) => file.id === contextMenu.fileId);
-  const canCloseLeftTabs = contextMenuTargetIndex > 0;
-  const canCloseRightTabs =
-    contextMenuTargetIndex >= 0 && contextMenuTargetIndex < files.length - 1;
-  const canCloseOtherTabs = files.length > 1 && contextMenuTargetIndex >= 0;
-  const canCloseAllTabs = files.length > 0;
-  const closeLeftCount = canCloseLeftTabs ? contextMenuTargetIndex : 0;
-  const closeRightCount =
-    canCloseRightTabs && contextMenuTargetIndex >= 0
-      ? files.length - contextMenuTargetIndex - 1
-      : 0;
-  const closeOtherCount = canCloseOtherTabs ? files.length - 1 : 0;
-  const closeAllCount = files.length;
+  const {
+    canCloseLeftTabs,
+    canCloseRightTabs,
+    canCloseOtherTabs,
+    canCloseAllTabs,
+    closeLeftCount,
+    closeRightCount,
+    closeOtherCount,
+    closeAllCount,
+  } = useMemo(() => {
+    const targetIndex = files.findIndex((file) => file.id === contextMenu.fileId);
+    const canLeft = targetIndex > 0;
+    const canRight = targetIndex >= 0 && targetIndex < files.length - 1;
+    const canOther = files.length > 1 && targetIndex >= 0;
+    const canAll = files.length > 0;
+
+    return {
+      canCloseLeftTabs: canLeft,
+      canCloseRightTabs: canRight,
+      canCloseOtherTabs: canOther,
+      canCloseAllTabs: canAll,
+      closeLeftCount: canLeft ? targetIndex : 0,
+      closeRightCount: canRight && targetIndex >= 0 ? files.length - targetIndex - 1 : 0,
+      closeOtherCount: canOther ? files.length - 1 : 0,
+      closeAllCount: files.length,
+    };
+  }, [files, contextMenu.fileId]);
 
   return (
     <div
