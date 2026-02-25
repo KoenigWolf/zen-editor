@@ -196,6 +196,7 @@ export const en = {
       search: 'Search',
       replace: 'Replace',
       replaceAll: 'All',
+      replaceAllWithCount: 'All ({{count}})',
       next: 'Next',
       previous: 'Previous',
       cancel: 'Cancel',

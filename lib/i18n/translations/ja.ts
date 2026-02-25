@@ -193,6 +193,7 @@ export const ja = {
       search: '検索',
       replace: '置換',
       replaceAll: '全置換',
+      replaceAllWithCount: '全置換（{{count}}）',
       next: '次へ',
       previous: '前へ',
       cancel: 'キャンセル',
