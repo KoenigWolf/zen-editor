@@ -4,8 +4,10 @@ import { useEffect } from 'react';
 import { EditorContainer } from '@/components/editor/EditorContainer';
 import { useFileStore } from '@/lib/store/file-store';
 import { SeoContent } from '@/components/seo/SeoContent';
+import { useMounted } from '@/hooks/use-mounted';
 
 export default function Home() {
+  const mounted = useMounted();
   const files = useFileStore((state) => state.files);
   const addFile = useFileStore((state) => state.addFile);
   const _hasHydrated = useFileStore((state) => state._hasHydrated);
@@ -21,6 +23,8 @@ export default function Home() {
       lastModified: Date.now(),
     });
   }, [_hasHydrated, files.length, addFile]);
+
+  if (!mounted) return null;
 
   return (
     <main id="main-content" className="h-full w-full max-w-full flex flex-col overflow-hidden">

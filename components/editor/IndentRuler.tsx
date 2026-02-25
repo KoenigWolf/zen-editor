@@ -13,12 +13,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { useMouseDrag } from '@/hooks/use-mouse-drag';
 
 const CM_TO_PX = 37.795275591;
 const RULER_HEIGHT = 18;
 const HANDLE_SIZE = 8;
 
-type DragType = 'firstLine' | 'hanging' | 'leftMargin' | 'rightMargin' | 'tabStop' | null;
+type DragType = 'firstLine' | 'hanging' | 'leftMargin' | 'rightMargin' | 'tabStop';
 
 interface IndentRulerProps {
   className?: string;
@@ -127,9 +128,6 @@ IndentHandle.displayName = 'IndentHandle';
 export const IndentRuler = memo(({ className }: IndentRulerProps) => {
   const { t } = useTranslation();
   const rulerRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragType, setDragType] = useState<DragType>(null);
-  const [dragTabIndex, setDragTabIndex] = useState<number>(-1);
   const [dragOffset, setDragOffset] = useState(0);
 
   const settings = useIndentStore((state) => state.settings);
@@ -165,28 +163,12 @@ export const IndentRuler = memo(({ className }: IndentRulerProps) => {
     return Math.round(cm / gridSize) * gridSize;
   }, []);
 
-  const handleMouseDown = useCallback(
-    (type: DragType, e: React.MouseEvent, tabIndex?: number) => {
-      e.preventDefault();
-      e.stopPropagation();
-      setIsDragging(true);
-      setDragType(type);
-      if (tabIndex !== undefined) {
-        setDragTabIndex(tabIndex);
-      }
-
-      const rulerRect = rulerRef.current?.getBoundingClientRect();
-      if (rulerRect) {
-        const clickX = e.clientX - rulerRect.left - lineNumberWidth;
-        setDragOffset(clickX);
-      }
-    },
-    [lineNumberWidth]
-  );
-
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (!isDragging || !dragType || !rulerRef.current) return;
+  const { isDragging, startDrag } = useMouseDrag<{
+    type: DragType;
+    tabIndex?: number;
+  }>({
+    onMove: (e, context) => {
+      if (!rulerRef.current) return;
 
       const rulerRect = rulerRef.current.getBoundingClientRect();
       const mouseX = e.clientX - rulerRect.left - lineNumberWidth;
@@ -195,7 +177,7 @@ export const IndentRuler = memo(({ className }: IndentRulerProps) => {
       let newCm = snapToGrid(pixelsToCm(mouseX));
       newCm = Math.max(0, Math.min(newCm, pixelsToCm(maxWidth)));
 
-      switch (dragType) {
+      switch (context.type) {
         case 'firstLine':
           updateSettings({ firstLineIndent: newCm - settings.leftMargin });
           break;
@@ -214,45 +196,35 @@ export const IndentRuler = memo(({ className }: IndentRulerProps) => {
           updateSettings({ rightMargin: Math.max(0, snapToGrid(rightCm)) });
           break;
         case 'tabStop':
-          if (dragTabIndex >= 0) {
+          if (context.tabIndex !== undefined && context.tabIndex >= 0) {
             const newTabStops = [...settings.tabStops];
-            newTabStops[dragTabIndex] = newCm;
+            newTabStops[context.tabIndex] = newCm;
             newTabStops.sort((a, b) => a - b);
             updateSettings({ tabStops: newTabStops });
           }
           break;
       }
     },
-    [
-      isDragging,
-      dragType,
-      dragTabIndex,
-      settings,
-      rulerWidth,
-      lineNumberWidth,
-      updateSettings,
-      pixelsToCm,
-      snapToGrid,
-    ]
+    onEnd: () => {
+      setDragOffset(0);
+    },
+  });
+
+  const handleMouseDown = useCallback(
+    (type: DragType, e: React.MouseEvent, tabIndex?: number) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const rulerRect = rulerRef.current?.getBoundingClientRect();
+      if (rulerRect) {
+        const clickX = e.clientX - rulerRect.left - lineNumberWidth;
+        setDragOffset(clickX);
+      }
+
+      startDrag(e, { type, tabIndex });
+    },
+    [lineNumberWidth, startDrag]
   );
-
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-    setDragType(null);
-    setDragTabIndex(-1);
-    setDragOffset(0);
-  }, []);
-
-  useEffect(() => {
-    if (isDragging) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
-      return () => {
-        window.removeEventListener('mousemove', handleMouseMove);
-        window.removeEventListener('mouseup', handleMouseUp);
-      };
-    }
-  }, [isDragging, handleMouseMove, handleMouseUp]);
 
   const handleRulerClick = useCallback(
     (e: React.MouseEvent) => {

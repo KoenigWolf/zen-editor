@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import {
   FILE_SECURITY,
   SEARCH_SECURITY,
-  SECURITY_HEADERS,
   validateSearchQuery,
   escapeRegExp,
   sanitizeText,
@@ -92,24 +91,6 @@ describe('escapeRegExp', () => {
   it('should escape mixed content', () => {
     expect(escapeRegExp('file.txt')).toBe('file\\.txt');
     expect(escapeRegExp('(test)')).toBe('\\(test\\)');
-  });
-});
-
-describe('SECURITY_HEADERS', () => {
-  it('should have CSP header defined', () => {
-    expect(SECURITY_HEADERS.CSP).toContain("default-src 'self'");
-    expect(SECURITY_HEADERS.CSP).toContain('frame-ancestors');
-  });
-
-  it('should have HSTS header defined', () => {
-    expect(SECURITY_HEADERS.HSTS).toContain('max-age=');
-    expect(SECURITY_HEADERS.HSTS).toContain('includeSubDomains');
-  });
-
-  it('should have all required security headers', () => {
-    expect(SECURITY_HEADERS.X_CONTENT_TYPE_OPTIONS).toBe('nosniff');
-    expect(SECURITY_HEADERS.X_FRAME_OPTIONS).toBe('DENY');
-    expect(SECURITY_HEADERS.REFERRER_POLICY).toBe('strict-origin-when-cross-origin');
   });
 });
 

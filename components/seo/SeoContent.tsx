@@ -18,18 +18,15 @@ export const SeoContent = () => {
 
   const features = useMemo(
     () => t('seo.features.items', { returnObjects: true }) as FeatureItem[],
-    [t],
+    [t]
   );
 
   const trustSignals = useMemo(
     () => t('seo.trust.items', { returnObjects: true }) as FeatureItem[],
-    [t],
+    [t]
   );
 
-  const faqItems = useMemo(
-    () => t('seo.faq.items', { returnObjects: true }) as FaqItem[],
-    [t],
-  );
+  const faqItems = useMemo(() => t('seo.faq.items', { returnObjects: true }) as FaqItem[], [t]);
 
   return (
     <section className="sr-only" aria-label={t('seo.hero.title')}>

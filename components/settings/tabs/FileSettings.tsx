@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { FileCode, CornerDownLeft, Save, HardDrive, Clock, Timer } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { EditorSettings } from '@/lib/types/editor';
-import { SettingsSection } from '../SettingsSection';
+import { SettingsSection } from '@/components/settings/SettingsSection';
 
 const ENCODING_VALUES = ['utf-8', 'utf-8-bom', 'shift-jis', 'euc-jp'] as const;
 const LINE_ENDING_VALUES = ['lf', 'crlf', 'cr'] as const;
@@ -22,7 +22,7 @@ const SelectionCard = ({
   current,
   label,
   description,
-  onClick
+  onClick,
 }: {
   value: string;
   current: string;
@@ -53,7 +53,7 @@ const SettingRow = ({
   label,
   description,
   checked,
-  onCheckedChange
+  onCheckedChange,
 }: {
   icon: React.ElementType;
   label: string;
@@ -67,9 +67,7 @@ const SettingRow = ({
         <Icon className="h-4 w-4 text-muted-foreground shrink-0" />
         <div className="flex flex-col">
           <Label className="text-sm cursor-pointer">{label}</Label>
-          {description && (
-            <span className="text-xs text-muted-foreground">{description}</span>
-          )}
+          {description && <span className="text-xs text-muted-foreground">{description}</span>}
         </div>
       </div>
       <Switch checked={checked} onCheckedChange={onCheckedChange} />
@@ -90,10 +88,12 @@ export function FileSettings({ settings, onSettingsChange }: FileSettingsProps) 
             checked={settings.autoSave}
             onCheckedChange={(checked) => onSettingsChange({ autoSave: checked })}
           />
-          <div className={cn(
-            'flex items-center gap-3 pl-6 transition-opacity',
-            !settings.autoSave && 'opacity-50 pointer-events-none'
-          )}>
+          <div
+            className={cn(
+              'flex items-center gap-3 pl-6 transition-opacity',
+              !settings.autoSave && 'opacity-50 pointer-events-none'
+            )}
+          >
             <Timer className="h-4 w-4 text-muted-foreground shrink-0" />
             <Label className="text-sm text-muted-foreground shrink-0">
               {t('settings.file.autoSave.interval')}
@@ -110,7 +110,8 @@ export function FileSettings({ settings, onSettingsChange }: FileSettingsProps) 
                 disabled={!settings.autoSave}
               />
               <span className="text-sm font-mono w-14 text-center bg-muted rounded px-2 py-1">
-                {settings.autoSaveInterval}{t('settings.file.autoSave.unit')}
+                {settings.autoSaveInterval}
+                {t('settings.file.autoSave.unit')}
               </span>
             </div>
           </div>

@@ -33,15 +33,13 @@ const FILE_COLOR_MAP: Record<string, string> = {
   md: 'text-purple-500',
 };
 
-const getFileIcon = (fileName: string) => {
-  const ext = fileName.split('.').pop()?.toLowerCase() || '';
-  return FILE_ICON_MAP[ext] || FileCode2;
-};
+const getFileExtension = (fileName: string): string =>
+  fileName.split('.').pop()?.toLowerCase() || '';
 
-const getFileColor = (fileName: string): string => {
-  const ext = fileName.split('.').pop()?.toLowerCase() || '';
-  return FILE_COLOR_MAP[ext] || 'text-muted-foreground';
-};
+const getFileIcon = (fileName: string) => FILE_ICON_MAP[getFileExtension(fileName)] || FileCode2;
+
+const getFileColor = (fileName: string): string =>
+  FILE_COLOR_MAP[getFileExtension(fileName)] || 'text-muted-foreground';
 
 interface FileTabItemProps {
   file: FileData;

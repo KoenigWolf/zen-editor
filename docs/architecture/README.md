@@ -55,6 +55,14 @@ Zustand を使用したストア構成。
 | EditorInstanceStore | `lib/store/editor-instance-store.ts` | Monaco インスタンス                | ×      |
 | AnnouncerStore      | `lib/store/announcer-store.ts`       | aria-live アナウンス               | ×      |
 
+### 2.1 コンテキスト (Context API) による状態管理
+
+Zustandの他に、React標準のContext APIを用いてグローバルな状態を管理している部分があります。
+
+| コンテキスト | ファイル | 役割 | 永続化 |
+| --- | --- | --- | --- |
+| PWAContext | `hooks/usePWA.ts` (Provider: `components/pwa/PWAProvider.tsx`) | PWAインストール状態、オフライン・アップデートの検知を一元管理 | △ (一部 localStorage) |
+
 ### 3. ドメイン層
 
 型定義とビジネスロジック。

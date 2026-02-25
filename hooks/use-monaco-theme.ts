@@ -1,11 +1,12 @@
 'use client';
 
-import { useCallback, useMemo, useRef, useState, useEffect } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import type { editor } from 'monaco-editor';
 import type { BeforeMount } from '@monaco-editor/react';
 import { useTheme } from 'next-themes';
 import { useEditorStore } from '@/lib/store';
 import { getThemeById, DEFAULT_EDITOR_COLORS, CUSTOM_THEMES } from '@/lib/themes';
+import { useMounted } from '@/hooks/use-mounted';
 
 type Monaco = typeof import('monaco-editor');
 
@@ -15,12 +16,8 @@ type Monaco = typeof import('monaco-editor');
 export const useMonacoTheme = () => {
   const { resolvedTheme } = useTheme();
   const settings = useEditorStore((state) => state.settings);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const currentThemeRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   /**
    * Monaco Editorがマウントされる前にすべてのカスタムテーマを定義

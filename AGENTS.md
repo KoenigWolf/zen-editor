@@ -8,6 +8,7 @@ Read before coding:
 - [Project Structure](docs/developments/project-structure-guide.md)
 - [Architecture](docs/architecture/README.md)
 - [i18n Guide](docs/i18n/README.md)
+- [Custom Hooks](docs/hooks/README.md)
 
 ## Required Rules
 
@@ -16,7 +17,9 @@ Read before coding:
 3. Use Zustand selectors
 4. Use absolute imports (`@/`)
 5. Use arrow functions
-6. No unnecessary comments
+6. Use `safeLocalStorageGet` / `safeLocalStorageSet` instead of direct `localStorage`
+7. Use custom hooks (`useMounted`, `useGlobalKeydown`) over standard APIs
+8. No unnecessary comments
 
 ## Before Commit
 

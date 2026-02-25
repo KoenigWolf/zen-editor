@@ -36,4 +36,4 @@ export const DEFAULT_EDITOR_SETTINGS: EditorSettings = {
   showFullWidthSpace: 'all',
   theme: 'system',
   language: 'en',
-}; 
+};

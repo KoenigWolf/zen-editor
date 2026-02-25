@@ -5,7 +5,7 @@ import { Palette, Sun, Moon, Laptop, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { EditorSettings } from '@/lib/types/editor';
 import { getLightThemes, getDarkThemes, type EditorTheme } from '@/lib/themes';
-import { SettingsSection } from '../SettingsSection';
+import { SettingsSection } from '@/components/settings/SettingsSection';
 
 interface ThemeSettingsProps {
   settings: EditorSettings;
@@ -17,7 +17,7 @@ const BaseThemeButton = ({
   current,
   icon: Icon,
   label,
-  onClick
+  onClick,
 }: {
   value: string;
   current: string;
@@ -67,10 +67,7 @@ const ThemeCard = ({
           : 'border-transparent hover:border-muted-foreground/30 hover:shadow-md bg-card'
       )}
     >
-      <div
-        className="h-16 w-full relative"
-        style={{ backgroundColor: theme.preview.bg }}
-      >
+      <div className="h-16 w-full relative" style={{ backgroundColor: theme.preview.bg }}>
         <div className="absolute inset-2 flex flex-col gap-1">
           <div className="flex items-center gap-1.5">
             <div
@@ -108,10 +105,12 @@ const ThemeCard = ({
       </div>
 
       <div className="px-2 py-1.5 bg-card">
-        <span className={cn(
-          'text-xs font-medium truncate block',
-          isActive ? 'text-primary' : 'text-foreground'
-        )}>
+        <span
+          className={cn(
+            'text-xs font-medium truncate block',
+            isActive ? 'text-primary' : 'text-foreground'
+          )}
+        >
           {displayName}
         </span>
       </div>

@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useFileStore } from '@/lib/store/file-store';
 import { useEditorInstanceStore } from '@/lib/store/editor-instance-store';
 import { useSplitViewStore } from '@/lib/store/split-view-store';
 import { useFileOperations } from '@/hooks/use-file-operations';
+import { useGlobalKeydown } from '@/hooks/use-global-keydown';
 
 interface UseKeyboardShortcutsOptions {
   onOpenSettings?: () => void;
@@ -27,7 +28,7 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
   const handleNextTab = useCallback(() => {
     if (files.length <= 1) return;
 
-    const currentIndex = files.findIndex(f => f.id === activeFileId);
+    const currentIndex = files.findIndex((f) => f.id === activeFileId);
     const nextIndex = (currentIndex + 1) % files.length;
     setActiveFileId(files[nextIndex].id);
   }, [files, activeFileId, setActiveFileId]);
@@ -35,7 +36,7 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
   const handlePrevTab = useCallback(() => {
     if (files.length <= 1) return;
 
-    const currentIndex = files.findIndex(f => f.id === activeFileId);
+    const currentIndex = files.findIndex((f) => f.id === activeFileId);
     const prevIndex = (currentIndex - 1 + files.length) % files.length;
     setActiveFileId(files[prevIndex].id);
   }, [files, activeFileId, setActiveFileId]);
@@ -59,8 +60,8 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
     reset();
   }, [reset]);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
       const isMod = e.metaKey || e.ctrlKey;
 
       if (isMod && e.key === 'n') {
@@ -134,22 +135,22 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
         handleCloseSplit();
         return;
       }
-    };
+    },
+    [
+      handleNewFile,
+      handleSave,
+      handleOpen,
+      handleCloseTab,
+      handleNextTab,
+      handlePrevTab,
+      handleGoToLine,
+      handleToggleSplit,
+      handleCloseSplit,
+      options,
+    ]
+  );
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [
-    handleNewFile,
-    handleSave,
-    handleOpen,
-    handleCloseTab,
-    handleNextTab,
-    handlePrevTab,
-    handleGoToLine,
-    handleToggleSplit,
-    handleCloseSplit,
-    options,
-  ]);
+  useGlobalKeydown({ handler: handleKeyDown });
 
   return {
     handleNewFile,

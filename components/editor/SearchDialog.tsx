@@ -9,6 +9,8 @@ import { useSearchStore, type SearchMatch } from '@/lib/store/search-store';
 import { cn } from '@/lib/utils';
 import { useFocusTrap } from '@/hooks/use-focus-trap';
 import { useSearchLogic, type SearchOptions } from '@/hooks/use-search-logic';
+import { useDialogDrag } from '@/hooks/use-dialog-drag';
+import { useGlobalKeydown } from '@/hooks/use-global-keydown';
 import {
   X,
   ChevronDown,
@@ -121,10 +123,17 @@ export const SearchDialog = memo(
     const [showReplace, setShowReplace] = useState(true);
     const [showResults, setShowResults] = useState(true);
     const [position, setPosition] = useState({ x: 0, y: 0 });
-    const [isDragging, setIsDragging] = useState(false);
-    const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
     const [isVisible, setIsVisible] = useState(false);
     const { isMobile } = useMobileDetection();
+    const { isDragging, startDrag } = useDialogDrag({
+      enabled: !isMobile,
+      position,
+      onPositionChange: setPosition,
+      clamp: (next) => ({
+        x: Math.max(0, Math.min(window.innerWidth - 400, next.x)),
+        y: Math.max(0, Math.min(window.innerHeight - 200, next.y)),
+      }),
+    });
 
     useEffect(() => {
       if (open) {
@@ -173,10 +182,8 @@ export const SearchDialog = memo(
       [handleReplaceAll, query, replacement]
     );
 
-    useEffect(() => {
-      if (!open) return;
-
-      const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = useCallback(
+      (e: KeyboardEvent) => {
         if (e.key === 'Escape') {
           e.preventDefault();
           onOpenChange(false);
@@ -223,54 +230,32 @@ export const SearchDialog = memo(
           performSearch(query, true);
           return;
         }
-      };
+      },
+      [
+        onOpenChange,
+        onNextMatch,
+        onPreviousMatch,
+        isCaseSensitive,
+        isRegex,
+        isWholeWord,
+        setIsCaseSensitive,
+        setIsRegex,
+        setIsWholeWord,
+        performSearch,
+        query,
+      ]
+    );
 
-      window.addEventListener('keydown', handleKeyDown);
-      return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [
-      open,
-      onOpenChange,
-      onNextMatch,
-      onPreviousMatch,
-      isCaseSensitive,
-      isRegex,
-      isWholeWord,
-      setIsCaseSensitive,
-      setIsRegex,
-      setIsWholeWord,
-      performSearch,
-      query,
-    ]);
+    useGlobalKeydown({ enabled: open, handler: handleKeyDown });
 
     const handleDragStart = useCallback(
       (e: React.MouseEvent) => {
         if (isMobile) return;
         if ((e.target as HTMLElement).closest('input, button')) return;
-        setIsDragging(true);
-        setDragOffset({ x: e.clientX - position.x, y: e.clientY - position.y });
+        startDrag(e);
       },
-      [position, isMobile]
+      [isMobile, startDrag]
     );
-
-    useEffect(() => {
-      if (!isDragging) return;
-
-      const handleMove = (e: MouseEvent) => {
-        setPosition({
-          x: Math.max(0, Math.min(window.innerWidth - 400, e.clientX - dragOffset.x)),
-          y: Math.max(0, Math.min(window.innerHeight - 200, e.clientY - dragOffset.y)),
-        });
-      };
-
-      const handleUp = () => setIsDragging(false);
-
-      document.addEventListener('mousemove', handleMove);
-      document.addEventListener('mouseup', handleUp);
-      return () => {
-        document.removeEventListener('mousemove', handleMove);
-        document.removeEventListener('mouseup', handleUp);
-      };
-    }, [isDragging, dragOffset]);
 
     useEffect(() => {
       if (!open) resetState();

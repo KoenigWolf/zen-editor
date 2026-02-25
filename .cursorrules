@@ -6,6 +6,7 @@ See [docs/ai/README.md](docs/ai/README.md) for full guide.
 - docs/developments/project-structure-guide.md
 - docs/architecture/README.md
 - docs/i18n/README.md
+- docs/hooks/README.md
 
 ## Rules
 - i18n for all UI text
@@ -13,6 +14,8 @@ See [docs/ai/README.md](docs/ai/README.md) for full guide.
 - Zustand selectors only
 - Absolute imports (@/)
 - Arrow functions
+- Use safeLocalStorageGet / safeLocalStorageSet instead of direct localStorage
+- Use custom hooks (useMounted, useGlobalKeydown) over standard APIs
 - No unnecessary comments
 
 ## Validation

@@ -1,8 +1,9 @@
 'use client';
 
-import { memo, useEffect, useRef } from 'react';
+import { memo, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, Copy, Pencil, XCircle } from 'lucide-react';
+import { useGlobalKeydown } from '@/hooks/use-global-keydown';
 
 interface TabContextMenuProps {
   isOpen: boolean;
@@ -16,6 +17,8 @@ interface TabContextMenuProps {
   onDuplicate: () => void;
   onRename: () => void;
 }
+
+const browserDocument = typeof document === 'undefined' ? undefined : document;
 
 export const TabContextMenu = memo(function TabContextMenu({
   isOpen,
@@ -54,18 +57,16 @@ export const TabContextMenu = memo(function TabContextMenu({
   }, [isOpen, onClose]);
 
   // ESCキーで閉じる
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleEscape = (event: KeyboardEvent) => {
+  const handleEscape = useCallback(
+    (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         onClose();
       }
-    };
+    },
+    [onClose]
+  );
 
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, onClose]);
+  useGlobalKeydown({ enabled: isOpen, target: browserDocument, handler: handleEscape });
 
   if (!isOpen) return null;
 

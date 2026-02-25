@@ -3,9 +3,7 @@
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Sparkles, Code2, WrapText, FileText, Moon, Sun } from 'lucide-react';
-
-const getDisplayFileName = (fileName: string | undefined, fallback: string): string =>
-  fileName || fallback;
+import { getDisplayFileName } from '@/lib/utils';
 
 interface EditorStatusBarProps {
   activeFile?: { name?: string; isDirty?: boolean };

@@ -55,7 +55,7 @@
 
 - 構造化データ（JSON-LD）対応
 - Open Graph / Twitter Cards 対応
-- PWA マニフェスト対応
+- PWA 完全対応（ブラウザからのインストール、オフライン対応、最新版へのアップデート通知）
 - サイトマップ自動生成
 
 ### 品質・パフォーマンス
@@ -156,6 +156,10 @@ ANALYZE=true npm run build  # バンドルサイズを可視化
 │   └── LiveAnnouncer.tsx  # スクリーンリーダー通知
 ├── hooks/                 # カスタムフック
 │   ├── use-focus-trap.ts  # フォーカストラップ
+│   ├── use-mounted.ts     # マウント判定
+│   ├── use-mouse-drag.ts  # マウスドラッグ操作処理
+│   ├── use-global-keydown.ts # グローバルキーボードショートカット
+│   ├── usePWA.ts          # PWA状態管理
 │   └── use-web-vitals.ts  # Web Vitals計測
 ├── lib/
 │   ├── i18n/              # 国際化

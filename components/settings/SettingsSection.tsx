@@ -13,9 +13,7 @@ export const SettingsSection = ({ icon: Icon, title, children }: SettingsSection
         <Icon className="h-4 w-4 text-primary" />
         <h3 className="text-sm font-medium">{title}</h3>
       </div>
-      <div className="p-3">
-        {children}
-      </div>
+      <div className="p-3">{children}</div>
     </div>
   );
 };

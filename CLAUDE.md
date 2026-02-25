@@ -8,6 +8,7 @@
 - [プロジェクト構造](docs/developments/project-structure-guide.md)
 - [アーキテクチャ](docs/architecture/README.md)
 - [国際化](docs/i18n/README.md)
+- [カスタムフック](docs/hooks/README.md)
 
 ## 必須ルール
 
@@ -16,7 +17,9 @@
 3. Zustand はセレクタで使用
 4. 絶対インポート (`@/`) を使用
 5. アロー関数を使用
-6. 不要なコメント禁止
+6. `localStorage` に代わり `safeLocalStorageGet` / `safeLocalStorageSet` を使用
+7. マウント判定やショートカットには標準APIではなくカスタムフック（`useMounted`, `useGlobalKeydown`）を使用
+8. 不要なコメント禁止
 
 ## コミット前
 

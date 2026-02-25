@@ -65,10 +65,11 @@ export const useSearchStore = create<SearchStore>((set, get) => ({
     set({ currentMatchIndex: prevIndex });
   },
 
-  reset: () => set({
-    searchTerm: '',
-    replaceText: '',
-    matches: [],
-    currentMatchIndex: -1,
-  }),
-})); 
+  reset: () =>
+    set({
+      searchTerm: '',
+      replaceText: '',
+      matches: [],
+      currentMatchIndex: -1,
+    }),
+}));

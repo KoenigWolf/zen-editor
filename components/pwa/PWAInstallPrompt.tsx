@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   X,
@@ -20,6 +20,8 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePWA } from '@/hooks/usePWA';
+import { useMounted } from '@/hooks/use-mounted';
+import { safeLocalStorageGet, safeLocalStorageSet } from '@/lib/storage-utils';
 
 declare global {
   interface Navigator {
@@ -38,21 +40,17 @@ export const PWAInstallPrompt = () => {
   const [showInstructions, setShowInstructions] = useState(false);
   const [installStep, setInstallStep] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
 
   const isIOS = platform === 'ios';
   const isMac = platform === 'macos';
   const isDesktop = platform === 'windows' || platform === 'macos' || platform === 'linux';
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
     if (!mounted || isInstalled) return;
 
     // 前回非表示にしてから24時間経過していなければ表示しない
-    const lastDismissed = localStorage.getItem('pwa-prompt-dismissed');
+    const lastDismissed = safeLocalStorageGet('pwa-prompt-dismissed');
     if (lastDismissed) {
       const dismissedTime = parseInt(lastDismissed, 10);
       if (Date.now() - dismissedTime < 24 * 60 * 60 * 1000) {
@@ -70,7 +68,7 @@ export const PWAInstallPrompt = () => {
     }
 
     // iOS/Safariの場合、初回訪問時にインストール案内を表示
-    if (isIOS && browser === 'safari' && !localStorage.getItem('ios-install-shown')) {
+    if (isIOS && browser === 'safari' && !safeLocalStorageGet('ios-install-shown')) {
       const timer = setTimeout(() => {
         setShowPrompt(true);
         setIsAnimating(true);
@@ -82,7 +80,7 @@ export const PWAInstallPrompt = () => {
   const handleInstall = useCallback(async () => {
     if (isIOS || (isMac && browser === 'safari')) {
       setShowInstructions(true);
-      localStorage.setItem('ios-install-shown', 'true');
+      safeLocalStorageSet('ios-install-shown', 'true');
       return;
     }
 
@@ -98,7 +96,7 @@ export const PWAInstallPrompt = () => {
       setShowPrompt(false);
       setShowInstructions(false);
     }, 200);
-    localStorage.setItem('pwa-prompt-dismissed', Date.now().toString());
+    safeLocalStorageSet('pwa-prompt-dismissed', Date.now().toString());
   }, []);
 
   const handleNextStep = useCallback(() => {
@@ -346,9 +344,7 @@ export const PWAInstallPrompt = () => {
             {isIOS
               ? t('pwa.browser.safari')
               : isDesktop
-                ? t(
-                    `pwa.browser.${browser === 'chrome' ? 'chrome' : browser === 'edge' ? 'edge' : 'default'}`
-                  )
+                ? t(`pwa.browser.${['chrome', 'edge'].includes(browser) ? browser : 'default'}`)
                 : t('pwa.browser.default')}
           </p>
         </div>
@@ -362,29 +358,24 @@ export const PWAInstallPrompt = () => {
  */
 export const OfflineIndicator = () => {
   const { t } = useTranslation();
-  const [isOnline, setIsOnline] = useState(true);
+  const { isOnline } = usePWA();
   const [showReconnected, setShowReconnected] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
+  const isOnlineRef = useRef(isOnline);
 
   useEffect(() => {
-    setMounted(true);
-    setIsOnline(navigator.onLine);
+    if (!mounted) return;
 
-    const handleOnline = () => {
-      setIsOnline(true);
+    // falseからtrueに変わった時だけ再接続通知を表示
+    if (!isOnlineRef.current && isOnline) {
       setShowReconnected(true);
-      setTimeout(() => setShowReconnected(false), 3000);
-    };
-    const handleOffline = () => setIsOnline(false);
+      const timer = setTimeout(() => setShowReconnected(false), 3000);
+      isOnlineRef.current = isOnline;
+      return () => clearTimeout(timer);
+    }
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
+    isOnlineRef.current = isOnline;
+  }, [isOnline, mounted]);
 
   if (!mounted) return null;
 
@@ -417,44 +408,23 @@ export const OfflineIndicator = () => {
  */
 export const UpdateNotification = () => {
   const { t } = useTranslation();
-  const [showUpdate, setShowUpdate] = useState(false);
-  const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
+  const { hasUpdate, applyUpdate } = usePWA();
   const [isUpdating, setIsUpdating] = useState(false);
-
-  useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.ready.then((reg) => {
-        setRegistration(reg);
-
-        reg.addEventListener('updatefound', () => {
-          const newWorker = reg.installing;
-          if (!newWorker) return;
-
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              setShowUpdate(true);
-            }
-          });
-        });
-      });
-    }
-  }, []);
+  const [dismissed, setDismissed] = useState(false);
 
   const handleUpdate = useCallback(() => {
     setIsUpdating(true);
-    if (registration?.waiting) {
-      registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-    }
+    applyUpdate();
     setTimeout(() => {
       window.location.reload();
     }, 500);
-  }, [registration]);
+  }, [applyUpdate]);
 
   const handleDismiss = useCallback(() => {
-    setShowUpdate(false);
+    setDismissed(true);
   }, []);
 
-  if (!showUpdate) return null;
+  if (!hasUpdate || dismissed) return null;
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-bottom-4 fade-in duration-300">

@@ -1,10 +1,11 @@
 'use client';
 
-import { memo, useCallback, useRef, useState, useEffect } from 'react';
+import { memo, useCallback, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useSplitViewStore, type PaneNode, type PaneSplit } from '@/lib/store/split-view-store';
 import { useTranslation } from 'react-i18next';
 import { X } from 'lucide-react';
+import { useMouseDrag } from '@/hooks/use-mouse-drag';
 
 const MonacoEditor = dynamic(
   () => import('@/components/editor/MonacoEditor').then((mod) => ({ default: mod.MonacoEditor })),
@@ -25,22 +26,13 @@ interface SplitPaneProps {
 
 export const SplitPane = memo(function SplitPane({ node, onRatioChange }: SplitPaneProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragSplitId, setDragSplitId] = useState<string | null>(null);
+  const [activeSplitId, setActiveSplitId] = useState<string | null>(null);
   const { setActivePane, activePaneId, closePane, root } = useSplitViewStore();
   const isSplit = root.type === 'split';
   const { t } = useTranslation();
 
-  const handleMouseDown = useCallback((e: React.MouseEvent, splitId: string) => {
-    e.preventDefault();
-    setIsDragging(true);
-    setDragSplitId(splitId);
-  }, []);
-
-  useEffect(() => {
-    if (!isDragging || !dragSplitId) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
+  const { isDragging, startDrag } = useMouseDrag<string>({
+    onMove: (e, splitId) => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
       const split = node as PaneSplit;
@@ -50,21 +42,21 @@ export const SplitPane = memo(function SplitPane({ node, onRatioChange }: SplitP
           ? (e.clientX - rect.left) / rect.width
           : (e.clientY - rect.top) / rect.height;
 
-      onRatioChange(dragSplitId, ratio);
-    };
+      onRatioChange(splitId, ratio);
+    },
+    onEnd: () => {
+      setActiveSplitId(null);
+    },
+  });
 
-    const handleMouseUp = () => {
-      setIsDragging(false);
-      setDragSplitId(null);
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDragging, dragSplitId, node, onRatioChange]);
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent, splitId: string) => {
+      e.preventDefault();
+      setActiveSplitId(splitId);
+      startDrag(e, splitId);
+    },
+    [startDrag]
+  );
 
   if (node.type === 'leaf') {
     const fileId = node.fileId;
@@ -120,7 +112,7 @@ export const SplitPane = memo(function SplitPane({ node, onRatioChange }: SplitP
         className={`
           mochi-splitter
           ${isVertical ? 'mochi-splitter-vertical' : 'mochi-splitter-horizontal'}
-          ${isDragging && dragSplitId === node.id ? 'mochi-splitter-active' : ''}
+          ${isDragging && activeSplitId === node.id ? 'mochi-splitter-active' : ''}
         `}
         onMouseDown={(e) => handleMouseDown(e, node.id)}
       />

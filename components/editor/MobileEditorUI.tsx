@@ -16,9 +16,7 @@ import {
   Minimize2,
   ChevronUp,
 } from 'lucide-react';
-
-const getDisplayFileName = (fileName: string | undefined, fallback: string): string =>
-  fileName || fallback;
+import { getDisplayFileName } from '@/lib/utils';
 
 interface MobileTabButtonProps {
   file: { id: string; name: string; isDirty?: boolean };
