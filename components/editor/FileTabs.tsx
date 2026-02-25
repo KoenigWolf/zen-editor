@@ -47,6 +47,7 @@ interface FileTabItemProps {
   isDragging: boolean;
   isDragOver: boolean;
   onSelect: (e: React.MouseEvent) => void;
+  onContextMenu: (e: React.MouseEvent) => void;
   onClose: (e: React.MouseEvent | React.KeyboardEvent) => void;
   onDragStart: (e: React.DragEvent) => void;
   onDragOver: (e: React.DragEvent) => void;
@@ -62,6 +63,7 @@ const FileTabItem = memo(function FileTabItem({
   isDragging,
   isDragOver,
   onSelect,
+  onContextMenu,
   onClose,
   onDragStart,
   onDragOver,
@@ -86,6 +88,7 @@ const FileTabItem = memo(function FileTabItem({
       onDrop={onDrop}
       onDragEnd={onDragEnd}
       onClick={onSelect}
+      onContextMenu={onContextMenu}
       className={cn(
         'mochi-tab group',
         isActive && 'mochi-tab-active',
@@ -115,7 +118,11 @@ const FileTabItem = memo(function FileTabItem({
   );
 });
 
-export const FileTabs = memo(function FileTabs() {
+interface FileTabsProps {
+  onTabContextMenu?: (fileId: string, fileName: string, event: React.MouseEvent) => void;
+}
+
+export const FileTabs = memo(function FileTabs({ onTabContextMenu }: FileTabsProps) {
   const { t } = useTranslation();
   const files = useFileStore((state) => state.files);
   const activeFileId = useFileStore((state) => state.activeFileId);
@@ -147,6 +154,18 @@ export const FileTabs = memo(function FileTabs() {
       if (fileId) removeFile(fileId);
     },
     [removeFile]
+  );
+
+  const handleContextMenu = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      const fileId = getFileIdFromEvent(e);
+      if (!fileId || !onTabContextMenu) return;
+      const file = useFileStore.getState().files.find((target) => target.id === fileId);
+      if (!file) return;
+      onTabContextMenu(fileId, file.name, e);
+    },
+    [getFileIdFromEvent, onTabContextMenu]
   );
 
   const handleDragStart = useCallback(
@@ -226,6 +245,7 @@ export const FileTabs = memo(function FileTabs() {
             isDragging={draggedId === file.id}
             isDragOver={dragOverId === file.id}
             onSelect={handleSelect}
+            onContextMenu={handleContextMenu}
             onClose={handleClose}
             onDragStart={handleDragStart}
             onDragOver={handleDragOver}

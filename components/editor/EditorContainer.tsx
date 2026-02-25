@@ -428,7 +428,7 @@ export const EditorContainer = memo(function EditorContainer() {
         />
       )}
 
-      {!showMobileUI && <FileTabs />}
+      {!showMobileUI && <FileTabs onTabContextMenu={handleTabLongPress} />}
       {!showMobileUI && rulerVisible && <IndentRuler />}
 
       <main
