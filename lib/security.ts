@@ -1,12 +1,3 @@
-export const SECURITY_HEADERS = {
-  CSP: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: blob:; font-src 'self' data: https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net; worker-src 'self' blob:; frame-ancestors 'none'; form-action 'self'; base-uri 'self'; object-src 'none'",
-  HSTS: 'max-age=31536000; includeSubDomains',
-  X_CONTENT_TYPE_OPTIONS: 'nosniff',
-  X_FRAME_OPTIONS: 'DENY',
-  REFERRER_POLICY: 'strict-origin-when-cross-origin',
-  PERMISSIONS_POLICY: 'camera=(), microphone=(), geolocation=()',
-} as const;
-
 export const FILE_SECURITY = {
   MAX_FILE_SIZE: 10 * 1024 * 1024,
   ALLOWED_EXTENSIONS: [
