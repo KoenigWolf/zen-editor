@@ -346,9 +346,7 @@ export const PWAInstallPrompt = () => {
             {isIOS
               ? t('pwa.browser.safari')
               : isDesktop
-                ? t(
-                    `pwa.browser.${browser === 'chrome' ? 'chrome' : browser === 'edge' ? 'edge' : 'default'}`
-                  )
+                ? t(`pwa.browser.${['chrome', 'edge'].includes(browser) ? browser : 'default'}`)
                 : t('pwa.browser.default')}
           </p>
         </div>
