@@ -18,6 +18,8 @@ interface TabContextMenuProps {
   onRename: () => void;
 }
 
+const browserDocument = typeof document === 'undefined' ? undefined : document;
+
 export const TabContextMenu = memo(function TabContextMenu({
   isOpen,
   position,
@@ -64,7 +66,7 @@ export const TabContextMenu = memo(function TabContextMenu({
     [onClose]
   );
 
-  useGlobalKeydown({ enabled: isOpen, target: document, handler: handleEscape });
+  useGlobalKeydown({ enabled: isOpen, target: browserDocument, handler: handleEscape });
 
   if (!isOpen) return null;
 

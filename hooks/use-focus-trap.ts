@@ -18,6 +18,8 @@ interface UseFocusTrapOptions {
   returnFocusOnDeactivate?: boolean;
 }
 
+const browserDocument = typeof document === 'undefined' ? undefined : document;
+
 export const useFocusTrap = <T extends HTMLElement>(options: UseFocusTrapOptions = {}) => {
   const { enabled = true, initialFocusRef, returnFocusOnDeactivate = true } = options;
   const containerRef = useRef<T>(null);
@@ -82,7 +84,7 @@ export const useFocusTrap = <T extends HTMLElement>(options: UseFocusTrapOptions
     };
   }, [enabled, initialFocusRef, returnFocusOnDeactivate, getFocusableElements]);
 
-  useGlobalKeydown({ enabled, target: document, handler: handleKeyDown });
+  useGlobalKeydown({ enabled, target: browserDocument, handler: handleKeyDown });
 
   return containerRef;
 };
