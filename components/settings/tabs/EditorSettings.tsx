@@ -4,10 +4,16 @@ import { useTranslation } from 'react-i18next';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Type, Monitor, Hash, Ruler, WrapText, Space } from 'lucide-react';
 import type { EditorSettings as EditorSettingsType } from '@/lib/types/editor';
-import { SettingsSection } from '../SettingsSection';
+import { SettingsSection } from '@/components/settings/SettingsSection';
 
 const FONT_FAMILIES = [
   { value: 'monospace', labelKey: 'settings.editor.font.system' },
@@ -44,7 +50,7 @@ const SettingRow = ({
   icon: Icon,
   label,
   checked,
-  onCheckedChange
+  onCheckedChange,
 }: {
   icon: React.ElementType;
   label: string;
@@ -73,13 +79,20 @@ export function EditorSettings({ settings, onSettingsChange }: EditorSettingsPro
             <Label className="text-sm text-muted-foreground w-24 shrink-0">
               {t('settings.editor.font.family')}
             </Label>
-            <Select value={settings.fontFamily} onValueChange={(value) => onSettingsChange({ fontFamily: value })}>
+            <Select
+              value={settings.fontFamily}
+              onValueChange={(value) => onSettingsChange({ fontFamily: value })}
+            >
               <SelectTrigger className="flex-1 h-9">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="max-h-60">
                 {FONT_FAMILIES.map((font) => (
-                  <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.value }}>
+                  <SelectItem
+                    key={font.value}
+                    value={font.value}
+                    style={{ fontFamily: font.value }}
+                  >
                     {font.labelKey ? t(font.labelKey) : font.value}
                   </SelectItem>
                 ))}
@@ -108,7 +121,8 @@ export function EditorSettings({ settings, onSettingsChange }: EditorSettingsPro
             className="mt-2 p-3 rounded-md bg-muted/50 border text-sm"
             style={{ fontFamily: settings.fontFamily, fontSize: settings.fontSize }}
           >
-            {t('settings.editor.font.preview.alphabet')}<br />
+            {t('settings.editor.font.preview.alphabet')}
+            <br />
             {t('settings.editor.font.preview.japanese')}
           </div>
         </div>
@@ -147,16 +161,24 @@ export function EditorSettings({ settings, onSettingsChange }: EditorSettingsPro
             </Label>
             <Select
               value={settings.showWhitespace}
-              onValueChange={(value) => onSettingsChange({ showWhitespace: value as EditorSettingsType['showWhitespace'] })}
+              onValueChange={(value) =>
+                onSettingsChange({ showWhitespace: value as EditorSettingsType['showWhitespace'] })
+              }
             >
               <SelectTrigger className="flex-1 h-8">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">{t('settings.editor.whitespace.options.none')}</SelectItem>
-                <SelectItem value="boundary">{t('settings.editor.whitespace.options.boundary')}</SelectItem>
-                <SelectItem value="selection">{t('settings.editor.whitespace.options.selection')}</SelectItem>
-                <SelectItem value="trailing">{t('settings.editor.whitespace.options.trailing')}</SelectItem>
+                <SelectItem value="boundary">
+                  {t('settings.editor.whitespace.options.boundary')}
+                </SelectItem>
+                <SelectItem value="selection">
+                  {t('settings.editor.whitespace.options.selection')}
+                </SelectItem>
+                <SelectItem value="trailing">
+                  {t('settings.editor.whitespace.options.trailing')}
+                </SelectItem>
                 <SelectItem value="all">{t('settings.editor.whitespace.options.all')}</SelectItem>
               </SelectContent>
             </Select>
@@ -167,16 +189,26 @@ export function EditorSettings({ settings, onSettingsChange }: EditorSettingsPro
             </Label>
             <Select
               value={settings.showFullWidthSpace}
-              onValueChange={(value) => onSettingsChange({ showFullWidthSpace: value as EditorSettingsType['showFullWidthSpace'] })}
+              onValueChange={(value) =>
+                onSettingsChange({
+                  showFullWidthSpace: value as EditorSettingsType['showFullWidthSpace'],
+                })
+              }
             >
               <SelectTrigger className="flex-1 h-8">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">{t('settings.editor.whitespace.options.none')}</SelectItem>
-                <SelectItem value="boundary">{t('settings.editor.whitespace.options.boundary')}</SelectItem>
-                <SelectItem value="selection">{t('settings.editor.whitespace.options.selection')}</SelectItem>
-                <SelectItem value="trailing">{t('settings.editor.whitespace.options.trailing')}</SelectItem>
+                <SelectItem value="boundary">
+                  {t('settings.editor.whitespace.options.boundary')}
+                </SelectItem>
+                <SelectItem value="selection">
+                  {t('settings.editor.whitespace.options.selection')}
+                </SelectItem>
+                <SelectItem value="trailing">
+                  {t('settings.editor.whitespace.options.trailing')}
+                </SelectItem>
                 <SelectItem value="all">{t('settings.editor.whitespace.options.all')}</SelectItem>
               </SelectContent>
             </Select>
