@@ -44,6 +44,7 @@ export const TabContextMenu = memo(function TabContextMenu({
 }: TabContextMenuProps) {
   const { t } = useTranslation();
   const menuRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   // 外側クリックで閉じる
   useEffect(() => {
@@ -80,14 +81,6 @@ export const TabContextMenu = memo(function TabContextMenu({
 
   useGlobalKeydown({ enabled: isOpen, target: browserDocument, handler: handleEscape });
 
-  if (!isOpen) return null;
-
-  // 画面端を考慮した位置調整
-  const adjustedPosition = {
-    x: Math.min(position.x, window.innerWidth - 200),
-    y: Math.min(position.y, window.innerHeight - 250),
-  };
-
   const menuItems = [
     { icon: X, label: t('tabMenu.close'), action: onCloseTab },
     {
@@ -119,6 +112,71 @@ export const TabContextMenu = memo(function TabContextMenu({
     { icon: Pencil, label: t('tabMenu.rename'), action: onRename },
   ];
 
+  const enabledItemIndexes = menuItems
+    .map((item, index) => (!item.disabled ? index : -1))
+    .filter((index) => index >= 0);
+
+  const focusItemByIndex = useCallback(
+    (index: number) => {
+      const target = itemRefs.current[index];
+      if (target) target.focus();
+    },
+    [itemRefs]
+  );
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const firstEnabledIndex = enabledItemIndexes[0];
+    if (firstEnabledIndex !== undefined) {
+      focusItemByIndex(firstEnabledIndex);
+    }
+  }, [isOpen, enabledItemIndexes, focusItemByIndex]);
+
+  const handleMenuKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (enabledItemIndexes.length === 0) return;
+
+      const activeElement = browserDocument?.activeElement;
+      const currentIndex = itemRefs.current.findIndex((item) => item === activeElement);
+
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        const enabledPosition = enabledItemIndexes.findIndex((index) => index === currentIndex);
+        const nextPosition =
+          enabledPosition < 0 || enabledPosition === enabledItemIndexes.length - 1
+            ? 0
+            : enabledPosition + 1;
+        focusItemByIndex(enabledItemIndexes[nextPosition]);
+      }
+
+      if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        const enabledPosition = enabledItemIndexes.findIndex((index) => index === currentIndex);
+        const prevPosition =
+          enabledPosition <= 0 ? enabledItemIndexes.length - 1 : enabledPosition - 1;
+        focusItemByIndex(enabledItemIndexes[prevPosition]);
+      }
+
+      if (event.key === 'Home') {
+        event.preventDefault();
+        focusItemByIndex(enabledItemIndexes[0]);
+      }
+
+      if (event.key === 'End') {
+        event.preventDefault();
+        focusItemByIndex(enabledItemIndexes[enabledItemIndexes.length - 1]);
+      }
+    },
+    [enabledItemIndexes, focusItemByIndex]
+  );
+
+  if (!isOpen) return null;
+
+  const adjustedPosition = {
+    x: Math.min(position.x, window.innerWidth - 200),
+    y: Math.min(position.y, window.innerHeight - 250),
+  };
+
   return (
     <>
       {/* バックドロップ */}
@@ -133,6 +191,7 @@ export const TabContextMenu = memo(function TabContextMenu({
           top: adjustedPosition.y,
         }}
         role="menu"
+        onKeyDown={handleMenuKeyDown}
         aria-label={t('tabMenu.close')}
       >
         {menuItems.map((item, index) => {
@@ -150,9 +209,14 @@ export const TabContextMenu = memo(function TabContextMenu({
           return (
             <button
               key={item.label}
+              ref={(el) => {
+                itemRefs.current[index] = el;
+              }}
               type="button"
               role="menuitem"
               disabled={item.disabled}
+              tabIndex={item.disabled ? -1 : 0}
+              aria-disabled={item.disabled}
               className="mochi-mobile-menu-item w-full text-left disabled:opacity-40 disabled:pointer-events-none"
               onClick={() => {
                 if (item.disabled) return;
