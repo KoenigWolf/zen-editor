@@ -31,11 +31,9 @@ const detectBrowser = (): Browser => {
   return 'unknown';
 };
 
-// グローバルにdeferredPromptを保存（イベントは一度しか発火しないため）
 let globalDeferredPrompt: BeforeInstallPromptEvent | null = null;
 const promptListeners = new Set<(prompt: BeforeInstallPromptEvent | null) => void>();
 
-// 早期にイベントをキャプチャ
 if (typeof window !== 'undefined') {
   window.addEventListener('beforeinstallprompt', (e: Event) => {
     e.preventDefault();
@@ -63,7 +61,6 @@ export function usePWAManager() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    // プラットフォーム・ブラウザ検出
     setPlatform(detectPlatform());
     setBrowser(detectBrowser());
 
@@ -82,7 +79,6 @@ export function usePWAManager() {
       setIsInstalled(true);
     }
 
-    // グローバルリスナーに登録
     const handlePromptChange = (prompt: BeforeInstallPromptEvent | null) => {
       setDeferredPrompt(prompt);
       if (prompt === null) {
@@ -91,12 +87,10 @@ export function usePWAManager() {
     };
     promptListeners.add(handlePromptChange);
 
-    // 既にキャプチャ済みの場合
     if (globalDeferredPrompt) {
       setDeferredPrompt(globalDeferredPrompt);
     }
 
-    // 開発環境ではSWを使わない（Hydration mismatch防止）
     if (process.env.NODE_ENV !== 'production') {
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then((regs) => {
@@ -109,7 +103,6 @@ export function usePWAManager() {
         });
       }
     } else {
-      // 本番環境のみSW登録
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker
           .register('/sw.js', { scope: '/' })
@@ -166,7 +159,6 @@ export function usePWAManager() {
       if (outcome === 'accepted') {
         setIsInstalled(true);
       }
-      // グローバル変数とローカル状態をクリア
       globalDeferredPrompt = null;
       setDeferredPrompt(null);
       return outcome;
@@ -198,10 +190,10 @@ export type PWAContextType = ReturnType<typeof usePWAManager>;
 import { createContext, useContext } from 'react';
 export const PWAContext = createContext<PWAContextType | null>(null);
 
-export function usePWA() {
+export const usePWA = () => {
   const context = useContext(PWAContext);
   if (!context) {
     throw new Error('usePWA must be used within a PWAProvider');
   }
   return context;
-}
+};
