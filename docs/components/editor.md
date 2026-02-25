@@ -364,10 +364,13 @@ export function EditorToolbar() {
 | `Ctrl+F` | 検索 |
 | `Escape` | ダイアログを閉じる |
 
-```typescript
+```tsx
 // キーボードショートカットの設定
-useEffect(() => {
-  const handleKeyDown = (e: KeyboardEvent) => {
+import { useGlobalKeydown } from '@/hooks/use-global-keydown'
+
+useGlobalKeydown({
+  enabled: true,
+  handler: (e) => {
     if (e.ctrlKey || e.metaKey) {
       switch (e.key) {
         case 'f':
@@ -378,8 +381,5 @@ useEffect(() => {
       }
     }
   }
-
-  window.addEventListener('keydown', handleKeyDown)
-  return () => window.removeEventListener('keydown', handleKeyDown)
-}, [])
+})
 ```

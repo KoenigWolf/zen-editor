@@ -9,6 +9,7 @@ AI コーディングアシスタント向けガイド。
 | [プロジェクト構造](../developments/project-structure-guide.md) | ディレクトリ、規約     |
 | [アーキテクチャ](../architecture/README.md)                    | 設計、状態管理         |
 | [国際化](../i18n/README.md)                                    | UI テキスト変更時      |
+| [カスタムフック](../hooks/README.md)                           | 共通化されたフックとユーティリティ |
 
 ## 技術スタック
 
@@ -21,7 +22,9 @@ Next.js (App Router) / TypeScript / Zustand / shadcn/ui / Monaco Editor / Tailwi
 3. **Zustand** - セレクタで使用 `useStore((s) => s.value)`
 4. **インポート** - 絶対パス `@/` を使用
 5. **関数** - アロー関数を使用
-6. **コメント** - 不要なコメント禁止
+6. **ストレージ** - `localStorage` の直接利用を避け、`safeLocalStorageGet` / `safeLocalStorageSet` を使用
+7. **フック** - マウント判定には `useMounted`、ショートカット等には標準APIでなくカスタムフック（`useGlobalKeydown` 等）を優先活用
+8. **コメント** - 不要なコメント禁止
 
 ## 主要ファイル
 
