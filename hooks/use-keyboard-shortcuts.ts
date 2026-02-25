@@ -27,7 +27,7 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
   const handleNextTab = useCallback(() => {
     if (files.length <= 1) return;
 
-    const currentIndex = files.findIndex(f => f.id === activeFileId);
+    const currentIndex = files.findIndex((f) => f.id === activeFileId);
     const nextIndex = (currentIndex + 1) % files.length;
     setActiveFileId(files[nextIndex].id);
   }, [files, activeFileId, setActiveFileId]);
@@ -35,7 +35,7 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
   const handlePrevTab = useCallback(() => {
     if (files.length <= 1) return;
 
-    const currentIndex = files.findIndex(f => f.id === activeFileId);
+    const currentIndex = files.findIndex((f) => f.id === activeFileId);
     const prevIndex = (currentIndex - 1 + files.length) % files.length;
     setActiveFileId(files[prevIndex].id);
   }, [files, activeFileId, setActiveFileId]);

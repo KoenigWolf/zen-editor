@@ -98,14 +98,14 @@
       "short_name": "新規",
       "description": "新しいファイルを作成",
       "url": "/?action=new",
-      "icons": [{"src": "/icon-new-file.svg", "sizes": "96x96", "type": "image/svg+xml"}]
+      "icons": [{ "src": "/icon-new-file.svg", "sizes": "96x96", "type": "image/svg+xml" }]
     },
     {
       "name": "ファイルを開く",
       "short_name": "開く",
       "description": "ファイルを開く",
       "url": "/?action=open",
-      "icons": [{"src": "/icon-open-file.svg", "sizes": "96x96", "type": "image/svg+xml"}]
+      "icons": [{ "src": "/icon-open-file.svg", "sizes": "96x96", "type": "image/svg+xml" }]
     }
   ],
   "file_handlers": [

@@ -52,7 +52,7 @@ const ThemeInitializer = ({ children }: { children: ReactNode }) => {
     if (prevThemeRef.current === editorTheme) return;
     prevThemeRef.current = editorTheme;
 
-    const customTheme = CUSTOM_THEMES.find(t => t.id === editorTheme);
+    const customTheme = CUSTOM_THEMES.find((t) => t.id === editorTheme);
 
     if (customTheme) {
       setTheme(customTheme.type);
@@ -67,7 +67,7 @@ const ThemeInitializer = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (!mounted) return;
-    const customTheme = CUSTOM_THEMES.find(t => t.id === editorTheme);
+    const customTheme = CUSTOM_THEMES.find((t) => t.id === editorTheme);
     if (customTheme) {
       requestAnimationFrame(() => applyThemeColors(customTheme));
     }

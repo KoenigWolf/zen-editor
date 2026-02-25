@@ -4,10 +4,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { useMobileDetection } from '@/hooks/use-mobile-detection';
-import {
-  Command,
-  ArrowRight,
-} from 'lucide-react';
+import { Command, ArrowRight } from 'lucide-react';
 
 interface CommandItem {
   id: string;
@@ -39,36 +36,37 @@ export function CommandPalette({ open, onOpenChange, commands }: CommandPaletteP
     if (!query.trim()) return commands;
 
     const lowerQuery = query.toLowerCase();
-    return commands.filter(cmd =>
-      cmd.label.toLowerCase().includes(lowerQuery) ||
-      cmd.description?.toLowerCase().includes(lowerQuery) ||
-      cmd.category.toLowerCase().includes(lowerQuery)
+    return commands.filter(
+      (cmd) =>
+        cmd.label.toLowerCase().includes(lowerQuery) ||
+        cmd.description?.toLowerCase().includes(lowerQuery) ||
+        cmd.category.toLowerCase().includes(lowerQuery)
     );
   }, [commands, query]);
 
   const groupedCommands = useMemo(() => {
     const groups: Record<string, CommandItem[]> = {};
-    filteredCommands.forEach(cmd => {
+    filteredCommands.forEach((cmd) => {
       if (!groups[cmd.category]) groups[cmd.category] = [];
       groups[cmd.category].push(cmd);
     });
     return categoryOrder
-      .filter(cat => groups[cat]?.length > 0)
-      .map(cat => ({ category: cat, commands: groups[cat] }));
+      .filter((cat) => groups[cat]?.length > 0)
+      .map((cat) => ({ category: cat, commands: groups[cat] }));
   }, [filteredCommands]);
 
-  const flatCommands = useMemo(() =>
-    groupedCommands.flatMap(g => g.commands),
-    [groupedCommands]
-  );
+  const flatCommands = useMemo(() => groupedCommands.flatMap((g) => g.commands), [groupedCommands]);
 
-  const executeCommand = useCallback((cmd: CommandItem) => {
-    onOpenChange(false);
-    setQuery('');
-    requestAnimationFrame(() => {
-      cmd.action();
-    });
-  }, [onOpenChange]);
+  const executeCommand = useCallback(
+    (cmd: CommandItem) => {
+      onOpenChange(false);
+      setQuery('');
+      requestAnimationFrame(() => {
+        cmd.action();
+      });
+    },
+    [onOpenChange]
+  );
 
   useEffect(() => {
     if (open) {
@@ -89,11 +87,11 @@ export function CommandPalette({ open, onOpenChange, commands }: CommandPaletteP
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
-          setSelectedIndex(i => Math.min(i + 1, flatCommands.length - 1));
+          setSelectedIndex((i) => Math.min(i + 1, flatCommands.length - 1));
           break;
         case 'ArrowUp':
           e.preventDefault();
-          setSelectedIndex(i => Math.max(i - 1, 0));
+          setSelectedIndex((i) => Math.max(i - 1, 0));
           break;
         case 'Enter':
           e.preventDefault();
@@ -131,16 +129,20 @@ export function CommandPalette({ open, onOpenChange, commands }: CommandPaletteP
       />
 
       {/* Palette */}
-      <div className={cn(
-        'fixed z-50 animate-in fade-in slide-in-from-top-4 duration-200',
-        isMobile
-          ? 'inset-x-0 bottom-0 top-auto'
-          : 'left-1/2 top-[15%] -translate-x-1/2 w-full max-w-xl'
-      )}>
-        <div className={cn(
-          'bg-background border shadow-xl overflow-hidden',
-          isMobile ? 'rounded-t-xl' : 'rounded-lg mx-4'
-        )}>
+      <div
+        className={cn(
+          'fixed z-50 animate-in fade-in slide-in-from-top-4 duration-200',
+          isMobile
+            ? 'inset-x-0 bottom-0 top-auto'
+            : 'left-1/2 top-[15%] -translate-x-1/2 w-full max-w-xl'
+        )}
+      >
+        <div
+          className={cn(
+            'bg-background border shadow-xl overflow-hidden',
+            isMobile ? 'rounded-t-xl' : 'rounded-lg mx-4'
+          )}
+        >
           {/* Handle for Mobile */}
           {isMobile && (
             <div className="flex justify-center pt-2">
@@ -167,10 +169,10 @@ export function CommandPalette({ open, onOpenChange, commands }: CommandPaletteP
           </div>
 
           {/* Command List */}
-          <div ref={listRef} className={cn(
-            'overflow-y-auto p-2',
-            isMobile ? 'max-h-[50vh]' : 'max-h-[60vh]'
-          )}>
+          <div
+            ref={listRef}
+            className={cn('overflow-y-auto p-2', isMobile ? 'max-h-[50vh]' : 'max-h-[60vh]')}
+          >
             {flatCommands.length === 0 ? (
               <div className="py-8 text-center text-sm text-muted-foreground">
                 {t('commandPalette.noResults')}
@@ -197,10 +199,12 @@ export function CommandPalette({ open, onOpenChange, commands }: CommandPaletteP
                           isSelected && 'bg-accent'
                         )}
                       >
-                        <div className={cn(
-                          'flex items-center justify-center w-8 h-8 rounded-md shrink-0',
-                          isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted'
-                        )}>
+                        <div
+                          className={cn(
+                            'flex items-center justify-center w-8 h-8 rounded-md shrink-0',
+                            isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                          )}
+                        >
                           <Icon className="h-4 w-4" strokeWidth={1.5} />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -224,7 +228,10 @@ export function CommandPalette({ open, onOpenChange, commands }: CommandPaletteP
                           </div>
                         )}
                         {isSelected && (
-                          <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0" strokeWidth={1.5} />
+                          <ArrowRight
+                            className="h-4 w-4 text-muted-foreground shrink-0"
+                            strokeWidth={1.5}
+                          />
                         )}
                       </button>
                     );
@@ -247,7 +254,9 @@ export function CommandPalette({ open, onOpenChange, commands }: CommandPaletteP
                 {t('commandPalette.select')}
               </span>
             </div>
-            <span>{flatCommands.length} {t('commandPalette.commands')}</span>
+            <span>
+              {flatCommands.length} {t('commandPalette.commands')}
+            </span>
           </div>
 
           {/* Safe Area for Mobile */}

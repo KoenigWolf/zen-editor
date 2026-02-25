@@ -18,7 +18,7 @@ import type { EditorSettings as EditorSettingsType } from '@/lib/types/editor';
 
 const shallowEqual = (a: EditorSettingsType, b: EditorSettingsType): boolean => {
   const keys = Object.keys(a) as (keyof EditorSettingsType)[];
-  return keys.every(key => a[key] === b[key]);
+  return keys.every((key) => a[key] === b[key]);
 };
 
 const settingsTabs = [
@@ -184,7 +184,14 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
   const [isResizing, setIsResizing] = useState(false);
   const [resizeDirection, setResizeDirection] = useState<ResizeDirection>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0, posX: 0, posY: 0 });
+  const [resizeStart, setResizeStart] = useState({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    posX: 0,
+    posY: 0,
+  });
   const dialogRef = useRef<HTMLDivElement>(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -206,33 +213,39 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
     setTempSettings(currentSettings);
   }, [open, isInitialized, currentSettings, isMobile, isTablet]);
 
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    if (isMobile || isTablet) return;
-    if (!dialogRef.current) return;
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      if (isMobile || isTablet) return;
+      if (!dialogRef.current) return;
 
-    setIsDragging(true);
-    setDragOffset({
-      x: e.clientX - position.x,
-      y: e.clientY - position.y,
-    });
-  }, [position, isMobile, isTablet]);
+      setIsDragging(true);
+      setDragOffset({
+        x: e.clientX - position.x,
+        y: e.clientY - position.y,
+      });
+    },
+    [position, isMobile, isTablet]
+  );
 
-  const handleResizeStart = useCallback((e: React.MouseEvent, direction: ResizeDirection) => {
-    if (isMobile || isTablet) return;
+  const handleResizeStart = useCallback(
+    (e: React.MouseEvent, direction: ResizeDirection) => {
+      if (isMobile || isTablet) return;
 
-    e.preventDefault();
-    e.stopPropagation();
-    setIsResizing(true);
-    setResizeDirection(direction);
-    setResizeStart({
-      x: e.clientX,
-      y: e.clientY,
-      width: size.width,
-      height: size.height,
-      posX: position.x,
-      posY: position.y,
-    });
-  }, [size, position, isMobile, isTablet]);
+      e.preventDefault();
+      e.stopPropagation();
+      setIsResizing(true);
+      setResizeDirection(direction);
+      setResizeStart({
+        x: e.clientX,
+        y: e.clientY,
+        width: size.width,
+        height: size.height,
+        posX: position.x,
+        posY: position.y,
+      });
+    },
+    [size, position, isMobile, isTablet]
+  );
 
   useEffect(() => {
     if (!isDragging) return;
@@ -309,10 +322,13 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
     toast({ title: t('settings.actions.resetDone'), duration: 2000 });
   }, [originalSettings, updateSettings, toast, t]);
 
-  const handleSettingsChange = useCallback((newSettings: Partial<typeof currentSettings>) => {
-    setTempSettings(prevSettings => ({ ...prevSettings, ...newSettings }));
-    updateSettings(newSettings);
-  }, [updateSettings]);
+  const handleSettingsChange = useCallback(
+    (newSettings: Partial<typeof currentSettings>) => {
+      setTempSettings((prevSettings) => ({ ...prevSettings, ...newSettings }));
+      updateSettings(newSettings);
+    },
+    [updateSettings]
+  );
 
   const handleClose = useCallback(() => {
     if (!shallowEqual(tempSettings, originalSettings)) {
@@ -326,41 +342,55 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
 
   const resizeHandleBase = 'absolute z-10';
   const resizeHandleEdge = 'bg-transparent hover:bg-primary/20 transition-colors';
-  const resizeHandleCorner = 'w-3 h-3 bg-transparent hover:bg-primary/30 transition-colors rounded-sm';
+  const resizeHandleCorner =
+    'w-3 h-3 bg-transparent hover:bg-primary/30 transition-colors rounded-sm';
 
   const dialogStyles = getDialogStyles(isMobile, position, size);
 
   return (
     <>
-      <div
-        className="fixed inset-0 z-40 bg-black/50"
-        onClick={handleClose}
-      />
+      <div className="fixed inset-0 z-40 bg-black/50" onClick={handleClose} />
 
       <div
         ref={dialogRef}
         className={cn(
           'fixed z-50 bg-background border shadow-lg flex flex-col overflow-hidden',
-          isMobile ? 'rounded-none' : 'rounded-lg',
+          isMobile ? 'rounded-none' : 'rounded-lg'
         )}
         style={dialogStyles}
       >
         {!isMobile && !isTablet && (
           <>
             <div
-              className={cn(resizeHandleBase, resizeHandleEdge, 'top-0 left-3 right-3 h-1 cursor-n-resize')}
+              className={cn(
+                resizeHandleBase,
+                resizeHandleEdge,
+                'top-0 left-3 right-3 h-1 cursor-n-resize'
+              )}
               onMouseDown={(e) => handleResizeStart(e, 'n')}
             />
             <div
-              className={cn(resizeHandleBase, resizeHandleEdge, 'bottom-0 left-3 right-3 h-1 cursor-s-resize')}
+              className={cn(
+                resizeHandleBase,
+                resizeHandleEdge,
+                'bottom-0 left-3 right-3 h-1 cursor-s-resize'
+              )}
               onMouseDown={(e) => handleResizeStart(e, 's')}
             />
             <div
-              className={cn(resizeHandleBase, resizeHandleEdge, 'left-0 top-3 bottom-3 w-1 cursor-w-resize')}
+              className={cn(
+                resizeHandleBase,
+                resizeHandleEdge,
+                'left-0 top-3 bottom-3 w-1 cursor-w-resize'
+              )}
               onMouseDown={(e) => handleResizeStart(e, 'w')}
             />
             <div
-              className={cn(resizeHandleBase, resizeHandleEdge, 'right-0 top-3 bottom-3 w-1 cursor-e-resize')}
+              className={cn(
+                resizeHandleBase,
+                resizeHandleEdge,
+                'right-0 top-3 bottom-3 w-1 cursor-e-resize'
+              )}
               onMouseDown={(e) => handleResizeStart(e, 'e')}
             />
             <div
@@ -372,11 +402,19 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
               onMouseDown={(e) => handleResizeStart(e, 'ne')}
             />
             <div
-              className={cn(resizeHandleBase, resizeHandleCorner, 'bottom-0 left-0 cursor-sw-resize')}
+              className={cn(
+                resizeHandleBase,
+                resizeHandleCorner,
+                'bottom-0 left-0 cursor-sw-resize'
+              )}
               onMouseDown={(e) => handleResizeStart(e, 'sw')}
             />
             <div
-              className={cn(resizeHandleBase, resizeHandleCorner, 'bottom-0 right-0 cursor-se-resize')}
+              className={cn(
+                resizeHandleBase,
+                resizeHandleCorner,
+                'bottom-0 right-0 cursor-se-resize'
+              )}
               onMouseDown={(e) => handleResizeStart(e, 'se')}
             />
           </>
@@ -395,18 +433,16 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
           <h2 className={cn('font-semibold', isMobile ? 'text-lg mt-2' : 'text-base')}>
             {t('settings.title')}
           </h2>
-          <CloseButton
-            onClick={handleClose}
-            size={isMobile ? 'md' : 'sm'}
-            variant="default"
-          />
+          <CloseButton onClick={handleClose} size={isMobile ? 'md' : 'sm'} variant="default" />
         </div>
 
         <Tabs defaultValue="theme" className="flex-1 min-h-0 flex flex-col">
-          <TabsList className={cn(
-            'shrink-0 w-full flex bg-transparent border-b',
-            isMobile ? 'justify-around px-0 py-1' : 'justify-start px-4 pt-2'
-          )}>
+          <TabsList
+            className={cn(
+              'shrink-0 w-full flex bg-transparent border-b',
+              isMobile ? 'justify-around px-0 py-1' : 'justify-start px-4 pt-2'
+            )}
+          >
             {settingsTabs.map(({ value, labelKey, Icon }) => (
               <TabsTrigger
                 key={value}
@@ -419,32 +455,26 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
                 )}
               >
                 {isMobile && <Icon className="h-5 w-5" />}
-                <span className={isMobile ? 'truncate max-w-full' : ''}>
-                  {t(labelKey)}
-                </span>
+                <span className={isMobile ? 'truncate max-w-full' : ''}>{t(labelKey)}</span>
               </TabsTrigger>
             ))}
           </TabsList>
 
-          <div className={cn(
-            'flex-1 min-h-0 overflow-auto',
-            isMobile ? 'px-4 py-4' : 'px-4 py-3'
-          )}>
+          <div className={cn('flex-1 min-h-0 overflow-auto', isMobile ? 'px-4 py-4' : 'px-4 py-3')}>
             {settingsTabs.map(({ value, Component }) => (
               <TabsContent key={value} value={value} className="mt-0">
-                <Component
-                  settings={tempSettings}
-                  onSettingsChange={handleSettingsChange}
-                />
+                <Component settings={tempSettings} onSettingsChange={handleSettingsChange} />
               </TabsContent>
             ))}
           </div>
         </Tabs>
 
-        <div className={cn(
-          'flex justify-end gap-3 border-t shrink-0',
-          isMobile ? 'px-4 py-4 pb-safe' : 'px-4 py-3'
-        )}>
+        <div
+          className={cn(
+            'flex justify-end gap-3 border-t shrink-0',
+            isMobile ? 'px-4 py-4 pb-safe' : 'px-4 py-3'
+          )}
+        >
           <Button
             variant="outline"
             size={isMobile ? 'default' : 'sm'}
