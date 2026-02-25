@@ -47,6 +47,7 @@ interface FileTabItemProps {
   isDragging: boolean;
   isDragOver: boolean;
   onSelect: (e: React.MouseEvent) => void;
+  onAuxClick: (e: React.MouseEvent) => void;
   onContextMenu: (e: React.MouseEvent) => void;
   onClose: (e: React.MouseEvent | React.KeyboardEvent) => void;
   onDragStart: (e: React.DragEvent) => void;
@@ -63,6 +64,7 @@ const FileTabItem = memo(function FileTabItem({
   isDragging,
   isDragOver,
   onSelect,
+  onAuxClick,
   onContextMenu,
   onClose,
   onDragStart,
@@ -88,6 +90,7 @@ const FileTabItem = memo(function FileTabItem({
       onDrop={onDrop}
       onDragEnd={onDragEnd}
       onClick={onSelect}
+      onAuxClick={onAuxClick}
       onContextMenu={onContextMenu}
       className={cn(
         'mochi-tab group',
@@ -154,6 +157,18 @@ export const FileTabs = memo(function FileTabs({ onTabContextMenu }: FileTabsPro
       if (fileId) removeFile(fileId);
     },
     [removeFile]
+  );
+
+  const handleAuxClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (e.button !== 1) return;
+      e.preventDefault();
+      const fileId = getFileIdFromEvent(e);
+      if (fileId) {
+        removeFile(fileId);
+      }
+    },
+    [getFileIdFromEvent, removeFile]
   );
 
   const handleContextMenu = useCallback(
@@ -245,6 +260,7 @@ export const FileTabs = memo(function FileTabs({ onTabContextMenu }: FileTabsPro
             isDragging={draggedId === file.id}
             isDragOver={dragOverId === file.id}
             onSelect={handleSelect}
+            onAuxClick={handleAuxClick}
             onContextMenu={handleContextMenu}
             onClose={handleClose}
             onDragStart={handleDragStart}
