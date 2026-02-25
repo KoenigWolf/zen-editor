@@ -2,13 +2,13 @@
 
 import { useEffect, useState, useCallback } from 'react';
 
-export interface BeforeInstallPromptEvent extends Event {
+interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 }
 
-export type Platform = 'ios' | 'android' | 'windows' | 'macos' | 'linux' | 'unknown';
-export type Browser = 'safari' | 'chrome' | 'edge' | 'firefox' | 'unknown';
+type Platform = 'ios' | 'android' | 'windows' | 'macos' | 'linux' | 'unknown';
+type Browser = 'safari' | 'chrome' | 'edge' | 'firefox' | 'unknown';
 
 const detectPlatform = (): Platform => {
   if (typeof window === 'undefined') return 'unknown';
@@ -78,7 +78,6 @@ export function usePWA() {
     if (window.matchMedia('(display-mode: standalone)').matches) {
       setIsInstalled(true);
     }
-    // @ts-ignore - iOS Safari
     if (window.navigator.standalone === true) {
       setIsInstalled(true);
     }

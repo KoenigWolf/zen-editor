@@ -5,18 +5,8 @@ import { onCLS, onINP, onFCP, onLCP, onTTFB, type Metric } from 'web-vitals';
 
 type WebVitalsCallback = (metric: Metric) => void;
 
-const defaultCallback: WebVitalsCallback = (metric) => {
-  // Log to console in development
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`[Web Vitals] ${metric.name}:`, {
-      value: metric.value,
-      rating: metric.rating,
-      delta: metric.delta,
-    });
-  }
-
-  // In production, you could send to analytics
-  // Example: sendToAnalytics(metric)
+const defaultCallback: WebVitalsCallback = (_metric) => {
+  // Send to analytics when configured
 };
 
 export const useWebVitals = (callback: WebVitalsCallback = defaultCallback): void => {
