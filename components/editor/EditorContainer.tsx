@@ -118,6 +118,26 @@ export const EditorContainer = memo(function EditorContainer() {
     }
   }, [contextMenu.fileId]);
 
+  const handleCloseLeftTabs = useCallback(() => {
+    const allFiles = useFileStore.getState().files;
+    const targetIndex = allFiles.findIndex((file) => file.id === contextMenu.fileId);
+    if (targetIndex <= 0) return;
+
+    allFiles.slice(0, targetIndex).forEach((file) => {
+      useFileStore.getState().removeFile(file.id);
+    });
+  }, [contextMenu.fileId]);
+
+  const handleCloseRightTabs = useCallback(() => {
+    const allFiles = useFileStore.getState().files;
+    const targetIndex = allFiles.findIndex((file) => file.id === contextMenu.fileId);
+    if (targetIndex < 0 || targetIndex >= allFiles.length - 1) return;
+
+    allFiles.slice(targetIndex + 1).forEach((file) => {
+      useFileStore.getState().removeFile(file.id);
+    });
+  }, [contextMenu.fileId]);
+
   const handleCloseOtherTabs = useCallback(() => {
     const allFiles = useFileStore.getState().files;
     allFiles.forEach((file) => {
@@ -360,6 +380,12 @@ export const EditorContainer = memo(function EditorContainer() {
   );
 
   const showMobileUI = mounted && isMobile;
+  const contextMenuTargetIndex = files.findIndex((file) => file.id === contextMenu.fileId);
+  const canCloseLeftTabs = contextMenuTargetIndex > 0;
+  const canCloseRightTabs =
+    contextMenuTargetIndex >= 0 && contextMenuTargetIndex < files.length - 1;
+  const canCloseOtherTabs = files.length > 1 && contextMenuTargetIndex >= 0;
+  const canCloseAllTabs = files.length > 0;
 
   return (
     <div
@@ -462,10 +488,16 @@ export const EditorContainer = memo(function EditorContainer() {
         fileName={contextMenu.fileName}
         onClose={closeContextMenu}
         onCloseTab={handleCloseTab}
+        onCloseLeftTabs={handleCloseLeftTabs}
+        onCloseRightTabs={handleCloseRightTabs}
         onCloseOtherTabs={handleCloseOtherTabs}
         onCloseAllTabs={handleCloseAllTabs}
         onDuplicate={handleDuplicateTab}
         onRename={handleRenameTab}
+        canCloseLeftTabs={canCloseLeftTabs}
+        canCloseRightTabs={canCloseRightTabs}
+        canCloseOtherTabs={canCloseOtherTabs}
+        canCloseAllTabs={canCloseAllTabs}
       />
     </div>
   );

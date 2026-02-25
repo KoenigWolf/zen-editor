@@ -2,7 +2,7 @@
 
 import { memo, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { X, Copy, Pencil, XCircle } from 'lucide-react';
+import { X, Copy, Pencil, XCircle, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { useGlobalKeydown } from '@/hooks/use-global-keydown';
 
 interface TabContextMenuProps {
@@ -12,10 +12,16 @@ interface TabContextMenuProps {
   fileName: string;
   onClose: () => void;
   onCloseTab: () => void;
+  onCloseLeftTabs: () => void;
+  onCloseRightTabs: () => void;
   onCloseOtherTabs: () => void;
   onCloseAllTabs: () => void;
   onDuplicate: () => void;
   onRename: () => void;
+  canCloseLeftTabs: boolean;
+  canCloseRightTabs: boolean;
+  canCloseOtherTabs: boolean;
+  canCloseAllTabs: boolean;
 }
 
 const browserDocument = typeof document === 'undefined' ? undefined : document;
@@ -25,10 +31,16 @@ export const TabContextMenu = memo(function TabContextMenu({
   position,
   onClose,
   onCloseTab,
+  onCloseLeftTabs,
+  onCloseRightTabs,
   onCloseOtherTabs,
   onCloseAllTabs,
   onDuplicate,
   onRename,
+  canCloseLeftTabs,
+  canCloseRightTabs,
+  canCloseOtherTabs,
+  canCloseAllTabs,
 }: TabContextMenuProps) {
   const { t } = useTranslation();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -78,8 +90,30 @@ export const TabContextMenu = memo(function TabContextMenu({
 
   const menuItems = [
     { icon: X, label: t('tabMenu.close'), action: onCloseTab },
-    { icon: XCircle, label: t('tabMenu.closeOthers'), action: onCloseOtherTabs },
-    { icon: XCircle, label: t('tabMenu.closeAll'), action: onCloseAllTabs },
+    {
+      icon: ChevronsLeft,
+      label: t('tabMenu.closeLeft'),
+      action: onCloseLeftTabs,
+      disabled: !canCloseLeftTabs,
+    },
+    {
+      icon: ChevronsRight,
+      label: t('tabMenu.closeRight'),
+      action: onCloseRightTabs,
+      disabled: !canCloseRightTabs,
+    },
+    {
+      icon: XCircle,
+      label: t('tabMenu.closeOthers'),
+      action: onCloseOtherTabs,
+      disabled: !canCloseOtherTabs,
+    },
+    {
+      icon: XCircle,
+      label: t('tabMenu.closeAll'),
+      action: onCloseAllTabs,
+      disabled: !canCloseAllTabs,
+    },
     { type: 'divider' as const },
     { icon: Copy, label: t('tabMenu.duplicate'), action: onDuplicate },
     { icon: Pencil, label: t('tabMenu.rename'), action: onRename },
@@ -118,8 +152,10 @@ export const TabContextMenu = memo(function TabContextMenu({
               key={item.label}
               type="button"
               role="menuitem"
-              className="mochi-mobile-menu-item w-full text-left"
+              disabled={item.disabled}
+              className="mochi-mobile-menu-item w-full text-left disabled:opacity-40 disabled:pointer-events-none"
               onClick={() => {
+                if (item.disabled) return;
                 item.action();
                 onClose();
               }}

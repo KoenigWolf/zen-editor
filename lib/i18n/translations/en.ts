@@ -253,6 +253,8 @@ export const en = {
   },
   tabMenu: {
     close: 'Close Tab',
+    closeLeft: 'Close Tabs to the Left',
+    closeRight: 'Close Tabs to the Right',
     closeOthers: 'Close Other Tabs',
     closeAll: 'Close All',
     duplicate: 'Duplicate',

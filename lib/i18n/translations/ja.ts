@@ -250,6 +250,8 @@ export const ja = {
   },
   tabMenu: {
     close: 'タブを閉じる',
+    closeLeft: '左側のタブを閉じる',
+    closeRight: '右側のタブを閉じる',
     closeOthers: '他のタブを閉じる',
     closeAll: 'すべて閉じる',
     duplicate: '複製',
