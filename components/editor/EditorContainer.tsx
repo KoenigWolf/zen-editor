@@ -386,6 +386,13 @@ export const EditorContainer = memo(function EditorContainer() {
     contextMenuTargetIndex >= 0 && contextMenuTargetIndex < files.length - 1;
   const canCloseOtherTabs = files.length > 1 && contextMenuTargetIndex >= 0;
   const canCloseAllTabs = files.length > 0;
+  const closeLeftCount = canCloseLeftTabs ? contextMenuTargetIndex : 0;
+  const closeRightCount =
+    canCloseRightTabs && contextMenuTargetIndex >= 0
+      ? files.length - contextMenuTargetIndex - 1
+      : 0;
+  const closeOtherCount = canCloseOtherTabs ? files.length - 1 : 0;
+  const closeAllCount = files.length;
 
   return (
     <div
@@ -498,6 +505,10 @@ export const EditorContainer = memo(function EditorContainer() {
         canCloseRightTabs={canCloseRightTabs}
         canCloseOtherTabs={canCloseOtherTabs}
         canCloseAllTabs={canCloseAllTabs}
+        closeLeftCount={closeLeftCount}
+        closeRightCount={closeRightCount}
+        closeOtherCount={closeOtherCount}
+        closeAllCount={closeAllCount}
       />
     </div>
   );

@@ -22,6 +22,10 @@ interface TabContextMenuProps {
   canCloseRightTabs: boolean;
   canCloseOtherTabs: boolean;
   canCloseAllTabs: boolean;
+  closeLeftCount: number;
+  closeRightCount: number;
+  closeOtherCount: number;
+  closeAllCount: number;
 }
 
 const browserDocument = typeof document === 'undefined' ? undefined : document;
@@ -42,6 +46,10 @@ export const TabContextMenu = memo(function TabContextMenu({
   canCloseRightTabs,
   canCloseOtherTabs,
   canCloseAllTabs,
+  closeLeftCount,
+  closeRightCount,
+  closeOtherCount,
+  closeAllCount,
 }: TabContextMenuProps) {
   const { t } = useTranslation();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -93,28 +101,28 @@ export const TabContextMenu = memo(function TabContextMenu({
     },
     {
       icon: ChevronsLeft,
-      label: t('tabMenu.closeLeft'),
+      label: t('tabMenu.closeLeftWithCount', { count: closeLeftCount }),
       action: onCloseLeftTabs,
       disabled: !canCloseLeftTabs,
       kind: 'destructive' as const,
     },
     {
       icon: ChevronsRight,
-      label: t('tabMenu.closeRight'),
+      label: t('tabMenu.closeRightWithCount', { count: closeRightCount }),
       action: onCloseRightTabs,
       disabled: !canCloseRightTabs,
       kind: 'destructive' as const,
     },
     {
       icon: XCircle,
-      label: t('tabMenu.closeOthers'),
+      label: t('tabMenu.closeOthersWithCount', { count: closeOtherCount }),
       action: onCloseOtherTabs,
       disabled: !canCloseOtherTabs,
       kind: 'destructive' as const,
     },
     {
       icon: XCircle,
-      label: t('tabMenu.closeAll'),
+      label: t('tabMenu.closeAllWithCount', { count: closeAllCount }),
       action: onCloseAllTabs,
       disabled: !canCloseAllTabs,
       kind: 'destructive' as const,
