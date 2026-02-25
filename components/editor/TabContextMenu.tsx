@@ -289,7 +289,6 @@ export const TabContextMenu = memo(function TabContextMenu({
               aria-disabled={item.disabled}
               className={`mochi-mobile-menu-item w-full text-left disabled:opacity-40 disabled:pointer-events-none ${isDestructive ? 'text-red-600 dark:text-red-400' : ''}`}
               onClick={() => {
-                if (item.disabled) return;
                 item.action();
                 onClose();
               }}
