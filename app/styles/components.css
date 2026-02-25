@@ -326,51 +326,6 @@
     0 8px 24px -4px hsl(var(--foreground) / 0.1);
 }
 
-/* スケルトンローディング */
-.skeleton {
-  @apply rounded;
-  background: linear-gradient(
-    90deg,
-    hsl(var(--muted)) 0%,
-    hsl(var(--muted) / 0.5) 50%,
-    hsl(var(--muted)) 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-/* スピナー */
-.spinner {
-  @apply w-4 h-4 border-2 rounded-full;
-  border-color: hsl(var(--muted));
-  border-top-color: hsl(var(--primary));
-  animation: spin 0.6s linear infinite;
-}
-
-/* リップルエフェクト */
-.ripple {
-  @apply relative overflow-hidden;
-}
-
-.ripple::after {
-  content: '';
-  @apply absolute inset-0 pointer-events-none;
-  background: radial-gradient(circle, hsl(var(--foreground) / 0.1) 0%, transparent 70%);
-  transform: scale(0);
-  opacity: 0;
-  transition:
-    transform 0.5s,
-    opacity 0.3s;
-}
-
-.ripple:active::after {
-  transform: scale(2);
-  opacity: 1;
-  transition:
-    transform 0s,
-    opacity 0s;
-}
-
 /* フォーカスリング改善 */
 .focus-ring {
   @apply outline-none;
