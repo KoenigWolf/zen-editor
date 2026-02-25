@@ -1,8 +1,8 @@
 'use client';
 
-import { memo, useEffect, useRef, useCallback, useState } from 'react';
+import { memo, useEffect, useRef, useCallback, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { X, Copy, Pencil, XCircle, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { X, Copy, Pencil, XCircle, ChevronsLeft, ChevronsRight, Trash2 } from 'lucide-react';
 import { useGlobalKeydown } from '@/hooks/use-global-keydown';
 
 interface TabContextMenuProps {
@@ -91,58 +91,77 @@ export const TabContextMenu = memo(function TabContextMenu({
 
   useGlobalKeydown({ enabled: isOpen, target: browserDocument, handler: handleEscape });
 
-  const menuItems = [
-    {
-      icon: X,
-      label: t('tabMenu.close'),
-      action: onCloseTab,
-      shortcut: 'Cmd+W',
-      kind: 'destructive' as const,
-    },
-    {
-      icon: ChevronsLeft,
-      label: t('tabMenu.closeLeftWithCount', { count: closeLeftCount }),
-      action: onCloseLeftTabs,
-      disabled: !canCloseLeftTabs,
-      kind: 'destructive' as const,
-    },
-    {
-      icon: ChevronsRight,
-      label: t('tabMenu.closeRightWithCount', { count: closeRightCount }),
-      action: onCloseRightTabs,
-      disabled: !canCloseRightTabs,
-      kind: 'destructive' as const,
-    },
-    {
-      icon: XCircle,
-      label: t('tabMenu.closeOthersWithCount', { count: closeOtherCount }),
-      action: onCloseOtherTabs,
-      disabled: !canCloseOtherTabs,
-      kind: 'destructive' as const,
-    },
-    {
-      icon: XCircle,
-      label: t('tabMenu.closeAllWithCount', { count: closeAllCount }),
-      action: onCloseAllTabs,
-      disabled: !canCloseAllTabs,
-      kind: 'destructive' as const,
-    },
-    { type: 'divider' as const },
-    { icon: Copy, label: t('tabMenu.duplicate'), action: onDuplicate, shortcut: 'Alt+Drag' },
-    { icon: Pencil, label: t('tabMenu.rename'), action: onRename, shortcut: 'F2' },
-  ];
-
-  const enabledItemIndexes = menuItems
-    .map((item, index) => (!item.disabled ? index : -1))
-    .filter((index) => index >= 0);
-
-  const focusItemByIndex = useCallback(
-    (index: number) => {
-      const target = itemRefs.current[index];
-      if (target) target.focus();
-    },
-    [itemRefs]
+  const menuItems = useMemo(
+    () => [
+      {
+        icon: X,
+        label: t('tabMenu.close'),
+        action: onCloseTab,
+        shortcut: 'Cmd+W',
+        kind: 'destructive' as const,
+      },
+      {
+        icon: ChevronsLeft,
+        label: t('tabMenu.closeLeftWithCount', { count: closeLeftCount }),
+        action: onCloseLeftTabs,
+        disabled: !canCloseLeftTabs,
+        kind: 'destructive' as const,
+      },
+      {
+        icon: ChevronsRight,
+        label: t('tabMenu.closeRightWithCount', { count: closeRightCount }),
+        action: onCloseRightTabs,
+        disabled: !canCloseRightTabs,
+        kind: 'destructive' as const,
+      },
+      {
+        icon: XCircle,
+        label: t('tabMenu.closeOthersWithCount', { count: closeOtherCount }),
+        action: onCloseOtherTabs,
+        disabled: !canCloseOtherTabs,
+        kind: 'destructive' as const,
+      },
+      {
+        icon: Trash2,
+        label: t('tabMenu.closeAllWithCount', { count: closeAllCount }),
+        action: onCloseAllTabs,
+        disabled: !canCloseAllTabs,
+        kind: 'destructive' as const,
+      },
+      { type: 'divider' as const },
+      { icon: Copy, label: t('tabMenu.duplicate'), action: onDuplicate, shortcut: 'Alt+Drag' },
+      { icon: Pencil, label: t('tabMenu.rename'), action: onRename, shortcut: 'F2' },
+    ],
+    [
+      t,
+      onCloseTab,
+      closeLeftCount,
+      onCloseLeftTabs,
+      canCloseLeftTabs,
+      closeRightCount,
+      onCloseRightTabs,
+      canCloseRightTabs,
+      closeOtherCount,
+      onCloseOtherTabs,
+      canCloseOtherTabs,
+      closeAllCount,
+      onCloseAllTabs,
+      canCloseAllTabs,
+      onDuplicate,
+      onRename,
+    ]
   );
+
+  const enabledItemIndexes = useMemo(
+    () =>
+      menuItems.map((item, index) => (!item.disabled ? index : -1)).filter((index) => index >= 0),
+    [menuItems]
+  );
+
+  const focusItemByIndex = useCallback((index: number) => {
+    const target = itemRefs.current[index];
+    if (target) target.focus();
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -154,8 +173,6 @@ export const TabContextMenu = memo(function TabContextMenu({
 
   useEffect(() => {
     if (!isOpen) return;
-
-    setMenuPosition(position);
 
     const adjustPosition = () => {
       const menuEl = menuRef.current;
