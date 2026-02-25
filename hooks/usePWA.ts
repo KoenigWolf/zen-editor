@@ -49,7 +49,7 @@ if (typeof window !== 'undefined') {
   });
 }
 
-export function usePWA() {
+export function usePWAManager() {
   const [isInstalled, setIsInstalled] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   const [hasUpdate, setHasUpdate] = useState(false);
@@ -192,4 +192,16 @@ export function usePWA() {
     platform,
     browser,
   };
+}
+
+export type PWAContextType = ReturnType<typeof usePWAManager>;
+import { createContext, useContext } from 'react';
+export const PWAContext = createContext<PWAContextType | null>(null);
+
+export function usePWA() {
+  const context = useContext(PWAContext);
+  if (!context) {
+    throw new Error('usePWA must be used within a PWAProvider');
+  }
+  return context;
 }

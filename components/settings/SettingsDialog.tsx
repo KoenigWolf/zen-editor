@@ -3,6 +3,7 @@
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useMobileDetection } from '@/hooks/use-mobile-detection';
+import { useDialogDrag } from '@/hooks/use-dialog-drag';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
@@ -180,10 +181,8 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [size, setSize] = useState({ width: DEFAULT_WIDTH, height: DEFAULT_HEIGHT });
-  const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [resizeDirection, setResizeDirection] = useState<ResizeDirection>(null);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [resizeStart, setResizeStart] = useState({
     x: 0,
     y: 0,
@@ -194,6 +193,11 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
   });
   const dialogRef = useRef<HTMLDivElement>(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const { startDrag } = useDialogDrag({
+    enabled: !isMobile && !isTablet,
+    position,
+    onPositionChange: setPosition,
+  });
 
   useEffect(() => {
     if (!open) {
@@ -217,14 +221,9 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
     (e: React.MouseEvent) => {
       if (isMobile || isTablet) return;
       if (!dialogRef.current) return;
-
-      setIsDragging(true);
-      setDragOffset({
-        x: e.clientX - position.x,
-        y: e.clientY - position.y,
-      });
+      startDrag(e);
     },
-    [position, isMobile, isTablet]
+    [isMobile, isTablet, startDrag]
   );
 
   const handleResizeStart = useCallback(
@@ -246,29 +245,6 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
     },
     [size, position, isMobile, isTablet]
   );
-
-  useEffect(() => {
-    if (!isDragging) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      setPosition({
-        x: e.clientX - dragOffset.x,
-        y: e.clientY - dragOffset.y,
-      });
-    };
-
-    const handleMouseUp = () => {
-      setIsDragging(false);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDragging, dragOffset]);
 
   useEffect(() => {
     if (!isResizing || !resizeDirection) return;

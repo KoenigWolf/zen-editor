@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   X,
@@ -360,29 +360,28 @@ export const PWAInstallPrompt = () => {
  */
 export const OfflineIndicator = () => {
   const { t } = useTranslation();
-  const [isOnline, setIsOnline] = useState(true);
+  const { isOnline } = usePWA();
   const [showReconnected, setShowReconnected] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const isOnlineRef = useRef(isOnline);
 
   useEffect(() => {
     setMounted(true);
-    setIsOnline(navigator.onLine);
-
-    const handleOnline = () => {
-      setIsOnline(true);
-      setShowReconnected(true);
-      setTimeout(() => setShowReconnected(false), 3000);
-    };
-    const handleOffline = () => setIsOnline(false);
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
   }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
+    // falseからtrueに変わった時だけ再接続通知を表示
+    if (!isOnlineRef.current && isOnline) {
+      setShowReconnected(true);
+      const timer = setTimeout(() => setShowReconnected(false), 3000);
+      isOnlineRef.current = isOnline;
+      return () => clearTimeout(timer);
+    }
+
+    isOnlineRef.current = isOnline;
+  }, [isOnline, mounted]);
 
   if (!mounted) return null;
 
@@ -415,44 +414,23 @@ export const OfflineIndicator = () => {
  */
 export const UpdateNotification = () => {
   const { t } = useTranslation();
-  const [showUpdate, setShowUpdate] = useState(false);
-  const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
+  const { hasUpdate, applyUpdate } = usePWA();
   const [isUpdating, setIsUpdating] = useState(false);
-
-  useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.ready.then((reg) => {
-        setRegistration(reg);
-
-        reg.addEventListener('updatefound', () => {
-          const newWorker = reg.installing;
-          if (!newWorker) return;
-
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              setShowUpdate(true);
-            }
-          });
-        });
-      });
-    }
-  }, []);
+  const [dismissed, setDismissed] = useState(false);
 
   const handleUpdate = useCallback(() => {
     setIsUpdating(true);
-    if (registration?.waiting) {
-      registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-    }
+    applyUpdate();
     setTimeout(() => {
       window.location.reload();
     }, 500);
-  }, [registration]);
+  }, [applyUpdate]);
 
   const handleDismiss = useCallback(() => {
-    setShowUpdate(false);
+    setDismissed(true);
   }, []);
 
-  if (!showUpdate) return null;
+  if (!hasUpdate || dismissed) return null;
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-bottom-4 fade-in duration-300">
