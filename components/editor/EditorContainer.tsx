@@ -118,6 +118,26 @@ export const EditorContainer = memo(function EditorContainer() {
     }
   }, [contextMenu.fileId]);
 
+  const handleCloseLeftTabs = useCallback(() => {
+    const allFiles = useFileStore.getState().files;
+    const targetIndex = allFiles.findIndex((file) => file.id === contextMenu.fileId);
+    if (targetIndex <= 0) return;
+
+    allFiles.slice(0, targetIndex).forEach((file) => {
+      useFileStore.getState().removeFile(file.id);
+    });
+  }, [contextMenu.fileId]);
+
+  const handleCloseRightTabs = useCallback(() => {
+    const allFiles = useFileStore.getState().files;
+    const targetIndex = allFiles.findIndex((file) => file.id === contextMenu.fileId);
+    if (targetIndex < 0 || targetIndex >= allFiles.length - 1) return;
+
+    allFiles.slice(targetIndex + 1).forEach((file) => {
+      useFileStore.getState().removeFile(file.id);
+    });
+  }, [contextMenu.fileId]);
+
   const handleCloseOtherTabs = useCallback(() => {
     const allFiles = useFileStore.getState().files;
     allFiles.forEach((file) => {
@@ -360,6 +380,33 @@ export const EditorContainer = memo(function EditorContainer() {
   );
 
   const showMobileUI = mounted && isMobile;
+  const {
+    canCloseLeftTabs,
+    canCloseRightTabs,
+    canCloseOtherTabs,
+    canCloseAllTabs,
+    closeLeftCount,
+    closeRightCount,
+    closeOtherCount,
+    closeAllCount,
+  } = useMemo(() => {
+    const targetIndex = files.findIndex((file) => file.id === contextMenu.fileId);
+    const canLeft = targetIndex > 0;
+    const canRight = targetIndex >= 0 && targetIndex < files.length - 1;
+    const canOther = files.length > 1 && targetIndex >= 0;
+    const canAll = files.length > 0;
+
+    return {
+      canCloseLeftTabs: canLeft,
+      canCloseRightTabs: canRight,
+      canCloseOtherTabs: canOther,
+      canCloseAllTabs: canAll,
+      closeLeftCount: canLeft ? targetIndex : 0,
+      closeRightCount: canRight && targetIndex >= 0 ? files.length - targetIndex - 1 : 0,
+      closeOtherCount: canOther ? files.length - 1 : 0,
+      closeAllCount: files.length,
+    };
+  }, [files, contextMenu.fileId]);
 
   return (
     <div
@@ -395,7 +442,7 @@ export const EditorContainer = memo(function EditorContainer() {
         />
       )}
 
-      {!showMobileUI && <FileTabs />}
+      {!showMobileUI && <FileTabs onTabContextMenu={handleTabLongPress} />}
       {!showMobileUI && rulerVisible && <IndentRuler />}
 
       <main
@@ -462,10 +509,20 @@ export const EditorContainer = memo(function EditorContainer() {
         fileName={contextMenu.fileName}
         onClose={closeContextMenu}
         onCloseTab={handleCloseTab}
+        onCloseLeftTabs={handleCloseLeftTabs}
+        onCloseRightTabs={handleCloseRightTabs}
         onCloseOtherTabs={handleCloseOtherTabs}
         onCloseAllTabs={handleCloseAllTabs}
         onDuplicate={handleDuplicateTab}
         onRename={handleRenameTab}
+        canCloseLeftTabs={canCloseLeftTabs}
+        canCloseRightTabs={canCloseRightTabs}
+        canCloseOtherTabs={canCloseOtherTabs}
+        canCloseAllTabs={canCloseAllTabs}
+        closeLeftCount={closeLeftCount}
+        closeRightCount={closeRightCount}
+        closeOtherCount={closeOtherCount}
+        closeAllCount={closeAllCount}
       />
     </div>
   );

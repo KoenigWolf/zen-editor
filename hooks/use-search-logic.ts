@@ -37,6 +37,27 @@ const buildSearchString = (
   return forRegexSearch ? escapeRegExp(query) : query;
 };
 
+const buildReplacementText = (
+  sourceText: string,
+  query: string,
+  replacement: string,
+  isRegex: boolean,
+  isWholeWord: boolean,
+  isCaseSensitive: boolean
+): string => {
+  if (!isRegex) return replacement;
+
+  try {
+    const pattern = buildSearchString(query, isRegex, isWholeWord, true);
+    const flags = isCaseSensitive ? '' : 'i';
+    const regex = new RegExp(pattern, flags);
+    const replaced = sourceText.replace(regex, replacement);
+    return replaced === sourceText ? replacement : replaced;
+  } catch {
+    return replacement;
+  }
+};
+
 export const useSearchLogic = (
   onSearch: (query: string, options: SearchOptions) => void,
   onReplace?: (query: string, replacement: string, options: SearchOptions) => void
@@ -125,7 +146,7 @@ export const useSearchLogic = (
   );
 
   const performSearch = useCallback(
-    (searchQuery: string, immediate = false) => {
+    (searchQuery: string, immediate = false, preferredIndex = 0) => {
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
       }
@@ -181,7 +202,7 @@ export const useSearchLogic = (
           setSearchTerm(searchQuery);
 
           if (parsedMatches.length > 0) {
-            goToMatch(0, parsedMatches);
+            goToMatch(preferredIndex, parsedMatches);
             announce(t('search.found', { count: parsedMatches.length }));
           } else {
             setCurrentMatchIndex(-1);
@@ -252,21 +273,57 @@ export const useSearchLogic = (
       const model = editor.getModel();
       if (!model) return;
 
-      const selection = editor.getSelection();
-      if (!selection || selection.isEmpty()) {
+      const activeMatch = matches[currentMatchIndex];
+      const targetRange = activeMatch
+        ? {
+            startLineNumber: activeMatch.lineNumber,
+            startColumn: activeMatch.startIndex,
+            endLineNumber: activeMatch.lineNumber,
+            endColumn: activeMatch.endIndex,
+          }
+        : editor.getSelection();
+
+      const isEmptyRange =
+        targetRange &&
+        targetRange.startLineNumber === targetRange.endLineNumber &&
+        targetRange.startColumn === targetRange.endColumn;
+
+      if (!targetRange || isEmptyRange) {
         handleNextMatch(query);
         return;
       }
 
-      editor.executeEdits('replace', [{ range: selection, text: replacement }]);
+      const sourceText = model.getValueInRange(targetRange);
+      const replacementText = buildReplacementText(
+        sourceText,
+        query,
+        replacement,
+        isRegex,
+        isWholeWord,
+        isCaseSensitive
+      );
+
+      editor.executeEdits('replace', [{ range: targetRange, text: replacementText }]);
 
       if (onReplace) {
         onReplace(query, replacement, options);
       }
 
-      performSearch(query, true);
+      const nextIndex = Math.max(0, currentMatchIndex);
+      performSearch(query, true, nextIndex);
     },
-    [getEditorInstance, onReplace, options, performSearch, handleNextMatch]
+    [
+      getEditorInstance,
+      onReplace,
+      options,
+      performSearch,
+      handleNextMatch,
+      matches,
+      currentMatchIndex,
+      isRegex,
+      isWholeWord,
+      isCaseSensitive,
+    ]
   );
 
   const handleReplaceAll = useCallback(
@@ -294,7 +351,14 @@ export const useSearchLogic = (
       const count = foundMatches.length;
       const edits = foundMatches.map((match) => ({
         range: match.range,
-        text: replacement,
+        text: buildReplacementText(
+          model.getValueInRange(match.range),
+          query,
+          replacement,
+          isRegex,
+          isWholeWord,
+          isCaseSensitive
+        ),
       }));
 
       editor.executeEdits('replaceAll', edits);

@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useSearchStore, type SearchMatch } from '@/lib/store/search-store';
 import { cn } from '@/lib/utils';
+import { safeLocalStorageGet, safeLocalStorageSet } from '@/lib/storage-utils';
 import { useFocusTrap } from '@/hooks/use-focus-trap';
 import { useSearchLogic, type SearchOptions } from '@/hooks/use-search-logic';
 import { useDialogDrag } from '@/hooks/use-dialog-drag';
@@ -21,6 +22,10 @@ import {
   Search,
   ChevronRight,
 } from 'lucide-react';
+
+const browserDocument = typeof document === 'undefined' ? undefined : document;
+const SEARCH_HISTORY_KEY = 'zen-editor-search-history';
+const MAX_SEARCH_HISTORY = 20;
 
 interface SearchDialogProps {
   open: boolean;
@@ -113,6 +118,7 @@ export const SearchDialog = memo(
 
     const searchInputRef = useRef<HTMLInputElement>(null);
     const replaceInputRef = useRef<HTMLInputElement>(null);
+    const historyDraftRef = useRef('');
     const focusTrapRef = useFocusTrap<HTMLDivElement>({
       enabled: open,
       initialFocusRef: searchInputRef as React.RefObject<HTMLElement>,
@@ -124,6 +130,8 @@ export const SearchDialog = memo(
     const [showResults, setShowResults] = useState(true);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [isVisible, setIsVisible] = useState(false);
+    const [searchHistory, setSearchHistory] = useState<string[]>([]);
+    const [historyIndex, setHistoryIndex] = useState(-1);
     const { isMobile } = useMobileDetection();
     const { isDragging, startDrag } = useDialogDrag({
       enabled: !isMobile,
@@ -163,30 +171,111 @@ export const SearchDialog = memo(
     const handleQueryChange = useCallback(
       (value: string) => {
         setQuery(value);
+        setHistoryIndex(-1);
         performSearch(value);
       },
       [performSearch]
     );
 
-    const onNextMatch = useCallback(() => handleNextMatch(query), [handleNextMatch, query]);
-    const onPreviousMatch = useCallback(
-      () => handlePreviousMatch(query),
-      [handlePreviousMatch, query]
+    useEffect(() => {
+      const rawHistory = safeLocalStorageGet(SEARCH_HISTORY_KEY);
+      if (!rawHistory) return;
+      try {
+        const parsed = JSON.parse(rawHistory);
+        if (Array.isArray(parsed)) {
+          setSearchHistory(parsed.filter((item): item is string => typeof item === 'string'));
+        }
+      } catch {
+        setSearchHistory([]);
+      }
+    }, []);
+
+    const saveQueryToHistory = useCallback((input: string) => {
+      const normalized = input.trim();
+      if (!normalized) return;
+
+      setSearchHistory((prev) => {
+        const next = [normalized, ...prev.filter((item) => item !== normalized)].slice(
+          0,
+          MAX_SEARCH_HISTORY
+        );
+        safeLocalStorageSet(SEARCH_HISTORY_KEY, JSON.stringify(next));
+        return next;
+      });
+      setHistoryIndex(-1);
+    }, []);
+
+    const navigateSearchHistory = useCallback(
+      (direction: 'prev' | 'next') => {
+        if (searchHistory.length === 0) return;
+
+        if (direction === 'prev') {
+          if (historyIndex === -1) {
+            historyDraftRef.current = query;
+          }
+          const nextIndex = Math.min(historyIndex + 1, searchHistory.length - 1);
+          const nextQuery = searchHistory[nextIndex];
+          setHistoryIndex(nextIndex);
+          setQuery(nextQuery);
+          performSearch(nextQuery, true);
+          return;
+        }
+
+        if (historyIndex <= -1) return;
+        const nextIndex = historyIndex - 1;
+        if (nextIndex >= 0) {
+          const nextQuery = searchHistory[nextIndex];
+          setHistoryIndex(nextIndex);
+          setQuery(nextQuery);
+          performSearch(nextQuery, true);
+          return;
+        }
+
+        setHistoryIndex(-1);
+        setQuery(historyDraftRef.current);
+        performSearch(historyDraftRef.current, true);
+      },
+      [historyIndex, searchHistory, query, performSearch]
     );
-    const onReplaceClick = useCallback(
-      () => handleReplace(query, replacement),
-      [handleReplace, query, replacement]
-    );
-    const onReplaceAllClick = useCallback(
-      () => handleReplaceAll(query, replacement),
-      [handleReplaceAll, query, replacement]
-    );
+
+    const onNextMatch = useCallback(() => {
+      saveQueryToHistory(query);
+      handleNextMatch(query);
+    }, [saveQueryToHistory, handleNextMatch, query]);
+    const onPreviousMatch = useCallback(() => {
+      saveQueryToHistory(query);
+      handlePreviousMatch(query);
+    }, [saveQueryToHistory, handlePreviousMatch, query]);
+    const onReplaceClick = useCallback(() => {
+      saveQueryToHistory(query);
+      handleReplace(query, replacement);
+    }, [saveQueryToHistory, handleReplace, query, replacement]);
+    const onReplaceAllClick = useCallback(() => {
+      saveQueryToHistory(query);
+      handleReplaceAll(query, replacement);
+    }, [saveQueryToHistory, handleReplaceAll, query, replacement]);
+    const canReplace = query.length > 0 && matches.length > 0;
+    const canReplaceAll = canReplace;
 
     const handleKeyDown = useCallback(
       (e: KeyboardEvent) => {
         if (e.key === 'Escape') {
           e.preventDefault();
           onOpenChange(false);
+          return;
+        }
+
+        if (
+          e.key === 'Enter' &&
+          showReplace &&
+          browserDocument?.activeElement === replaceInputRef.current
+        ) {
+          e.preventDefault();
+          if (e.metaKey || e.ctrlKey) {
+            if (canReplaceAll) onReplaceAllClick();
+          } else {
+            if (canReplace) onReplaceClick();
+          }
           return;
         }
 
@@ -200,6 +289,18 @@ export const SearchDialog = memo(
         if ((e.ctrlKey || e.metaKey) && e.key === 'h') {
           e.preventDefault();
           setShowReplace((prev) => !prev);
+          return;
+        }
+
+        if (e.altKey && e.key === 'ArrowUp') {
+          e.preventDefault();
+          navigateSearchHistory('prev');
+          return;
+        }
+
+        if (e.altKey && e.key === 'ArrowDown') {
+          e.preventDefault();
+          navigateSearchHistory('next');
           return;
         }
 
@@ -233,6 +334,11 @@ export const SearchDialog = memo(
       },
       [
         onOpenChange,
+        showReplace,
+        canReplace,
+        canReplaceAll,
+        onReplaceClick,
+        onReplaceAllClick,
         onNextMatch,
         onPreviousMatch,
         isCaseSensitive,
@@ -242,6 +348,7 @@ export const SearchDialog = memo(
         setIsRegex,
         setIsWholeWord,
         performSearch,
+        navigateSearchHistory,
         query,
       ]
     );
@@ -376,6 +483,14 @@ export const SearchDialog = memo(
                       replaceInputRef.current?.focus();
                     }
                   }
+                  if (e.altKey && e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    navigateSearchHistory('prev');
+                  }
+                  if (e.altKey && e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    navigateSearchHistory('next');
+                  }
                 }}
                 placeholder={t('search.placeholder')}
                 className="h-9 text-sm pr-20"
@@ -383,6 +498,7 @@ export const SearchDialog = memo(
                 spellCheck={false}
                 autoCapitalize="off"
                 autoCorrect="off"
+                aria-label={`${t('search.searchInput')} (${t('search.previousHistory')}: Alt+↑, ${t('search.nextHistory')}: Alt+↓)`}
               />
               <div className="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5">
                 <OptionButton
@@ -458,12 +574,20 @@ export const SearchDialog = memo(
                     variant="outline"
                     size="sm"
                     onClick={onReplaceClick}
+                    disabled={!canReplace}
                     className="h-8 flex-1 text-xs"
                   >
                     {t('search.actions.replace')}
                   </Button>
-                  <Button size="sm" onClick={onReplaceAllClick} className="h-8 flex-1 text-xs">
-                    {t('search.actions.replaceAll')}
+                  <Button
+                    size="sm"
+                    onClick={onReplaceAllClick}
+                    disabled={!canReplaceAll}
+                    className="h-8 flex-1 text-xs"
+                  >
+                    {canReplaceAll
+                      ? t('search.actions.replaceAllWithCount', { count: matches.length })
+                      : t('search.actions.replaceAll')}
                   </Button>
                 </div>
               </div>
