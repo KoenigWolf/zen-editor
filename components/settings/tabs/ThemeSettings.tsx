@@ -37,7 +37,7 @@ const BaseThemeButton = ({
           : 'border-transparent bg-muted/50 hover:bg-muted hover:border-muted-foreground/20'
       )}
     >
-      <Icon className={cn('h-5 w-5', isActive && 'text-primary')} />
+      <Icon className={cn('h-icon-xl w-icon-xl', isActive && 'text-primary')} />
       <span className="text-xs font-medium">{label}</span>
     </button>
   );
@@ -99,7 +99,7 @@ const ThemeCard = ({
 
         {isActive && (
           <div className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-            <Check className="w-3 h-3 text-primary-foreground" />
+            <Check className="w-icon-xs h-icon-xs text-primary-foreground" />
           </div>
         )}
       </div>
@@ -161,7 +161,7 @@ export function ThemeSettings({ settings, onSettingsChange }: ThemeSettingsProps
 
           <div>
             <h4 className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1.5">
-              <Moon className="h-3 w-3" />
+              <Moon className="h-icon-xs w-icon-xs" />
               {t('settings.theme.darkThemes')}
             </h4>
             <div className="grid grid-cols-3 gap-2">
@@ -179,7 +179,7 @@ export function ThemeSettings({ settings, onSettingsChange }: ThemeSettingsProps
 
           <div>
             <h4 className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1.5">
-              <Sun className="h-3 w-3" />
+              <Sun className="h-icon-xs w-icon-xs" />
               {t('settings.theme.lightThemes')}
             </h4>
             <div className="grid grid-cols-3 gap-2">

@@ -430,7 +430,7 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
                     : 'flex-1 text-sm'
                 )}
               >
-                {isMobile && <Icon className="h-5 w-5" />}
+                {isMobile && <Icon className="h-icon-xl w-icon-xl" />}
                 <span className={isMobile ? 'truncate max-w-full' : ''}>{t(labelKey)}</span>
               </TabsTrigger>
             ))}

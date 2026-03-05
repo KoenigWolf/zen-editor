@@ -10,18 +10,20 @@ const config: Config = {
   theme: {
     extend: {
       // Icon sizes (semantic tokens)
-      // xs: 12px, sm: 14px, md: 16px, lg: 18px
+      // xs: 12px, sm: 14px, md: 16px, lg: 18px, xl: 20px
       width: {
         'icon-xs': '0.75rem', // 12px - status bar, tabs, split pane
         'icon-sm': '0.875rem', // 14px - toolbar buttons
         'icon-md': '1rem', // 16px - command palette, context menu, search
         'icon-lg': '1.125rem', // 18px - mobile UI
+        'icon-xl': '1.25rem', // 20px - settings, large buttons
       },
       height: {
         'icon-xs': '0.75rem', // 12px
         'icon-sm': '0.875rem', // 14px
         'icon-md': '1rem', // 16px
         'icon-lg': '1.125rem', // 18px
+        'icon-xl': '1.25rem', // 20px
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
