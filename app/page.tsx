@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect } from 'react';
-import { EditorContainer } from '@/components/editor/EditorContainer';
+import { EditorContainer } from '@/components/editor/editor-container';
 import { useFileStore } from '@/lib/store/file-store';
-import { SeoContent } from '@/components/seo/SeoContent';
-import { useMounted } from '@/hooks/use-mounted';
+import { SeoContent } from '@/components/seo/seo-content';
+import { useMounted } from '@/hooks/core/use-mounted';
 
 export default function Home() {
   const mounted = useMounted();

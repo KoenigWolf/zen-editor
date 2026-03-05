@@ -9,7 +9,7 @@ import {
   ToastViewport,
 } from '@/components/ui/toast';
 import { useToast } from '@/components/ui/use-toast';
-import { useMounted } from '@/hooks/use-mounted';
+import { useMounted } from '@/hooks/core/use-mounted';
 
 export function Toaster() {
   const { toasts } = useToast();

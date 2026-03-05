@@ -4,6 +4,7 @@ export const ja = {
     tryAgain: '再試行',
     refresh: '更新',
     home: 'ホーム',
+    copySuffix: '(コピー)',
   },
   errorBoundary: {
     title: 'エラーが発生しました',

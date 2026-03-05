@@ -366,7 +366,7 @@ export function EditorToolbar() {
 
 ```tsx
 // キーボードショートカットの設定
-import { useGlobalKeydown } from '@/hooks/use-global-keydown'
+import { useGlobalKeydown } from '@/hooks/core/use-global-keydown'
 
 useGlobalKeydown({
   enabled: true,

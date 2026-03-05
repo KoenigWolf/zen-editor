@@ -4,7 +4,7 @@ import { forwardRef, type ElementRef, type ComponentPropsWithoutRef, type ReactN
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 
 import { cn } from '@/lib/utils';
-import { useMounted } from '@/hooks/use-mounted';
+import { useMounted } from '@/hooks/core/use-mounted';
 
 const TooltipProvider = TooltipPrimitive.Provider;
 

@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { createSafeStorage } from '@/lib/store/storage';
 import { useSplitViewStore } from '@/lib/store/split-view-store';
+import { reorderArray } from '@/lib/utils/data/array';
 
 export interface FileData {
   id: string;
@@ -25,6 +26,7 @@ interface FileStore {
   setHasHydrated: (state: boolean) => void;
   markAsSaved: (id: string) => void;
   renameFile: (id: string, name: string) => void;
+  reorderFiles: (fromIndex: number, toIndex: number) => void;
 }
 
 let pendingUpdates: Map<string, string> = new Map();
@@ -117,6 +119,22 @@ export const useFileStore = create<FileStore>()(
             file.id === id ? { ...file, name, lastModified: Date.now() } : file
           ),
         }));
+      },
+
+      reorderFiles: (fromIndex, toIndex) => {
+        set((state) => {
+          const { files } = state;
+          if (
+            fromIndex < 0 ||
+            fromIndex >= files.length ||
+            toIndex < 0 ||
+            toIndex >= files.length ||
+            fromIndex === toIndex
+          ) {
+            return state;
+          }
+          return { files: reorderArray(files, fromIndex, toIndex) };
+        });
       },
     }),
     {

@@ -85,7 +85,7 @@ announce('エラーが発生しました', 'assertive'); // 緊急通知
 ### フォーカストラップ（モーダル用）
 
 ```typescript
-import { useFocusTrap } from '@/hooks/use-focus-trap';
+import { useFocusTrap } from '@/hooks/core/use-focus-trap';
 
 const MyDialog = ({ isOpen }: { isOpen: boolean }) => {
   const dialogRef = useFocusTrap<HTMLDivElement>({ isActive: isOpen });

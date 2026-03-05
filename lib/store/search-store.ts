@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { getNextIndex, getPrevIndex } from '@/lib/utils';
 
 export interface SearchMatch {
   lineNumber: number;
@@ -52,17 +53,14 @@ export const useSearchStore = create<SearchStore>((set, get) => ({
     const { matches, currentMatchIndex } = get();
     if (matches.length === 0) return;
 
-    const nextIndex = (currentMatchIndex + 1) % matches.length;
-    set({ currentMatchIndex: nextIndex });
+    set({ currentMatchIndex: getNextIndex(currentMatchIndex, matches.length) });
   },
 
   previousMatch: () => {
     const { matches, currentMatchIndex } = get();
     if (matches.length === 0) return;
 
-    const isAtStart = currentMatchIndex <= 0;
-    const prevIndex = isAtStart ? matches.length - 1 : currentMatchIndex - 1;
-    set({ currentMatchIndex: prevIndex });
+    set({ currentMatchIndex: getPrevIndex(currentMatchIndex, matches.length) });
   },
 
   reset: () =>
