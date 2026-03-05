@@ -1,14 +1,13 @@
 'use client';
 
 import '@/lib/i18n';
-import { ThemeProvider } from '@/components/ThemeProvider';
+import { ThemeProvider, PWAProvider } from '@/components/providers';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from '@/components/ui/toaster';
-import { LanguageSync } from '@/components/LanguageSync';
-import { LiveAnnouncer } from '@/components/LiveAnnouncer';
-import { PWAProvider } from '@/components/pwa/PWAProvider';
-import { WebVitalsReporter } from '@/components/WebVitalsReporter';
-import { SkipLink } from '@/components/SkipLink';
+import { LanguageSync } from '@/components/layout/language-sync';
+import { LiveAnnouncer } from '@/components/layout/live-announcer';
+import { WebVitalsReporter } from '@/components/layout/web-vitals-reporter';
+import { SkipLink } from '@/components/layout/skip-link';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (

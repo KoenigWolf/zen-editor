@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import type { EditorSettings } from './types/editor';
-import { DEFAULT_EDITOR_SETTINGS } from './types/editor';
-import { createSafeStorage } from '@/lib/store/storage';
+import type { EditorSettings } from '@/lib/types/editor';
+import { DEFAULT_EDITOR_SETTINGS } from '@/lib/types/editor';
+import { createSafeStorage } from './storage';
 
 /**
  * エディタ設定ストアのインターフェース

@@ -9,9 +9,9 @@ import { useEditorInstanceStore } from '@/lib/store/editor-instance-store';
 import { useSearchStore } from '@/lib/store/search-store';
 import type { editor } from 'monaco-editor';
 import { getLanguageFromFilename, getEolLabel } from '@/lib/editor/constants';
-import { useEditorOptions } from '@/hooks/use-editor-options';
-import { useMonacoTheme } from '@/hooks/use-monaco-theme';
-import { useFullWidthSpace } from '@/hooks/use-fullwidth-space';
+import { useEditorOptions } from '@/hooks/editor/use-editor-options';
+import { useMonacoTheme } from '@/hooks/editor/use-monaco-theme';
+import { useFullWidthSpace } from '@/hooks/editor/use-fullwidth-space';
 
 type Monaco = typeof import('monaco-editor');
 

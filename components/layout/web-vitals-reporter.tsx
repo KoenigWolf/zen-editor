@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 import type { Metric } from 'web-vitals';
-import { useWebVitals } from '@/hooks/use-web-vitals';
+import { useWebVitals } from '@/hooks/platform/use-web-vitals';
 
 export const WebVitalsReporter = () => {
   const handleMetric = useCallback((metric: Metric) => {

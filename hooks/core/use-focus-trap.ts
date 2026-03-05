@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useCallback } from 'react';
-import { useGlobalKeydown } from '@/hooks/use-global-keydown';
+import { useGlobalKeydown } from '@/hooks/core/use-global-keydown';
 
 const FOCUSABLE_SELECTORS = [
   'button:not([disabled])',

@@ -1,17 +1,17 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState, memo } from 'react';
-import { useMobileDetection } from '@/hooks/use-mobile-detection';
+import { useMobileDetection } from '@/hooks/platform/use-mobile-detection';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useSearchStore, type SearchMatch } from '@/lib/store/search-store';
 import { cn } from '@/lib/utils';
 import { safeLocalStorageGet, safeLocalStorageSet } from '@/lib/storage-utils';
-import { useFocusTrap } from '@/hooks/use-focus-trap';
-import { useSearchLogic, type SearchOptions } from '@/hooks/use-search-logic';
-import { useDialogDrag } from '@/hooks/use-dialog-drag';
-import { useGlobalKeydown } from '@/hooks/use-global-keydown';
+import { useFocusTrap } from '@/hooks/core/use-focus-trap';
+import { useSearchLogic, type SearchOptions } from '@/hooks/editor/use-search-logic';
+import { useDialogDrag } from '@/hooks/ui/use-dialog-drag';
+import { useGlobalKeydown } from '@/hooks/core/use-global-keydown';
 import {
   X,
   ChevronDown,

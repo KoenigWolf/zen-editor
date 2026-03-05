@@ -23,9 +23,9 @@ import { useFileStore } from '@/lib/store/file-store';
 import { useIndentStore } from '@/lib/store/indent-store';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-import { useMobileDetection } from '@/hooks/use-mobile-detection';
-import { useFileOperations } from '@/hooks/use-file-operations';
-import { useEditorActions } from '@/hooks/use-editor-actions';
+import { useMobileDetection } from '@/hooks/platform/use-mobile-detection';
+import { useFileOperations } from '@/hooks/editor/use-file-operations';
+import { useEditorActions } from '@/hooks/editor/use-editor-actions';
 
 const SearchDialog = dynamic(
   () => import('@/components/editor/SearchDialog').then((mod) => ({ default: mod.SearchDialog })),

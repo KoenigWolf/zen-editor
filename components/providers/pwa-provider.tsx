@@ -1,8 +1,12 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { usePWAManager, PWAContext } from '@/hooks/usePWA';
-import { PWAInstallPrompt, OfflineIndicator, UpdateNotification } from './PWAInstallPrompt';
+import { usePWAManager, PWAContext } from '@/hooks/platform/use-pwa';
+import {
+  PWAInstallPrompt,
+  OfflineIndicator,
+  UpdateNotification,
+} from '@/components/pwa/PWAInstallPrompt';
 
 export function PWAProvider({ children }: { children: ReactNode }) {
   const pwa = usePWAManager();

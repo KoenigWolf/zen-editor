@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
-import { useMouseDrag } from '@/hooks/use-mouse-drag';
+import { useMouseDrag } from '@/hooks/ui/use-mouse-drag';
 
 const CM_TO_PX = 37.795275591;
 const RULER_HEIGHT = 18;

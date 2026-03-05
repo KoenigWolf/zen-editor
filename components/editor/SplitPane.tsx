@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { useSplitViewStore, type PaneNode, type PaneSplit } from '@/lib/store/split-view-store';
 import { useTranslation } from 'react-i18next';
 import { X } from 'lucide-react';
-import { useMouseDrag } from '@/hooks/use-mouse-drag';
+import { useMouseDrag } from '@/hooks/ui/use-mouse-drag';
 
 const MonacoEditor = dynamic(
   () => import('@/components/editor/MonacoEditor').then((mod) => ({ default: mod.MonacoEditor })),

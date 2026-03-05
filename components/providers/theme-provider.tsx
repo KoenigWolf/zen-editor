@@ -5,7 +5,7 @@ import { ThemeProvider as NextThemesProvider, useTheme } from 'next-themes';
 import { type ThemeProviderProps } from 'next-themes/dist/types';
 import { useEditorStore } from '@/lib/store';
 import { CUSTOM_THEMES, type EditorTheme } from '@/lib/themes';
-import { useMounted } from '@/hooks/use-mounted';
+import { useMounted } from '@/hooks/core/use-mounted';
 
 const camelToKebab = (str: string): string => {
   return str.replace(/([A-Z])/g, '-$1').toLowerCase();

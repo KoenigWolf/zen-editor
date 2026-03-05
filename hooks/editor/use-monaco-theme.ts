@@ -6,7 +6,7 @@ import type { BeforeMount } from '@monaco-editor/react';
 import { useTheme } from 'next-themes';
 import { useEditorStore } from '@/lib/store';
 import { getThemeById, DEFAULT_EDITOR_COLORS, CUSTOM_THEMES } from '@/lib/themes';
-import { useMounted } from '@/hooks/use-mounted';
+import { useMounted } from '@/hooks/core/use-mounted';
 
 type Monaco = typeof import('monaco-editor');
 

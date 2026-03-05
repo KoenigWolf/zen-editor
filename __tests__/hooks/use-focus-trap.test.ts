@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useFocusTrap } from '@/hooks/use-focus-trap';
+import { useFocusTrap } from '@/hooks/core/use-focus-trap';
 
 describe('useFocusTrap', () => {
   let container: HTMLDivElement;

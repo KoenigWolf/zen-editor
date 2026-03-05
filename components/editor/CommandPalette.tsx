@@ -3,9 +3,9 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
-import { useMobileDetection } from '@/hooks/use-mobile-detection';
+import { useMobileDetection } from '@/hooks/platform/use-mobile-detection';
 import { Command, ArrowRight } from 'lucide-react';
-import { useGlobalKeydown } from '@/hooks/use-global-keydown';
+import { useGlobalKeydown } from '@/hooks/core/use-global-keydown';
 
 interface CommandItem {
   id: string;

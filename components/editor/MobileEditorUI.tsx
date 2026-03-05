@@ -2,7 +2,7 @@
 
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLongPress } from '@/hooks/use-long-press';
+import { useLongPress } from '@/hooks/ui/use-long-press';
 import {
   Plus,
   Download,

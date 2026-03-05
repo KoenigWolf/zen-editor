@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { BREAKPOINTS, DEBOUNCE } from '@/lib/constants/breakpoints';
-import { useMounted } from '@/hooks/use-mounted';
+import { useMounted } from '@/hooks/core/use-mounted';
 
 interface MobileDetectionOptions {
   mobileBreakpoint?: number;

@@ -4,8 +4,8 @@ import { useCallback } from 'react';
 import { useFileStore } from '@/lib/store/file-store';
 import { useEditorInstanceStore } from '@/lib/store/editor-instance-store';
 import { useSplitViewStore } from '@/lib/store/split-view-store';
-import { useFileOperations } from '@/hooks/use-file-operations';
-import { useGlobalKeydown } from '@/hooks/use-global-keydown';
+import { useFileOperations } from '@/hooks/editor/use-file-operations';
+import { useGlobalKeydown } from '@/hooks/core/use-global-keydown';
 
 interface UseKeyboardShortcutsOptions {
   onOpenSettings?: () => void;

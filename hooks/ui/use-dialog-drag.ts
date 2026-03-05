@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { useMouseDrag } from '@/hooks/use-mouse-drag';
+import { useMouseDrag } from '@/hooks/ui/use-mouse-drag';
 
 type Position = { x: number; y: number };
 

@@ -19,8 +19,8 @@ import {
   Chrome,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { usePWA } from '@/hooks/usePWA';
-import { useMounted } from '@/hooks/use-mounted';
+import { usePWA } from '@/hooks/platform/use-pwa';
+import { useMounted } from '@/hooks/core/use-mounted';
 import { safeLocalStorageGet, safeLocalStorageSet } from '@/lib/storage-utils';
 
 declare global {

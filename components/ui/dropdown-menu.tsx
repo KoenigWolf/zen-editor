@@ -4,7 +4,7 @@ import { forwardRef, type ElementRef, type ComponentPropsWithoutRef, type ReactN
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 
 import { cn } from '@/lib/utils';
-import { useMounted } from '@/hooks/use-mounted';
+import { useMounted } from '@/hooks/core/use-mounted';
 
 const DropdownMenu = ({
   children,

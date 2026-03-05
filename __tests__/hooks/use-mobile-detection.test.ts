@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useMobileDetection } from '@/hooks/use-mobile-detection';
+import { useMobileDetection } from '@/hooks/platform/use-mobile-detection';
 
 describe('useMobileDetection', () => {
   const originalInnerWidth = window.innerWidth;

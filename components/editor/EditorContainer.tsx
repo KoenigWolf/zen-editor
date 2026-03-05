@@ -22,11 +22,11 @@ import { useIndentStore } from '@/lib/store/indent-store';
 import { useTheme } from 'next-themes';
 import { FileTabs } from '@/components/editor/FileTabs';
 import { useTranslation } from 'react-i18next';
-import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
-import { useMobileDetection } from '@/hooks/use-mobile-detection';
-import { useEditorActions } from '@/hooks/use-editor-actions';
-import { useSwipeGesture } from '@/hooks/use-swipe-gesture';
-import { useVirtualKeyboard } from '@/hooks/use-virtual-keyboard';
+import { useKeyboardShortcuts } from '@/hooks/editor/use-keyboard-shortcuts';
+import { useMobileDetection } from '@/hooks/platform/use-mobile-detection';
+import { useEditorActions } from '@/hooks/editor/use-editor-actions';
+import { useSwipeGesture } from '@/hooks/ui/use-swipe-gesture';
+import { useVirtualKeyboard } from '@/hooks/platform/use-virtual-keyboard';
 import { TabContextMenu } from '@/components/editor/TabContextMenu';
 import type { CommandItem } from '@/components/editor/CommandPalette';
 import {

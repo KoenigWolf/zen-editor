@@ -2,8 +2,8 @@
 
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { useMobileDetection } from '@/hooks/use-mobile-detection';
-import { useDialogDrag } from '@/hooks/use-dialog-drag';
+import { useMobileDetection } from '@/hooks/platform/use-mobile-detection';
+import { useDialogDrag } from '@/hooks/ui/use-dialog-drag';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';

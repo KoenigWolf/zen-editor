@@ -3,7 +3,7 @@
 import { memo, useEffect, useRef, useCallback, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, Copy, Pencil, XCircle, ChevronsLeft, ChevronsRight, Trash2 } from 'lucide-react';
-import { useGlobalKeydown } from '@/hooks/use-global-keydown';
+import { useGlobalKeydown } from '@/hooks/core/use-global-keydown';
 
 interface TabContextMenuProps {
   isOpen: boolean;
