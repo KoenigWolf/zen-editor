@@ -4,13 +4,29 @@
  */
 
 // Core hooks - 基本的な再利用可能フック
-export * from './core';
+export { useMounted, useGlobalKeydown, useFocusTrap } from './core';
 
 // Editor hooks - エディタ固有のフック
-export * from './editor';
+export {
+  useEditorActions,
+  useEditorOptions,
+  useFileOperations,
+  useFullWidthSpace,
+  useKeyboardShortcuts,
+  useMonacoTheme,
+  useSearchLogic,
+  type SearchOptions,
+} from './editor';
 
 // UI hooks - UI操作フック
-export * from './ui';
+export { useDialogDrag, useLongPress, useMouseDrag, useSwipeGesture } from './ui';
 
 // Platform hooks - プラットフォーム/デバイス検出フック
-export * from './platform';
+export {
+  useMobileDetection,
+  useVirtualKeyboard,
+  usePWA,
+  usePWAManager,
+  PWAContext,
+  useWebVitals,
+} from './platform';
