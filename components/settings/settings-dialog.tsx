@@ -12,15 +12,9 @@ import { EditorSettings } from './tabs/editor-settings';
 import { FileSettings } from './tabs/file-settings';
 import { GeneralSettings } from './tabs/general-settings';
 import { useEditorStore } from '@/lib/store';
-import { cn } from '@/lib/utils';
+import { cn, shallowEqual } from '@/lib/utils';
 import { Palette, Type, FileText, Settings2 } from 'lucide-react';
 import { CloseButton } from '@/components/ui/close-button';
-import type { EditorSettings as EditorSettingsType } from '@/lib/types/editor';
-
-const shallowEqual = (a: EditorSettingsType, b: EditorSettingsType): boolean => {
-  const keys = Object.keys(a) as (keyof EditorSettingsType)[];
-  return keys.every((key) => a[key] === b[key]);
-};
 
 const settingsTabs = [
   {

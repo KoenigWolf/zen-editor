@@ -32,3 +32,6 @@ export {
   getFileIcon,
   getFileColor,
 } from './file-types';
+
+// オブジェクト操作
+export { shallowEqual } from './object';

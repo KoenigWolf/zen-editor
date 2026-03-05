@@ -58,6 +58,18 @@ const buildReplacementText = (
   }
 };
 
+/**
+ * Monacoモデルでマッチを検索するヘルパー関数
+ */
+const findMatchesInModel = (
+  model: editor.ITextModel,
+  searchString: string,
+  isRegexMode: boolean,
+  isCaseSensitive: boolean
+) => {
+  return model.findMatches(searchString, false, isRegexMode, isCaseSensitive, null, false);
+};
+
 export const useSearchLogic = (
   onSearch: (query: string, options: SearchOptions) => void,
   onReplace?: (query: string, replacement: string, options: SearchOptions) => void
@@ -182,13 +194,11 @@ export const useSearchLogic = (
           const isRegexMode = isRegex || isWholeWord;
           const searchString = buildSearchString(searchQuery, isRegex, isWholeWord, false);
 
-          const foundMatches = model.findMatches(
+          const foundMatches = findMatchesInModel(
+            model,
             searchString,
-            false,
             isRegexMode,
-            isCaseSensitive,
-            null,
-            false
+            isCaseSensitive
           );
 
           const parsedMatches = foundMatches.map((match) => ({
@@ -337,14 +347,7 @@ export const useSearchLogic = (
       if (!model) return;
 
       const searchString = buildSearchString(query, isRegex, isWholeWord, true);
-      const foundMatches = model.findMatches(
-        searchString,
-        false,
-        true,
-        isCaseSensitive,
-        null,
-        false
-      );
+      const foundMatches = findMatchesInModel(model, searchString, true, isCaseSensitive);
 
       if (foundMatches.length === 0) return;
 
