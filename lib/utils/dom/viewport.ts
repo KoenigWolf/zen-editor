@@ -20,10 +20,11 @@ export const constrainToViewport = (
   elementSize: Size,
   options: ConstrainOptions = {}
 ): Position => {
-  const { margin = 0 } = options;
+  if (!isBrowser) return position;
 
-  const viewportWidth = isBrowser ? window.innerWidth : 0;
-  const viewportHeight = isBrowser ? window.innerHeight : 0;
+  const { margin = 0 } = options;
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
 
   const maxX = Math.max(margin, viewportWidth - elementSize.width - margin);
   const maxY = Math.max(margin, viewportHeight - elementSize.height - margin);

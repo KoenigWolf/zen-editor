@@ -1,7 +1,8 @@
+import type { MutableRefObject } from 'react';
 import type { editor } from 'monaco-editor';
 
 export const updateDecorationCollection = (
-  ref: React.MutableRefObject<editor.IEditorDecorationsCollection | null>,
+  ref: MutableRefObject<editor.IEditorDecorationsCollection | null>,
   editorInstance: editor.IStandaloneCodeEditor | null | undefined,
   decorations: editor.IModelDeltaDecoration[]
 ): void => {
@@ -18,7 +19,7 @@ export const updateDecorationCollection = (
  * Monaco装飾コレクションをクリア
  */
 export const clearDecorationCollection = (
-  ref: React.MutableRefObject<editor.IEditorDecorationsCollection | null>
+  ref: MutableRefObject<editor.IEditorDecorationsCollection | null>
 ): void => {
   if (ref.current) {
     ref.current.clear();

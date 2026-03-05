@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { createSafeStorage } from '@/lib/store/storage';
 import { useSplitViewStore } from '@/lib/store/split-view-store';
+import { reorderArray } from '@/lib/utils/data/array';
 
 export interface FileData {
   id: string;
@@ -132,10 +133,7 @@ export const useFileStore = create<FileStore>()(
           ) {
             return state;
           }
-          const result = [...files];
-          const [removed] = result.splice(fromIndex, 1);
-          result.splice(toIndex, 0, removed);
-          return { files: result };
+          return { files: reorderArray(files, fromIndex, toIndex) };
         });
       },
     }),
