@@ -1,4 +1,4 @@
-import { clamp } from './math';
+import { clamp } from '../data/math';
 
 export interface Size {
   width: number;
