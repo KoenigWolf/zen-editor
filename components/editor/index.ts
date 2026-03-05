@@ -7,7 +7,7 @@ export { EditorContainer } from './editor-container';
 export { EditorStatusBar } from './editor-status-bar';
 export { EditorToolbar } from './editor-toolbar';
 export { FileTabs } from './file-tabs';
-export { IndentRuler } from './indent-ruler';
+export { IndentRuler, IndentHandle } from './indent';
 export {
   MobileTopBar,
   MobileTabsBar,
@@ -17,6 +17,6 @@ export {
   MobileFocusExitButton,
 } from './mobile-editor-ui';
 export { MonacoEditor } from './monaco-editor';
-export { SearchDialog } from './search-dialog';
+export { SearchDialog, SearchResultItem, SearchOptionButton } from './search';
 export { SplitPane } from './split-pane';
 export { TabContextMenu } from './tab-context-menu';

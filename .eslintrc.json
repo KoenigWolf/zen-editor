@@ -9,7 +9,7 @@
 
     "no-var": "error",
     "prefer-const": "error",
-    "prefer-arrow-callback": "warn",
+    "prefer-arrow-callback": ["warn", { "allowNamedFunctions": true }],
     "eqeqeq": ["error", "always", { "null": "ignore" }]
   },
   "overrides": [
