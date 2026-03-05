@@ -5,7 +5,7 @@ import { useMobileDetection } from '@/hooks/platform/use-mobile-detection';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useSearchStore, type SearchMatch } from '@/lib/store/search-store';
+import { useSearchStore } from '@/lib/store/search-store';
 import {
   cn,
   constrainToViewport,
@@ -14,7 +14,7 @@ import {
   browserDocument,
 } from '@/lib/utils';
 import { useFocusTrap } from '@/hooks/core/use-focus-trap';
-import { useSearchLogic, type SearchOptions } from '@/hooks/editor/use-search-logic';
+import { useSearchLogic } from '@/hooks/editor/use-search-logic';
 import { useDialogDrag } from '@/hooks/ui/use-dialog-drag';
 import { useGlobalKeydown } from '@/hooks/core/use-global-keydown';
 import {
@@ -27,78 +27,12 @@ import {
   Search,
   ChevronRight,
 } from 'lucide-react';
+import { SearchResultItem } from './search-result-item';
+import { SearchOptionButton } from './search-option-button';
+import type { SearchDialogProps } from './types';
 
 const SEARCH_HISTORY_KEY = 'zen-editor-search-history';
 const MAX_SEARCH_HISTORY = 20;
-
-interface SearchDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSearch: (query: string, options: SearchOptions) => void;
-  onReplace?: (query: string, replacement: string, options: SearchOptions) => void;
-}
-
-const SearchResultItem = memo(
-  ({
-    match,
-    isActive,
-    onClick,
-  }: {
-    match: SearchMatch;
-    isActive: boolean;
-    onClick: () => void;
-  }) => (
-    <button
-      type="button"
-      className={cn(
-        'w-full text-left text-sm px-2.5 py-2 rounded-md transition-all',
-        'hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
-        isActive && 'bg-accent text-accent-foreground'
-      )}
-      onClick={onClick}
-    >
-      <span className="font-mono text-muted-foreground mr-2 tabular-nums">L{match.lineNumber}</span>
-      <span className="truncate">
-        {match.text.substring(0, 60)}
-        {match.text.length > 60 ? '…' : ''}
-      </span>
-    </button>
-  )
-);
-SearchResultItem.displayName = 'SearchResultItem';
-
-const OptionButton = memo(
-  ({
-    active,
-    onClick,
-    icon: Icon,
-    label,
-    shortcut,
-  }: {
-    active: boolean;
-    onClick: () => void;
-    icon: React.ElementType;
-    label: string;
-    shortcut?: string;
-  }) => (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={`${label}${shortcut ? ` (${shortcut})` : ''}`}
-      aria-pressed={active}
-      className={cn(
-        'h-8 w-8 rounded-md flex items-center justify-center transition-all',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
-        active
-          ? 'bg-primary/15 text-primary shadow-sm'
-          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-      )}
-    >
-      <Icon className="h-icon-md w-icon-md" strokeWidth={1.5} />
-    </button>
-  )
-);
-OptionButton.displayName = 'OptionButton';
 
 export const SearchDialog = memo(
   ({ open, onOpenChange, onSearch, onReplace }: SearchDialogProps) => {
@@ -518,21 +452,21 @@ export const SearchDialog = memo(
                 aria-label={`${t('search.searchInput')} (${t('search.previousHistory')}: Alt+↑, ${t('search.nextHistory')}: Alt+↓)`}
               />
               <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex gap-1">
-                <OptionButton
+                <SearchOptionButton
                   active={isCaseSensitive}
                   onClick={() => setIsCaseSensitive(!isCaseSensitive)}
                   icon={CaseSensitive}
                   label={t('search.options.caseSensitive')}
                   shortcut="Alt+C"
                 />
-                <OptionButton
+                <SearchOptionButton
                   active={isWholeWord}
                   onClick={() => setIsWholeWord(!isWholeWord)}
                   icon={WholeWord}
                   label={t('search.options.wholeWord')}
                   shortcut="Alt+W"
                 />
-                <OptionButton
+                <SearchOptionButton
                   active={isRegex}
                   onClick={() => setIsRegex(!isRegex)}
                   icon={Regex}
