@@ -1,3 +1,5 @@
+import { getFileExtensionWithDot } from './file-types';
+
 export const FILE_SECURITY = {
   MAX_FILE_SIZE: 10 * 1024 * 1024,
   ALLOWED_EXTENSIONS: [
@@ -54,9 +56,7 @@ export const validateFile = (
     };
   }
 
-  const fileName = file.name.toLowerCase();
-  const lastDotIndex = fileName.lastIndexOf('.');
-  const ext = lastDotIndex >= 0 ? fileName.substring(lastDotIndex) : '';
+  const ext = getFileExtensionWithDot(file.name);
 
   if (ext && !(FILE_SECURITY.ALLOWED_EXTENSIONS as readonly string[]).includes(ext)) {
     return {

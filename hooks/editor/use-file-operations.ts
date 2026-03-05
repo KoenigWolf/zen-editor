@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 import { useFileStore } from '@/lib/store/file-store';
-import { validateFile, FILE_SECURITY } from '@/lib/utils';
+import { validateFile, FILE_SECURITY, downloadAsFile } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
 
@@ -29,13 +29,7 @@ export const useFileOperations = (options: UseFileOperationsOptions = {}) => {
     const activeFile = getActiveFile();
     if (!activeFile) return;
 
-    const blob = new Blob([activeFile.content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = activeFile.name;
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadAsFile(activeFile.content, activeFile.name);
 
     if (showToast) {
       toast({

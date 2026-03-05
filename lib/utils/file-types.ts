@@ -40,9 +40,15 @@ export const DEFAULT_FILE_ICON = FileCode2;
 /** デフォルトカラークラス */
 export const DEFAULT_FILE_COLOR = 'text-muted-foreground';
 
-/** ファイル名から拡張子を取得 */
+/** ファイル名から拡張子を取得（ドットなし） */
 export const getFileExtension = (fileName: string): string =>
   fileName.split('.').pop()?.toLowerCase() || '';
+
+/** ファイル名から拡張子を取得（ドット付き） */
+export const getFileExtensionWithDot = (fileName: string): string => {
+  const ext = getFileExtension(fileName);
+  return ext ? `.${ext}` : '';
+};
 
 /** ファイル名からアイコンコンポーネントを取得 */
 export const getFileIcon = (fileName: string): React.ElementType =>

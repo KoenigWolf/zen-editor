@@ -3,6 +3,7 @@
  */
 
 import type { editor } from 'monaco-editor';
+import { getFileExtensionWithDot } from '@/lib/utils';
 
 type Monaco = typeof import('monaco-editor');
 
@@ -40,7 +41,7 @@ const LANGUAGE_MAPPINGS: Record<string, string> = {
 export const getLanguageFromFilename = (filename: string | null): string => {
   if (!filename) return 'plaintext';
 
-  const extension = filename.substring(filename.lastIndexOf('.')).toLowerCase();
+  const extension = getFileExtensionWithDot(filename);
   return LANGUAGE_MAPPINGS[extension] || 'plaintext';
 };
 
