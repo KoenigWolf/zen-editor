@@ -1,6 +1,3 @@
-/**
- * コンテンツをファイルとしてダウンロード
- */
 export const downloadAsFile = (
   content: string,
   fileName: string,
@@ -12,5 +9,5 @@ export const downloadAsFile = (
   a.href = url;
   a.download = fileName;
   a.click();
-  URL.revokeObjectURL(url);
+  setTimeout(() => URL.revokeObjectURL(url), 500);
 };

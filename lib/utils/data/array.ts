@@ -30,9 +30,19 @@ export const getPrevIndex = (currentIndex: number, length: number): number =>
  * @param array 元の配列
  * @param fromIndex 移動元インデックス
  * @param toIndex 移動先インデックス
- * @returns 新しい配列
+ * @returns 新しい配列（無効なインデックスの場合は元の配列のコピー）
  */
 export const reorderArray = <T>(array: T[], fromIndex: number, toIndex: number): T[] => {
+  if (
+    array.length === 0 ||
+    fromIndex < 0 ||
+    fromIndex >= array.length ||
+    toIndex < 0 ||
+    toIndex >= array.length ||
+    fromIndex === toIndex
+  ) {
+    return [...array];
+  }
   const result = [...array];
   const [removed] = result.splice(fromIndex, 1);
   result.splice(toIndex, 0, removed);

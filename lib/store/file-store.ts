@@ -25,6 +25,7 @@ interface FileStore {
   setHasHydrated: (state: boolean) => void;
   markAsSaved: (id: string) => void;
   renameFile: (id: string, name: string) => void;
+  reorderFiles: (fromIndex: number, toIndex: number) => void;
 }
 
 let pendingUpdates: Map<string, string> = new Map();
@@ -117,6 +118,25 @@ export const useFileStore = create<FileStore>()(
             file.id === id ? { ...file, name, lastModified: Date.now() } : file
           ),
         }));
+      },
+
+      reorderFiles: (fromIndex, toIndex) => {
+        set((state) => {
+          const { files } = state;
+          if (
+            fromIndex < 0 ||
+            fromIndex >= files.length ||
+            toIndex < 0 ||
+            toIndex >= files.length ||
+            fromIndex === toIndex
+          ) {
+            return state;
+          }
+          const result = [...files];
+          const [removed] = result.splice(fromIndex, 1);
+          result.splice(toIndex, 0, removed);
+          return { files: result };
+        });
       },
     }),
     {

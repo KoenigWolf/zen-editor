@@ -1,13 +1,12 @@
 import type { editor } from 'monaco-editor';
 
-/**
- * Monaco装飾コレクションを更新（作成または更新）
- */
 export const updateDecorationCollection = (
   ref: React.MutableRefObject<editor.IEditorDecorationsCollection | null>,
-  editorInstance: editor.IStandaloneCodeEditor,
+  editorInstance: editor.IStandaloneCodeEditor | null | undefined,
   decorations: editor.IModelDeltaDecoration[]
 ): void => {
+  if (!editorInstance) return;
+
   if (!ref.current) {
     ref.current = editorInstance.createDecorationsCollection(decorations);
   } else {

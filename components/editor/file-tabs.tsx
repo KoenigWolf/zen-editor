@@ -4,7 +4,7 @@ import { memo, useCallback, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFileStore, type FileData } from '@/lib/store/file-store';
 import { X } from 'lucide-react';
-import { cn, getFileIcon, getFileColor, reorderArray } from '@/lib/utils';
+import { cn, getFileIcon, getFileColor } from '@/lib/utils';
 
 interface FileTabItemProps {
   file: FileData;
@@ -99,6 +99,7 @@ export const FileTabs = memo(function FileTabs({ onTabContextMenu }: FileTabsPro
   const activeFileId = useFileStore((state) => state.activeFileId);
   const setActiveFileId = useFileStore((state) => state.setActiveFileId);
   const removeFile = useFileStore((state) => state.removeFile);
+  const reorderFiles = useFileStore((state) => state.reorderFiles);
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
 
@@ -185,15 +186,14 @@ export const FileTabs = memo(function FileTabs({ onTabContextMenu }: FileTabsPro
 
       if (!draggedId || !targetFileId || draggedId === targetFileId) return;
 
-      const { files: currentFiles } = useFileStore.getState();
-      const draggedIndex = currentFiles.findIndex((f) => f.id === draggedId);
-      const targetIndex = currentFiles.findIndex((f) => f.id === targetFileId);
+      const draggedIndex = files.findIndex((f) => f.id === draggedId);
+      const targetIndex = files.findIndex((f) => f.id === targetFileId);
 
       if (draggedIndex === -1 || targetIndex === -1) return;
 
-      useFileStore.setState({ files: reorderArray(currentFiles, draggedIndex, targetIndex) });
+      reorderFiles(draggedIndex, targetIndex);
     },
-    [draggedId, getFileIdFromEvent]
+    [draggedId, getFileIdFromEvent, files, reorderFiles]
   );
 
   const handleDragEnd = useCallback(() => {

@@ -64,9 +64,6 @@ const buildReplacementText = (
   }
 };
 
-/**
- * Monacoモデルでマッチを検索するヘルパー関数
- */
 const findMatchesInModel = (
   model: editor.ITextModel,
   searchString: string,

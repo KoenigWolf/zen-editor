@@ -1,4 +1,5 @@
 import { clamp } from '../data/math';
+import { isBrowser } from './ssr';
 
 export interface Size {
   width: number;
@@ -14,12 +15,6 @@ export interface ConstrainOptions {
   margin?: number;
 }
 
-/**
- * 位置をビューポート内に制限する
- * @param position 制限する位置
- * @param elementSize 要素のサイズ
- * @param options オプション（マージンなど）
- */
 export const constrainToViewport = (
   position: Position,
   elementSize: Size,
@@ -27,8 +22,11 @@ export const constrainToViewport = (
 ): Position => {
   const { margin = 0 } = options;
 
-  const maxX = Math.max(margin, window.innerWidth - elementSize.width - margin);
-  const maxY = Math.max(margin, window.innerHeight - elementSize.height - margin);
+  const viewportWidth = isBrowser ? window.innerWidth : 0;
+  const viewportHeight = isBrowser ? window.innerHeight : 0;
+
+  const maxX = Math.max(margin, viewportWidth - elementSize.width - margin);
+  const maxY = Math.max(margin, viewportHeight - elementSize.height - margin);
 
   return {
     x: clamp(position.x, margin, maxX),
