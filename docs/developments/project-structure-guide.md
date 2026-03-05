@@ -19,39 +19,66 @@
 ```
 <project-root>/
 ├── app/                      # Next.js App Router
+│   ├── styles/               # CSSモジュール
 │   ├── globals.css           # グローバルスタイル
 │   ├── layout.tsx            # ルートレイアウト
 │   ├── error.tsx             # エラーページ
 │   ├── global-error.tsx      # グローバルエラーページ
 │   ├── metadata.ts           # メタデータ設定
+│   ├── providers.tsx         # アプリケーションプロバイダー
 │   └── page.tsx              # メインページ
 ├── components/               # Reactコンポーネント
 │   ├── editor/               # エディター関連コンポーネント
 │   ├── settings/             # 設定関連コンポーネント
-│   ├── pwa/                  # PWA関連コンポーネント
-│   ├── ui/                   # 汎用UIコンポーネント（shadcn/ui）
-│   ├── ErrorBoundary.tsx     # エラー境界
-│   ├── LiveAnnouncer.tsx     # スクリーンリーダー通知
-│   └── ThemeProvider.tsx
-├── hooks/                    # カスタムフック
-│   ├── use-focus-trap.ts     # フォーカストラップ
-│   ├── use-web-vitals.ts     # Web Vitals計測
-│   └── ...
+│   ├── pwa/                  # PWAプロンプトコンポーネント
+│   ├── providers/            # コンテキストプロバイダー
+│   │   ├── theme-provider.tsx
+│   │   ├── pwa-provider.tsx
+│   │   └── index.ts
+│   ├── layout/               # レイアウトコンポーネント
+│   │   ├── language-sync.tsx
+│   │   ├── live-announcer.tsx
+│   │   ├── skip-link.tsx
+│   │   ├── web-vitals-reporter.tsx
+│   │   └── index.ts
+│   ├── seo/                  # SEOコンポーネント
+│   └── ui/                   # 汎用UIコンポーネント（shadcn/ui）
+├── hooks/                    # カスタムフック（ドメイン別）
+│   ├── core/                 # 基本フック
+│   │   ├── use-mounted.ts
+│   │   ├── use-global-keydown.ts
+│   │   ├── use-focus-trap.ts
+│   │   └── index.ts
+│   ├── editor/               # エディター固有フック
+│   │   ├── use-editor-actions.ts
+│   │   ├── use-monaco-theme.ts
+│   │   └── index.ts
+│   ├── ui/                   # UI操作フック
+│   │   ├── use-dialog-drag.ts
+│   │   ├── use-mouse-drag.ts
+│   │   └── index.ts
+│   ├── platform/             # プラットフォーム検出
+│   │   ├── use-mobile-detection.ts
+│   │   ├── use-pwa.ts
+│   │   └── index.ts
+│   └── index.ts              # バレルエクスポート
 ├── lib/                      # ユーティリティ・状態管理
 │   ├── i18n/                 # 国際化設定
 │   ├── store/                # Zustand状態管理
+│   │   ├── editor-settings-store.ts
+│   │   ├── file-store.ts
+│   │   ├── search-store.ts
+│   │   └── index.ts          # バレルエクスポート
 │   ├── themes/               # カスタムテーマ定義
 │   ├── types/                # 型定義
 │   └── utils.ts
 ├── __tests__/                # テストファイル
+│   ├── hooks/                # フックのテスト
 │   └── lib/                  # libのテスト
 ├── .github/
 │   └── workflows/            # GitHub Actions CI/CD
-│       └── ci.yml
 ├── docs/                     # ドキュメント
 ├── public/                   # 静的ファイル
-├── .eslintrc.json
-├── .prettierrc               # Prettier設定
 ├── vitest.config.ts          # Vitest設定
 ├── next.config.js
 ├── package.json
@@ -61,30 +88,36 @@
 
 ### ディレクトリの役割
 
-| ディレクトリ           | 役割                                        |
-| ---------------------- | ------------------------------------------- |
-| `app/`                 | Next.js App Router のルート・ページ         |
-| `components/editor/`   | エディター固有のコンポーネント              |
-| `components/settings/` | 設定画面のコンポーネント                    |
-| `components/pwa/`      | PWA 関連コンポーネント                      |
-| `components/ui/`       | 再利用可能な UI コンポーネント（shadcn/ui） |
-| `hooks/`               | カスタム React フック                       |
-| `lib/store/`           | Zustand による状態管理                      |
-| `lib/types/`           | TypeScript 型定義                           |
-| `lib/i18n/`            | 国際化・翻訳ファイル                        |
-| `__tests__/`           | テストファイル                              |
-| `.github/workflows/`   | GitHub Actions CI/CD                        |
-| `docs/`                | 開発ドキュメント                            |
+| ディレクトリ             | 役割                                        |
+| ------------------------ | ------------------------------------------- |
+| `app/`                   | Next.js App Router のルート・ページ         |
+| `components/editor/`     | エディター固有のコンポーネント              |
+| `components/settings/`   | 設定画面のコンポーネント                    |
+| `components/providers/`  | コンテキストプロバイダー（テーマ、PWA）     |
+| `components/layout/`     | レイアウトコンポーネント（通知、スキップリンク）|
+| `components/pwa/`        | PWA プロンプトコンポーネント                |
+| `components/ui/`         | 再利用可能な UI コンポーネント（shadcn/ui） |
+| `hooks/core/`            | 基本的な再利用可能フック                    |
+| `hooks/editor/`          | エディター固有のフック                      |
+| `hooks/ui/`              | UI操作フック（ドラッグ、スワイプ）          |
+| `hooks/platform/`        | プラットフォーム検出フック（PWA、モバイル） |
+| `lib/store/`             | Zustand による状態管理                      |
+| `lib/types/`             | TypeScript 型定義                           |
+| `lib/i18n/`              | 国際化・翻訳ファイル                        |
+| `__tests__/`             | テストファイル                              |
+| `.github/workflows/`     | GitHub Actions CI/CD                        |
+| `docs/`                  | 開発ドキュメント                            |
 
 ### ストア構成
 
 | ストア                               | 役割                                 | 永続化 |
 | ------------------------------------ | ------------------------------------ | ------ |
-| `lib/store.ts`                       | エディター設定（フォント、テーマ等） | ○      |
+| `lib/store/editor-settings-store.ts` | エディター設定（フォント、テーマ等） | ○      |
 | `lib/store/file-store.ts`            | ファイル管理（開いているファイル）   | ○      |
 | `lib/store/split-view-store.ts`      | 分割ビュー（ツリー構造）             | ×      |
 | `lib/store/search-store.ts`          | 検索機能（検索条件、マッチ結果）     | ×      |
 | `lib/store/editor-instance-store.ts` | Monaco Editor インスタンス           | ×      |
+| `lib/store/indent-store.ts`          | インデント設定                       | ×      |
 | `lib/store/announcer-store.ts`       | aria-live アナウンス                 | ×      |
 
 ---
@@ -198,7 +231,8 @@ npm run typecheck     # 型チェック
 - **ストア設計**: 関心事ごとに分離（設定、ファイル、検索など）
 - **永続化**: `persist` ミドルウェアでローカルストレージに保存
 - **セレクタ**: 必要なデータのみ取得し、不要な再レンダリングを防止
-- 実装例: `lib/store.ts`, `lib/store/file-store.ts`
+- **バレルエクスポート**: `lib/store/index.ts` から統一的にインポート
+- 実装例: `lib/store/editor-settings-store.ts`, `lib/store/file-store.ts`
 
 ### UI コンポーネント（shadcn/ui）
 
