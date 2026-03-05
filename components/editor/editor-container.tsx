@@ -28,6 +28,7 @@ import { useEditorActions } from '@/hooks/editor/use-editor-actions';
 import { useSwipeGesture } from '@/hooks/ui/use-swipe-gesture';
 import { useVirtualKeyboard } from '@/hooks/platform/use-virtual-keyboard';
 import { TabContextMenu } from '@/components/editor/tab-context-menu';
+import { getEventCoordinates } from '@/lib/utils';
 import type { CommandItem } from '@/components/editor/command-palette';
 import {
   Plus,
@@ -93,18 +94,7 @@ export const EditorContainer = memo(function EditorContainer() {
 
   const handleTabLongPress = useCallback(
     (fileId: string, fileName: string, event: React.TouchEvent | React.MouseEvent) => {
-      let x: number;
-      let y: number;
-
-      if ('touches' in event) {
-        const touch = event.touches[0] || event.changedTouches[0];
-        x = touch.clientX;
-        y = touch.clientY;
-      } else {
-        x = event.clientX;
-        y = event.clientY;
-      }
-
+      const { x, y } = getEventCoordinates(event);
       setContextMenu({ isOpen: true, position: { x, y }, fileId, fileName });
     },
     []

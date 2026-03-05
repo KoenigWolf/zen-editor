@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import { useGlobalKeydown } from '@/hooks/core/use-global-keydown';
+import { browserDocument } from '@/lib/utils';
 
 const FOCUSABLE_SELECTORS = [
   'button:not([disabled])',
@@ -17,8 +18,6 @@ interface UseFocusTrapOptions {
   initialFocusRef?: React.RefObject<HTMLElement>;
   returnFocusOnDeactivate?: boolean;
 }
-
-const browserDocument = typeof document === 'undefined' ? undefined : document;
 
 export const useFocusTrap = <T extends HTMLElement>(options: UseFocusTrapOptions = {}) => {
   const { enabled = true, initialFocusRef, returnFocusOnDeactivate = true } = options;
