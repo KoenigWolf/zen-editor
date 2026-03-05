@@ -101,7 +101,10 @@ const FileTabItem = memo(function FileTabItem({
       )}
     >
       <FileIcon
-        className={cn('h-3 w-3 flex-shrink-0', isActive ? fileColor : 'text-muted-foreground')}
+        className={cn(
+          'h-icon-xs w-icon-xs flex-shrink-0',
+          isActive ? fileColor : 'text-muted-foreground'
+        )}
       />
       <span className="truncate max-w-[150px] text-left text-xs font-medium">{file.name}</span>
       {file.isDirty && isActive && (
@@ -115,7 +118,7 @@ const FileTabItem = memo(function FileTabItem({
         className="mochi-tab-close"
         aria-label={closeLabel}
       >
-        <X className="h-3 w-3" />
+        <X className="h-icon-xs w-icon-xs" />
       </span>
     </button>
   );

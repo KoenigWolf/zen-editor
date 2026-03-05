@@ -79,7 +79,7 @@ export const SplitPane = memo(function SplitPane({ node, onRatioChange }: SplitP
               className="p-0.5 rounded hover:bg-muted/50 opacity-60 hover:opacity-100"
               title={t('split.closePane')}
             >
-              <X className="h-3 w-3 text-muted-foreground" />
+              <X className="h-icon-xs w-icon-xs text-muted-foreground" />
             </button>
           </div>
         )}

@@ -151,7 +151,10 @@ export function CommandPalette({ open, onOpenChange, commands }: CommandPaletteP
 
           {/* Header */}
           <div className="flex items-center gap-3 px-4 py-3 border-b">
-            <Command className="h-4 w-4 text-muted-foreground shrink-0" strokeWidth={1.5} />
+            <Command
+              className="h-icon-md w-icon-md text-muted-foreground shrink-0"
+              strokeWidth={1.5}
+            />
             <input
               ref={inputRef}
               type="text"
@@ -204,7 +207,7 @@ export function CommandPalette({ open, onOpenChange, commands }: CommandPaletteP
                             isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted'
                           )}
                         >
-                          <Icon className="h-4 w-4" strokeWidth={1.5} />
+                          <Icon className="h-icon-md w-icon-md" strokeWidth={1.5} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="text-sm font-medium truncate">{cmd.label}</div>
@@ -228,7 +231,7 @@ export function CommandPalette({ open, onOpenChange, commands }: CommandPaletteP
                         )}
                         {isSelected && (
                           <ArrowRight
-                            className="h-4 w-4 text-muted-foreground shrink-0"
+                            className="h-icon-md w-icon-md text-muted-foreground shrink-0"
                             strokeWidth={1.5}
                           />
                         )}

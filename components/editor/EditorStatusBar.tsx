@@ -40,7 +40,7 @@ export const EditorStatusBar = memo(function EditorStatusBar({
           title={`${t('commandPalette.actions.openSettings')} (⌘P)`}
           aria-label={t('accessibility.openCommandPalette')}
         >
-          <Sparkles className="h-3 w-3" strokeWidth={1.5} />
+          <Sparkles className="h-icon-xs w-icon-xs" strokeWidth={1.5} />
           <span className="truncate max-w-[180px] flex items-center gap-1.5 text-[11px]">
             {activeFile?.isDirty && (
               <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
@@ -52,12 +52,12 @@ export const EditorStatusBar = memo(function EditorStatusBar({
         <div className="h-3 w-px bg-border/30 mx-1" />
 
         <div className="mochi-statusbar-item gap-1">
-          <Code2 className="h-3 w-3 text-muted-foreground" strokeWidth={1.5} />
+          <Code2 className="h-icon-xs w-icon-xs text-muted-foreground" strokeWidth={1.5} />
           <span className="mochi-statusbar-badge">{statusInfo.language}</span>
         </div>
 
         <div className="mochi-statusbar-item gap-1">
-          <WrapText className="h-3 w-3 text-muted-foreground" strokeWidth={1.5} />
+          <WrapText className="h-icon-xs w-icon-xs text-muted-foreground" strokeWidth={1.5} />
           <span className="text-[10px]">{statusInfo.eol}</span>
         </div>
 
@@ -76,7 +76,7 @@ export const EditorStatusBar = memo(function EditorStatusBar({
         <div className="h-3 w-px bg-border/30 mx-1" />
 
         <div className="mochi-statusbar-item gap-1">
-          <FileText className="h-3 w-3 text-muted-foreground" strokeWidth={1.5} />
+          <FileText className="h-icon-xs w-icon-xs text-muted-foreground" strokeWidth={1.5} />
           <span className="text-[10px]">{statusInfo.lineCount}</span>
         </div>
 
@@ -91,9 +91,9 @@ export const EditorStatusBar = memo(function EditorStatusBar({
           {mounted && (
             <>
               {resolvedTheme === 'dark' ? (
-                <Moon className="h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
+                <Moon className="h-icon-xs w-icon-xs" strokeWidth={1.5} aria-hidden="true" />
               ) : (
-                <Sun className="h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
+                <Sun className="h-icon-xs w-icon-xs" strokeWidth={1.5} aria-hidden="true" />
               )}
             </>
           )}

@@ -295,7 +295,7 @@ export const TabContextMenu = memo(function TabContextMenu({
             >
               {Icon && (
                 <Icon
-                  className={`h-4 w-4 ${isDestructive ? 'text-red-500 dark:text-red-400' : 'text-muted-foreground'}`}
+                  className={`h-icon-md w-icon-md ${isDestructive ? 'text-red-500 dark:text-red-400' : 'text-muted-foreground'}`}
                 />
               )}
               <span className="text-sm flex-1">{item.label}</span>
