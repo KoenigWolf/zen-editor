@@ -4,7 +4,6 @@ import { useCallback, useRef, useState, useEffect, memo, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useIndentStore } from '@/lib/store/indent-store';
 import { useEditorStore } from '@/lib/store';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,116 +13,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { cn, clamp } from '@/lib/utils';
 import { useMouseDrag } from '@/hooks/ui/use-mouse-drag';
-
-const CM_TO_PX = 37.795275591;
-const RULER_HEIGHT = 18;
-const HANDLE_SIZE = 8;
-
-type DragType = 'firstLine' | 'hanging' | 'leftMargin' | 'rightMargin' | 'tabStop';
-
-interface IndentRulerProps {
-  className?: string;
-}
-
-type HandleVariant = 'firstLine' | 'hanging' | 'leftMargin' | 'rightMargin' | 'tabStop';
-
-interface IndentHandleProps {
-  variant: HandleVariant;
-  position: number;
-  onDragStart: (e: React.MouseEvent) => void;
-  onKeyDown: (e: React.KeyboardEvent) => void;
-  label: string;
-  value: number;
-  onRemove?: () => void;
-}
-
-const HANDLE_CONFIGS: Record<
-  HandleVariant,
-  {
-    className: string;
-    positionProp: 'left' | 'right';
-    svg: React.ReactNode;
-  }
-> = {
-  firstLine: {
-    className: 'indent-handle-first-line',
-    positionProp: 'left',
-    svg: (
-      <svg width={HANDLE_SIZE} height={HANDLE_SIZE} viewBox="0 0 10 10">
-        <polygon points="0,0 10,0 5,8" fill="currentColor" />
-      </svg>
-    ),
-  },
-  hanging: {
-    className: 'indent-handle-hanging',
-    positionProp: 'left',
-    svg: (
-      <svg width={HANDLE_SIZE} height={HANDLE_SIZE} viewBox="0 0 10 10">
-        <polygon points="0,10 10,10 5,2" fill="currentColor" />
-      </svg>
-    ),
-  },
-  leftMargin: {
-    className: 'indent-handle-left-margin',
-    positionProp: 'left',
-    svg: (
-      <svg width={HANDLE_SIZE} height={6} viewBox="0 0 10 6">
-        <rect x="0" y="0" width="10" height="6" fill="currentColor" />
-      </svg>
-    ),
-  },
-  rightMargin: {
-    className: 'indent-handle-right-margin',
-    positionProp: 'right',
-    svg: (
-      <svg width={HANDLE_SIZE} height={HANDLE_SIZE} viewBox="0 0 10 10">
-        <polygon points="0,10 10,10 5,2" fill="currentColor" />
-      </svg>
-    ),
-  },
-  tabStop: {
-    className: 'indent-handle-tab-stop',
-    positionProp: 'left',
-    svg: (
-      <svg width={6} height={10} viewBox="0 0 6 10">
-        <line x1="3" y1="0" x2="3" y2="10" stroke="currentColor" strokeWidth="2" />
-        <line x1="0" y1="10" x2="6" y2="10" stroke="currentColor" strokeWidth="2" />
-      </svg>
-    ),
-  },
-};
-
-const IndentHandle = memo(
-  ({ variant, position, onDragStart, onKeyDown, label, value, onRemove }: IndentHandleProps) => {
-    const config = HANDLE_CONFIGS[variant];
-
-    return (
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div
-            className={`indent-handle ${config.className}`}
-            style={{ [config.positionProp]: position }}
-            onMouseDown={onDragStart}
-            onKeyDown={onKeyDown}
-            onDoubleClick={onRemove}
-            role="slider"
-            aria-label={label}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={value}
-            tabIndex={0}
-          >
-            {config.svg}
-          </div>
-        </TooltipTrigger>
-        <TooltipContent side="bottom" className="text-xs">
-          {label}
-        </TooltipContent>
-      </Tooltip>
-    );
-  }
-);
-IndentHandle.displayName = 'IndentHandle';
+import { IndentHandle } from './indent-handle';
+import { CM_TO_PX, RULER_HEIGHT, HANDLE_SIZE, type DragType, type IndentRulerProps } from './types';
 
 export const IndentRuler = memo(({ className }: IndentRulerProps) => {
   const { t } = useTranslation();
@@ -348,7 +239,6 @@ export const IndentRuler = memo(({ className }: IndentRulerProps) => {
     [settings, maxCm, updateSettings, snapToGrid]
   );
 
-  // tick データを事前計算（位置とタイプのみ）
   const tickData = useMemo(() => {
     const data: Array<{ px: number; type: 'major' | 'half' | 'minor'; label?: number }> = [];
     const maxCm = rulerWidth / CM_TO_PX;
@@ -370,7 +260,6 @@ export const IndentRuler = memo(({ className }: IndentRulerProps) => {
     return data;
   }, [rulerWidth, lineNumberWidth]);
 
-  // tick 要素をメモ化してレンダリング
   const renderedTicks = useMemo(
     () =>
       tickData.map((tick, i) => {
