@@ -91,7 +91,7 @@ export function GeneralSettings({ settings, onSettingsChange }: GeneralSettingsP
           <p className="text-sm text-muted-foreground">{t('settings.general.pwa.description')}</p>
           {isInstalled ? (
             <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400">
-              <CheckCircle2 className="h-4 w-4" />
+              <CheckCircle2 className="h-icon-md w-icon-md" />
               <span>{t('settings.general.pwa.installed')}</span>
             </div>
           ) : canInstall ? (
@@ -104,7 +104,7 @@ export function GeneralSettings({ settings, onSettingsChange }: GeneralSettingsP
                 'text-sm font-medium'
               )}
             >
-              <Download className="h-4 w-4" />
+              <Download className="h-icon-md w-icon-md" />
               {needsManualInstall
                 ? t('settings.general.pwa.showInstructions')
                 : t('settings.general.pwa.installButton')}

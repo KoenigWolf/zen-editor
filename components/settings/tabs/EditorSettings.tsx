@@ -60,7 +60,7 @@ const SettingRow = ({
   return (
     <div className="flex items-center justify-between py-2 px-1 rounded hover:bg-muted/50 transition-colors">
       <div className="flex items-center gap-2">
-        <Icon className="h-4 w-4 text-muted-foreground" />
+        <Icon className="h-icon-md w-icon-md text-muted-foreground" />
         <Label className="text-sm cursor-pointer">{label}</Label>
       </div>
       <Switch checked={checked} onCheckedChange={onCheckedChange} />

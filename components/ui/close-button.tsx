@@ -45,7 +45,7 @@ export function CloseButton({
       aria-label={ariaLabel ?? t('common.close')}
       className={cn(
         'inline-flex items-center justify-center rounded-full',
-        'text-muted-foreground transition-all duration-150',
+        'text-muted-foreground transition-all',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
         'active:scale-95',
         sizeClasses[size],

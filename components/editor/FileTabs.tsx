@@ -3,43 +3,9 @@
 import { memo, useCallback, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFileStore, type FileData } from '@/lib/store/file-store';
-import { X, FileCode2, FileJson2, FileType2, FileText, Code2, Braces } from 'lucide-react';
+import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-const FILE_ICON_MAP: Record<string, React.ElementType> = {
-  json: FileJson2,
-  ts: Braces,
-  tsx: Braces,
-  js: Braces,
-  jsx: Braces,
-  html: Code2,
-  xml: Code2,
-  md: FileText,
-  txt: FileText,
-  css: FileType2,
-  scss: FileType2,
-  less: FileType2,
-};
-
-const FILE_COLOR_MAP: Record<string, string> = {
-  ts: 'text-blue-500',
-  tsx: 'text-blue-500',
-  js: 'text-yellow-500',
-  jsx: 'text-yellow-500',
-  json: 'text-green-500',
-  css: 'text-pink-500',
-  scss: 'text-pink-500',
-  html: 'text-orange-500',
-  md: 'text-purple-500',
-};
-
-const getFileExtension = (fileName: string): string =>
-  fileName.split('.').pop()?.toLowerCase() || '';
-
-const getFileIcon = (fileName: string) => FILE_ICON_MAP[getFileExtension(fileName)] || FileCode2;
-
-const getFileColor = (fileName: string): string =>
-  FILE_COLOR_MAP[getFileExtension(fileName)] || 'text-muted-foreground';
+import { getFileIcon, getFileColor } from '@/lib/file-types';
 
 interface FileTabItemProps {
   file: FileData;
@@ -101,7 +67,10 @@ const FileTabItem = memo(function FileTabItem({
       )}
     >
       <FileIcon
-        className={cn('h-3 w-3 flex-shrink-0', isActive ? fileColor : 'text-muted-foreground')}
+        className={cn(
+          'h-icon-xs w-icon-xs flex-shrink-0',
+          isActive ? fileColor : 'text-muted-foreground'
+        )}
       />
       <span className="truncate max-w-[150px] text-left text-xs font-medium">{file.name}</span>
       {file.isDirty && isActive && (
@@ -115,7 +84,7 @@ const FileTabItem = memo(function FileTabItem({
         className="mochi-tab-close"
         aria-label={closeLabel}
       >
-        <X className="h-3 w-3" />
+        <X className="h-icon-xs w-icon-xs" />
       </span>
     </button>
   );
@@ -134,13 +103,11 @@ export const FileTabs = memo(function FileTabs({ onTabContextMenu }: FileTabsPro
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
 
-  // data-file-id から id を取得するヘルパー
   const getFileIdFromEvent = useCallback((e: React.SyntheticEvent): string | null => {
     const target = e.currentTarget as HTMLElement;
     return target.dataset.fileId || null;
   }, []);
 
-  // 安定したコールバック（インライン関数を避けて memo を有効化）
   const handleSelect = useCallback(
     (e: React.MouseEvent) => {
       const fileId = getFileIdFromEvent(e);

@@ -64,7 +64,7 @@ const SettingRow = ({
   return (
     <div className="flex items-center justify-between py-2 px-1 rounded hover:bg-muted/50 transition-colors">
       <div className="flex items-center gap-2 flex-1">
-        <Icon className="h-4 w-4 text-muted-foreground shrink-0" />
+        <Icon className="h-icon-md w-icon-md text-muted-foreground shrink-0" />
         <div className="flex flex-col">
           <Label className="text-sm cursor-pointer">{label}</Label>
           {description && <span className="text-xs text-muted-foreground">{description}</span>}
@@ -94,7 +94,7 @@ export function FileSettings({ settings, onSettingsChange }: FileSettingsProps) 
               !settings.autoSave && 'opacity-50 pointer-events-none'
             )}
           >
-            <Timer className="h-4 w-4 text-muted-foreground shrink-0" />
+            <Timer className="h-icon-md w-icon-md text-muted-foreground shrink-0" />
             <Label className="text-sm text-muted-foreground shrink-0">
               {t('settings.file.autoSave.interval')}
             </Label>

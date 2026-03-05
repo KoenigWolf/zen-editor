@@ -64,7 +64,7 @@ const ToolbarButton = ({
           )}
         >
           <Icon
-            className="h-[14px] w-[14px] transition-transform duration-150 group-hover:scale-110 group-active:scale-95"
+            className="h-icon-sm w-icon-sm transition-transform group-hover:scale-110 group-active:scale-95"
             strokeWidth={1.5}
           />
         </button>
@@ -86,13 +86,25 @@ export function EditorToolbar({ onOpenSettings }: EditorToolbarProps) {
   const { setIsOpen: setSearchOpen, isOpen: searchOpen } = useSearchStore();
   const { reset, splitActive } = useSplitViewStore();
   const isSplit = useIsSplit();
-  const activeFile = useFileStore((state) => state.files.find((f) => f.id === state.activeFileId));
-  const addFile = useFileStore((state) => state.addFile);
   const rulerVisible = useIndentStore((state) => state.rulerVisible);
   const setRulerVisible = useIndentStore((state) => state.setRulerVisible);
   const { isMobile, mounted } = useMobileDetection();
   const { handleNewFile, handleSave, handleOpen } = useFileOperations({ showToast: false });
   const { handleUndo, handleRedo, handleIndent, handleOutdent } = useEditorActions();
+
+  const handleSplit = (direction: 'vertical' | 'horizontal') => {
+    const state = useFileStore.getState();
+    const activeFile = state.files.find((f) => f.id === state.activeFileId);
+
+    const sourceFile = activeFile || { name: 'untitled.txt', content: '' };
+    const newFileId = state.addFile({
+      name: `${sourceFile.name} (copy)`,
+      content: sourceFile.content,
+      path: '',
+      lastModified: Date.now(),
+    });
+    splitActive(direction, newFileId);
+  };
 
   const showMobileUI = mounted && isMobile;
 
@@ -119,7 +131,7 @@ export function EditorToolbar({ onOpenSettings }: EditorToolbarProps) {
               className="mochi-toolbar-btn group"
             >
               <Settings
-                className="h-[14px] w-[14px] transition-all duration-200 group-hover:rotate-45"
+                className="h-icon-sm w-icon-sm transition-all duration-200 group-hover:rotate-45"
                 strokeWidth={1.5}
               />
             </button>
@@ -209,30 +221,12 @@ export function EditorToolbar({ onOpenSettings }: EditorToolbarProps) {
             icon={Columns2}
             label={t('toolbar.splitVertical')}
             shortcut="⌘\\"
-            onClick={() => {
-              if (!activeFile) return;
-              const newFileId = addFile({
-                name: `${activeFile.name} (copy)`,
-                content: activeFile.content,
-                path: '',
-                lastModified: Date.now(),
-              });
-              splitActive('vertical', newFileId);
-            }}
+            onClick={() => handleSplit('vertical')}
           />
           <ToolbarButton
             icon={Rows2}
             label={t('toolbar.splitHorizontal')}
-            onClick={() => {
-              if (!activeFile) return;
-              const newFileId = addFile({
-                name: `${activeFile.name} (copy)`,
-                content: activeFile.content,
-                path: '',
-                lastModified: Date.now(),
-              });
-              splitActive('horizontal', newFileId);
-            }}
+            onClick={() => handleSplit('horizontal')}
           />
           {isSplit && <ToolbarButton icon={X} label={t('toolbar.closeSplit')} onClick={reset} />}
         </div>

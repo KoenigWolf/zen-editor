@@ -40,8 +40,8 @@ export const EditorStatusBar = memo(function EditorStatusBar({
           title={`${t('commandPalette.actions.openSettings')} (⌘P)`}
           aria-label={t('accessibility.openCommandPalette')}
         >
-          <Sparkles className="h-3 w-3" strokeWidth={1.5} />
-          <span className="truncate max-w-[180px] flex items-center gap-1.5 text-[11px]">
+          <Sparkles className="h-icon-xs w-icon-xs" strokeWidth={1.5} />
+          <span className="truncate max-w-[180px] flex items-center gap-1.5 text-xs">
             {activeFile?.isDirty && (
               <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             )}
@@ -52,22 +52,22 @@ export const EditorStatusBar = memo(function EditorStatusBar({
         <div className="h-3 w-px bg-border/30 mx-1" />
 
         <div className="mochi-statusbar-item gap-1">
-          <Code2 className="h-3 w-3 text-muted-foreground" strokeWidth={1.5} />
+          <Code2 className="h-icon-xs w-icon-xs text-muted-foreground" strokeWidth={1.5} />
           <span className="mochi-statusbar-badge">{statusInfo.language}</span>
         </div>
 
         <div className="mochi-statusbar-item gap-1">
-          <WrapText className="h-3 w-3 text-muted-foreground" strokeWidth={1.5} />
-          <span className="text-[10px]">{statusInfo.eol}</span>
+          <WrapText className="h-icon-xs w-icon-xs text-muted-foreground" strokeWidth={1.5} />
+          <span className="text-xs">{statusInfo.eol}</span>
         </div>
 
         <div className="mochi-statusbar-item">
-          <span className="text-muted-foreground text-[10px]">{t('status.encoding')}</span>
+          <span className="text-muted-foreground text-xs">{t('status.encoding')}</span>
         </div>
       </div>
 
       <div className="flex items-center gap-1">
-        <div className="mochi-statusbar-item gap-0.5 text-[11px] font-mono">
+        <div className="mochi-statusbar-item gap-0.5 text-xs font-mono">
           <span className="text-foreground">{statusInfo.cursorLine}</span>
           <span className="text-muted-foreground">:</span>
           <span className="text-foreground">{statusInfo.cursorColumn}</span>
@@ -76,8 +76,8 @@ export const EditorStatusBar = memo(function EditorStatusBar({
         <div className="h-3 w-px bg-border/30 mx-1" />
 
         <div className="mochi-statusbar-item gap-1">
-          <FileText className="h-3 w-3 text-muted-foreground" strokeWidth={1.5} />
-          <span className="text-[10px]">{statusInfo.lineCount}</span>
+          <FileText className="h-icon-xs w-icon-xs text-muted-foreground" strokeWidth={1.5} />
+          <span className="text-xs">{statusInfo.lineCount}</span>
         </div>
 
         <div className="h-3 w-px bg-border/30 mx-1" />
@@ -91,9 +91,9 @@ export const EditorStatusBar = memo(function EditorStatusBar({
           {mounted && (
             <>
               {resolvedTheme === 'dark' ? (
-                <Moon className="h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
+                <Moon className="h-icon-xs w-icon-xs" strokeWidth={1.5} aria-hidden="true" />
               ) : (
-                <Sun className="h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
+                <Sun className="h-icon-xs w-icon-xs" strokeWidth={1.5} aria-hidden="true" />
               )}
             </>
           )}

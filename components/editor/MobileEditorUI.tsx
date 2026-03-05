@@ -73,7 +73,7 @@ export const MobileTopBar = memo(function MobileTopBar({
         className="mochi-mobile-icon-btn"
         aria-label={t('toolbar.settings')}
       >
-        <Settings className="h-[18px] w-[18px]" strokeWidth={1.5} />
+        <Settings className="h-icon-lg w-icon-lg" strokeWidth={1.5} />
       </button>
 
       <button type="button" onClick={onOpenCommandPalette} className="mochi-mobile-title">
@@ -89,7 +89,7 @@ export const MobileTopBar = memo(function MobileTopBar({
         className="mochi-mobile-icon-btn"
         aria-label={t('toolbar.fullscreen')}
       >
-        <Maximize2 className="h-[18px] w-[18px]" strokeWidth={1.5} />
+        <Maximize2 className="h-icon-lg w-icon-lg" strokeWidth={1.5} />
       </button>
     </div>
   );
@@ -214,7 +214,7 @@ export const MobileStatusBar = memo(function MobileStatusBar({
           aria-expanded={showQuickActions}
         >
           <ChevronUp
-            className={`h-4 w-4 transition-transform ${showQuickActions ? 'rotate-180' : ''}`}
+            className={`h-icon-md w-icon-md transition-transform ${showQuickActions ? 'rotate-180' : ''}`}
             aria-hidden="true"
           />
         </button>
@@ -226,9 +226,9 @@ export const MobileStatusBar = memo(function MobileStatusBar({
         >
           {mounted &&
             (resolvedTheme === 'dark' ? (
-              <Moon className="h-4 w-4" aria-hidden="true" />
+              <Moon className="h-icon-md w-icon-md" aria-hidden="true" />
             ) : (
-              <Sun className="h-4 w-4" aria-hidden="true" />
+              <Sun className="h-icon-md w-icon-md" aria-hidden="true" />
             ))}
         </button>
       </div>
@@ -267,7 +267,7 @@ export const MobileFocusExitButton = memo(function MobileFocusExitButton({
 
   return (
     <button type="button" onClick={onExit} className="mochi-focus-exit-hint show">
-      <Minimize2 className="h-4 w-4" />
+      <Minimize2 className="h-icon-md w-icon-md" />
       <span>{t('toolbar.exitFocus')}</span>
     </button>
   );
