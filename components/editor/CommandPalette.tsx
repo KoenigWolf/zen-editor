@@ -165,7 +165,7 @@ export function CommandPalette({ open, onOpenChange, commands }: CommandPaletteP
               autoComplete="off"
               spellCheck={false}
             />
-            <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] text-muted-foreground">
+            <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs text-muted-foreground">
               ESC
             </kbd>
           </div>
@@ -222,7 +222,7 @@ export function CommandPalette({ open, onOpenChange, commands }: CommandPaletteP
                             {cmd.shortcut.split('+').map((key, i) => (
                               <kbd
                                 key={i}
-                                className="h-5 min-w-[20px] inline-flex items-center justify-center rounded border bg-muted px-1.5 font-mono text-[10px] text-muted-foreground"
+                                className="h-5 min-w-[20px] inline-flex items-center justify-center rounded border bg-muted px-1.5 font-mono text-xs text-muted-foreground"
                               >
                                 {key}
                               </kbd>
@@ -247,12 +247,12 @@ export function CommandPalette({ open, onOpenChange, commands }: CommandPaletteP
           <div className="flex items-center justify-between px-4 py-2 border-t bg-muted/30 text-xs text-muted-foreground">
             <div className="hidden sm:flex items-center gap-4">
               <span className="flex items-center gap-1">
-                <kbd className="px-1 py-0.5 rounded bg-background border text-[10px]">↑</kbd>
-                <kbd className="px-1 py-0.5 rounded bg-background border text-[10px]">↓</kbd>
+                <kbd className="px-1 py-0.5 rounded bg-background border text-xs">↑</kbd>
+                <kbd className="px-1 py-0.5 rounded bg-background border text-xs">↓</kbd>
                 {t('commandPalette.navigate')}
               </span>
               <span className="flex items-center gap-1">
-                <kbd className="px-1 py-0.5 rounded bg-background border text-[10px]">↵</kbd>
+                <kbd className="px-1 py-0.5 rounded bg-background border text-xs">↵</kbd>
                 {t('commandPalette.select')}
               </span>
             </div>

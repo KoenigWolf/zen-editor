@@ -47,7 +47,7 @@ const SearchResultItem = memo(
     <button
       type="button"
       className={cn(
-        'w-full text-left text-[13px] px-2.5 py-2 rounded-md transition-all',
+        'w-full text-left text-sm px-2.5 py-2 rounded-md transition-all',
         'hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
         isActive && 'bg-accent text-accent-foreground'
       )}
@@ -546,7 +546,7 @@ export const SearchDialog = memo(
                 type="button"
                 onClick={() => setShowReplace((prev) => !prev)}
                 className={cn(
-                  'text-[13px] px-2.5 py-1.5 rounded-md transition-all',
+                  'text-sm px-2.5 py-1.5 rounded-md transition-all',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                   showReplace
                     ? 'bg-primary/10 text-primary font-medium'
@@ -556,9 +556,7 @@ export const SearchDialog = memo(
                 {showReplace ? t('search.hideReplace') : t('search.showReplace')}
               </button>
               {query && matches.length === 0 && (
-                <span className="text-[13px] text-muted-foreground">
-                  {t('search.results.empty')}
-                </span>
+                <span className="text-sm text-muted-foreground">{t('search.results.empty')}</span>
               )}
             </div>
 
@@ -611,7 +609,7 @@ export const SearchDialog = memo(
                 type="button"
                 onClick={() => setShowResults((prev) => !prev)}
                 className={cn(
-                  'flex items-center justify-between w-full px-3 py-2.5 text-[13px] text-muted-foreground',
+                  'flex items-center justify-between w-full px-3 py-2.5 text-sm text-muted-foreground',
                   'hover:bg-muted/50 transition-colors',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset'
                 )}

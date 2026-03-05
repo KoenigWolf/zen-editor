@@ -254,7 +254,7 @@ export const TabContextMenu = memo(function TabContextMenu({
         aria-label={t('tabMenu.close')}
       >
         <div className="px-3 py-2 border-b border-border/60">
-          <div className="text-[10px] uppercase tracking-wide text-muted-foreground">
+          <div className="text-xs uppercase tracking-wide text-muted-foreground">
             {t('tabMenu.target')}
           </div>
           <div className="text-xs font-medium text-foreground truncate" title={fileName}>
@@ -298,7 +298,7 @@ export const TabContextMenu = memo(function TabContextMenu({
               )}
               <span className="text-sm flex-1">{item.label}</span>
               {'shortcut' in item && item.shortcut && (
-                <span className="text-[10px] text-muted-foreground ml-2">{item.shortcut}</span>
+                <span className="text-xs text-muted-foreground ml-2">{item.shortcut}</span>
               )}
             </button>
           );
