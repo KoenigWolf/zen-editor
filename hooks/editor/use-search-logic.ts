@@ -6,7 +6,13 @@ import { useTranslation } from 'react-i18next';
 import { useToast } from '@/components/ui/use-toast';
 import { useEditorInstanceStore } from '@/lib/store/editor-instance-store';
 import { useSearchStore, type SearchMatch } from '@/lib/store/search-store';
-import { validateSearchQuery, escapeRegExp } from '@/lib/utils';
+import {
+  validateSearchQuery,
+  escapeRegExp,
+  wrapIndex,
+  getNextIndex,
+  updateDecorationCollection,
+} from '@/lib/utils';
 import { useAnnouncerStore } from '@/lib/store/announcer-store';
 
 export interface SearchOptions {
@@ -118,11 +124,7 @@ export const useSearchLogic = (
         },
       }));
 
-      if (!decorationsCollectionRef.current) {
-        decorationsCollectionRef.current = editorInstance.createDecorationsCollection(decorations);
-      } else {
-        decorationsCollectionRef.current.set(decorations);
-      }
+      updateDecorationCollection(decorationsCollectionRef, editorInstance, decorations);
     },
     [getEditorInstance]
   );
@@ -141,7 +143,7 @@ export const useSearchLogic = (
       const list = targetMatches || matches;
       if (list.length === 0) return;
 
-      const safeIndex = ((index % list.length) + list.length) % list.length;
+      const safeIndex = wrapIndex(index, list.length);
       const match = list[safeIndex];
 
       editor.setSelection({
@@ -257,7 +259,7 @@ export const useSearchLogic = (
         performSearch(query, true);
         return;
       }
-      goToMatch((currentMatchIndex + 1) % matches.length);
+      goToMatch(currentMatchIndex + 1);
     },
     [currentMatchIndex, goToMatch, matches.length, performSearch]
   );
@@ -268,7 +270,7 @@ export const useSearchLogic = (
         performSearch(query, true);
         return;
       }
-      goToMatch(currentMatchIndex <= 0 ? matches.length - 1 : currentMatchIndex - 1);
+      goToMatch(currentMatchIndex - 1);
     },
     [currentMatchIndex, goToMatch, matches.length, performSearch]
   );

@@ -5,6 +5,7 @@ import type { editor } from 'monaco-editor';
 import { useTranslation } from 'react-i18next';
 import { useEditorStore } from '@/lib/store';
 import { shouldHighlightFullWidthSpace } from '@/lib/config';
+import { updateDecorationCollection, clearDecorationCollection } from '@/lib/utils';
 
 type Monaco = typeof import('monaco-editor');
 
@@ -76,11 +77,7 @@ export const useFullWidthSpace = ({ editorRef, monacoRef }: UseFullWidthSpaceOpt
         });
       }
 
-      if (!decorationsRef.current) {
-        decorationsRef.current = ed.createDecorationsCollection(decorations);
-      } else {
-        decorationsRef.current.set(decorations);
-      }
+      updateDecorationCollection(decorationsRef, ed, decorations);
     } catch {
       // エディタがdisposeされた場合は無視
     }
@@ -106,10 +103,7 @@ export const useFullWidthSpace = ({ editorRef, monacoRef }: UseFullWidthSpaceOpt
       clearTimeout(debounceRef.current);
       debounceRef.current = null;
     }
-    if (decorationsRef.current) {
-      decorationsRef.current.clear();
-      decorationsRef.current = null;
-    }
+    clearDecorationCollection(decorationsRef);
   }, []);
 
   return {
