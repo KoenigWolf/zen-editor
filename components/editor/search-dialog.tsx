@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useSearchStore, type SearchMatch } from '@/lib/store/search-store';
 import { cn } from '@/lib/utils';
-import { safeLocalStorageGet, safeLocalStorageSet } from '@/lib/storage-utils';
+import { safeLocalStorageGet, safeLocalStorageSet } from '@/lib/utils';
 import { useFocusTrap } from '@/hooks/core/use-focus-trap';
 import { useSearchLogic, type SearchOptions } from '@/hooks/editor/use-search-logic';
 import { useDialogDrag } from '@/hooks/ui/use-dialog-drag';

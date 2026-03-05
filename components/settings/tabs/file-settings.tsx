@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { FileCode, CornerDownLeft, Save, HardDrive, Clock, Timer } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { EditorSettings } from '@/lib/types/editor';
-import { SettingsSection } from '@/components/settings/SettingsSection';
+import { SettingsSection } from '@/components/settings/settings-section';
 
 const ENCODING_VALUES = ['utf-8', 'utf-8-bom', 'shift-jis', 'euc-jp'] as const;
 const LINE_ENDING_VALUES = ['lf', 'crlf', 'cr'] as const;

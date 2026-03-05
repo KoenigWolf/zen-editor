@@ -6,7 +6,7 @@ import {
   PWAInstallPrompt,
   OfflineIndicator,
   UpdateNotification,
-} from '@/components/pwa/PWAInstallPrompt';
+} from '@/components/pwa/pwa-install-prompt';
 
 export function PWAProvider({ children }: { children: ReactNode }) {
   const pwa = usePWAManager();

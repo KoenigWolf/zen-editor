@@ -28,7 +28,7 @@ import { useFileOperations } from '@/hooks/editor/use-file-operations';
 import { useEditorActions } from '@/hooks/editor/use-editor-actions';
 
 const SearchDialog = dynamic(
-  () => import('@/components/editor/SearchDialog').then((mod) => ({ default: mod.SearchDialog })),
+  () => import('@/components/editor/search-dialog').then((mod) => ({ default: mod.SearchDialog })),
   { ssr: false }
 );
 

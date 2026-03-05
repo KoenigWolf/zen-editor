@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useFileStore, type FileData } from '@/lib/store/file-store';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getFileIcon, getFileColor } from '@/lib/file-types';
+import { getFileIcon, getFileColor } from '@/lib/utils';
 
 interface FileTabItemProps {
   file: FileData;

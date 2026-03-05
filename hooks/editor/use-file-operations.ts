@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 import { useFileStore } from '@/lib/store/file-store';
-import { validateFile, FILE_SECURITY } from '@/lib/security';
+import { validateFile, FILE_SECURITY } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
 

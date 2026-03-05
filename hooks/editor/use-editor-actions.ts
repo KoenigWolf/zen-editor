@@ -3,7 +3,7 @@
 import { useCallback } from 'react';
 import { useEditorInstanceStore } from '@/lib/store/editor-instance-store';
 import { useIndentStore } from '@/lib/store/indent-store';
-import { indentLines, outdentLines } from '@/lib/indent-utils';
+import { indentLines, outdentLines } from '@/lib/utils';
 
 export const useEditorActions = () => {
   const getEditorInstance = useEditorInstanceStore((state) => state.getEditorInstance);

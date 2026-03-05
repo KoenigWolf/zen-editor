@@ -5,7 +5,7 @@ import { Palette, Sun, Moon, Laptop, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { EditorSettings } from '@/lib/types/editor';
 import { getLightThemes, getDarkThemes, type EditorTheme } from '@/lib/themes';
-import { SettingsSection } from '@/components/settings/SettingsSection';
+import { SettingsSection } from '@/components/settings/settings-section';
 
 interface ThemeSettingsProps {
   settings: EditorSettings;

@@ -21,7 +21,7 @@ import {
 import { cn } from '@/lib/utils';
 import { usePWA } from '@/hooks/platform/use-pwa';
 import { useMounted } from '@/hooks/core/use-mounted';
-import { safeLocalStorageGet, safeLocalStorageSet } from '@/lib/storage-utils';
+import { safeLocalStorageGet, safeLocalStorageSet } from '@/lib/utils';
 
 declare global {
   interface Navigator {

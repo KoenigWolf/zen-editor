@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { BREAKPOINTS, DEBOUNCE } from '@/lib/constants/breakpoints';
+import { BREAKPOINTS, DEBOUNCE } from '@/lib/config';
 import { useMounted } from '@/hooks/core/use-mounted';
 
 interface MobileDetectionOptions {

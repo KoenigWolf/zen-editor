@@ -8,7 +8,7 @@ import { X } from 'lucide-react';
 import { useMouseDrag } from '@/hooks/ui/use-mouse-drag';
 
 const MonacoEditor = dynamic(
-  () => import('@/components/editor/MonacoEditor').then((mod) => ({ default: mod.MonacoEditor })),
+  () => import('@/components/editor/monaco-editor').then((mod) => ({ default: mod.MonacoEditor })),
   {
     ssr: false,
     loading: () => (

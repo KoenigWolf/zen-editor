@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Globe, Download, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { EditorSettings } from '@/lib/types/editor';
-import { SettingsSection } from '@/components/settings/SettingsSection';
+import { SettingsSection } from '@/components/settings/settings-section';
 import { usePWA } from '@/hooks/platform/use-pwa';
 
 interface GeneralSettingsProps {

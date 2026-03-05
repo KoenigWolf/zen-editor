@@ -6,7 +6,7 @@ import {
   escapeRegExp,
   sanitizeText,
   isValidUrl,
-} from '@/lib/security';
+} from '@/lib/utils';
 
 describe('FILE_SECURITY', () => {
   it('should have correct max file size (10MB)', () => {

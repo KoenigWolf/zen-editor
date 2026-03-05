@@ -63,15 +63,25 @@
 │   │   └── index.ts
 │   └── index.ts              # バレルエクスポート
 ├── lib/                      # ユーティリティ・状態管理
-│   ├── i18n/                 # 国際化設定
+│   ├── config/               # 設定・定数
+│   │   ├── breakpoints.ts    # ブレークポイント定義
+│   │   ├── editor.ts         # エディタオプション
+│   │   └── index.ts
+│   ├── utils/                # ユーティリティ関数
+│   │   ├── cn.ts             # クラス名結合
+│   │   ├── storage.ts        # localStorage
+│   │   ├── security.ts       # バリデーション
+│   │   ├── indent.ts         # インデント操作
+│   │   ├── file-types.ts     # ファイルタイプ
+│   │   └── index.ts
 │   ├── store/                # Zustand状態管理
 │   │   ├── editor-settings-store.ts
 │   │   ├── file-store.ts
 │   │   ├── search-store.ts
-│   │   └── index.ts          # バレルエクスポート
+│   │   └── index.ts
+│   ├── i18n/                 # 国際化設定
 │   ├── themes/               # カスタムテーマ定義
-│   ├── types/                # 型定義
-│   └── utils.ts
+│   └── types/                # 型定義
 ├── __tests__/                # テストファイル
 │   ├── hooks/                # フックのテスト
 │   └── lib/                  # libのテスト

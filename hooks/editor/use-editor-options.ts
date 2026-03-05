@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import type { editor } from 'monaco-editor';
 import { useEditorStore } from '@/lib/store';
-import { DEFAULT_EDITOR_OPTIONS } from '@/lib/editor/constants';
+import { DEFAULT_EDITOR_OPTIONS } from '@/lib/config';
 
 /**
  * エディタオプションを生成するフック

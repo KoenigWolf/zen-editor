@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useToast } from '@/components/ui/use-toast';
 import { useEditorInstanceStore } from '@/lib/store/editor-instance-store';
 import { useSearchStore, type SearchMatch } from '@/lib/store/search-store';
-import { validateSearchQuery, escapeRegExp } from '@/lib/security';
+import { validateSearchQuery, escapeRegExp } from '@/lib/utils';
 import { useAnnouncerStore } from '@/lib/store/announcer-store';
 
 export interface SearchOptions {

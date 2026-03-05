@@ -2,10 +2,10 @@
 
 import { memo, useCallback, useRef, useState, useEffect, useMemo } from 'react';
 import dynamic from 'next/dynamic';
-import { EditorToolbar } from '@/components/editor/EditorToolbar';
-import { IndentRuler } from '@/components/editor/IndentRuler';
-import { SplitPane } from '@/components/editor/SplitPane';
-import { EditorStatusBar } from '@/components/editor/EditorStatusBar';
+import { EditorToolbar } from '@/components/editor/editor-toolbar';
+import { IndentRuler } from '@/components/editor/indent-ruler';
+import { SplitPane } from '@/components/editor/split-pane';
+import { EditorStatusBar } from '@/components/editor/editor-status-bar';
 import {
   MobileTopBar,
   MobileTabsBar,
@@ -13,22 +13,22 @@ import {
   MobileStatusBar,
   MobileFocusModeIndicator,
   MobileFocusExitButton,
-} from '@/components/editor/MobileEditorUI';
+} from '@/components/editor/mobile-editor-ui';
 import { useFileStore } from '@/lib/store/file-store';
 import { useEditorInstanceStore } from '@/lib/store/editor-instance-store';
 import { useSplitViewStore, useIsSplit } from '@/lib/store/split-view-store';
 import { useSearchStore } from '@/lib/store/search-store';
 import { useIndentStore } from '@/lib/store/indent-store';
 import { useTheme } from 'next-themes';
-import { FileTabs } from '@/components/editor/FileTabs';
+import { FileTabs } from '@/components/editor/file-tabs';
 import { useTranslation } from 'react-i18next';
 import { useKeyboardShortcuts } from '@/hooks/editor/use-keyboard-shortcuts';
 import { useMobileDetection } from '@/hooks/platform/use-mobile-detection';
 import { useEditorActions } from '@/hooks/editor/use-editor-actions';
 import { useSwipeGesture } from '@/hooks/ui/use-swipe-gesture';
 import { useVirtualKeyboard } from '@/hooks/platform/use-virtual-keyboard';
-import { TabContextMenu } from '@/components/editor/TabContextMenu';
-import type { CommandItem } from '@/components/editor/CommandPalette';
+import { TabContextMenu } from '@/components/editor/tab-context-menu';
+import type { CommandItem } from '@/components/editor/command-palette';
 import {
   Plus,
   Download,
@@ -47,13 +47,15 @@ import {
 
 const CommandPalette = dynamic(
   () =>
-    import('@/components/editor/CommandPalette').then((mod) => ({ default: mod.CommandPalette })),
+    import('@/components/editor/command-palette').then((mod) => ({ default: mod.CommandPalette })),
   { ssr: false }
 );
 
 const SettingsDialog = dynamic(
   () =>
-    import('@/components/settings/SettingsDialog').then((mod) => ({ default: mod.SettingsDialog })),
+    import('@/components/settings/settings-dialog').then((mod) => ({
+      default: mod.SettingsDialog,
+    })),
   { ssr: false }
 );
 

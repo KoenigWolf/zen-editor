@@ -4,7 +4,7 @@ import { useCallback, useRef } from 'react';
 import type { editor } from 'monaco-editor';
 import { useTranslation } from 'react-i18next';
 import { useEditorStore } from '@/lib/store';
-import { shouldHighlightFullWidthSpace } from '@/lib/editor/constants';
+import { shouldHighlightFullWidthSpace } from '@/lib/config';
 
 type Monaco = typeof import('monaco-editor');
 

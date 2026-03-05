@@ -333,7 +333,7 @@ const handleOpen = useCallback(async () => {
 ```typescript
 // __tests__/components/FileTabs.test.tsx
 import { render, screen, fireEvent } from '@testing-library/react';
-import { FileTabs } from '@/components/editor/FileTabs';
+import { FileTabs } from '@/components/editor/file-tabs';
 
 describe('FileTabs', () => {
   it('アクティブタブが正しくハイライトされる', () => {

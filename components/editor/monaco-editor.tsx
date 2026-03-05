@@ -8,7 +8,7 @@ import { useFileStore } from '@/lib/store/file-store';
 import { useEditorInstanceStore } from '@/lib/store/editor-instance-store';
 import { useSearchStore } from '@/lib/store/search-store';
 import type { editor } from 'monaco-editor';
-import { getLanguageFromFilename, getEolLabel } from '@/lib/editor/constants';
+import { getLanguageFromFilename, getEolLabel } from '@/lib/config';
 import { useEditorOptions } from '@/hooks/editor/use-editor-options';
 import { useMonacoTheme } from '@/hooks/editor/use-monaco-theme';
 import { useFullWidthSpace } from '@/hooks/editor/use-fullwidth-space';

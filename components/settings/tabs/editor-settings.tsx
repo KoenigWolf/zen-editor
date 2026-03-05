@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/select';
 import { Type, Monitor, Hash, Ruler, WrapText, Space } from 'lucide-react';
 import type { EditorSettings as EditorSettingsType } from '@/lib/types/editor';
-import { SettingsSection } from '@/components/settings/SettingsSection';
+import { SettingsSection } from '@/components/settings/settings-section';
 
 const FONT_FAMILIES = [
   { value: 'monospace', labelKey: 'settings.editor.font.system' },
