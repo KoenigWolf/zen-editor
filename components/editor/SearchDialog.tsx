@@ -47,13 +47,13 @@ const SearchResultItem = memo(
     <button
       type="button"
       className={cn(
-        'w-full text-left text-xs px-2 py-1.5 rounded transition-colors',
-        'hover:bg-muted/50 focus:bg-muted/50 focus:outline-none',
+        'w-full text-left text-[13px] px-2.5 py-2 rounded-md transition-all',
+        'hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
         isActive && 'bg-accent text-accent-foreground'
       )}
       onClick={onClick}
     >
-      <span className="font-mono text-muted-foreground mr-2">L{match.lineNumber}</span>
+      <span className="font-mono text-muted-foreground mr-2 tabular-nums">L{match.lineNumber}</span>
       <span className="truncate">
         {match.text.substring(0, 60)}
         {match.text.length > 60 ? '…' : ''}
@@ -81,12 +81,16 @@ const OptionButton = memo(
       type="button"
       onClick={onClick}
       aria-label={`${label}${shortcut ? ` (${shortcut})` : ''}`}
+      aria-pressed={active}
       className={cn(
-        'h-6 w-6 rounded flex items-center justify-center transition-colors',
-        active ? 'bg-primary/15 text-primary' : 'text-muted-foreground hover:bg-muted'
+        'h-8 w-8 rounded-md flex items-center justify-center transition-all',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
+        active
+          ? 'bg-primary/15 text-primary shadow-sm'
+          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
       )}
     >
-      <Icon className="h-3.5 w-3.5" strokeWidth={1.5} />
+      <Icon className="h-icon-md w-icon-md" strokeWidth={1.5} />
     </button>
   )
 );
@@ -162,8 +166,11 @@ export const SearchDialog = memo(
     }, [open, isMobile]);
 
     useEffect(() => {
-      if (open && searchTerm && searchTerm !== query) {
-        setQuery(searchTerm);
+      if (open && searchTerm) {
+        if (searchTerm !== query) {
+          setQuery(searchTerm);
+        }
+        performSearch(searchTerm, true);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open, searchTerm]);
@@ -314,21 +321,18 @@ export const SearchDialog = memo(
         if (e.altKey && e.key === 'c') {
           e.preventDefault();
           setIsCaseSensitive(!isCaseSensitive);
-          performSearch(query, true);
           return;
         }
 
         if (e.altKey && e.key === 'r') {
           e.preventDefault();
           setIsRegex(!isRegex);
-          performSearch(query, true);
           return;
         }
 
         if (e.altKey && e.key === 'w') {
           e.preventDefault();
           setIsWholeWord(!isWholeWord);
-          performSearch(query, true);
           return;
         }
       },
@@ -347,9 +351,7 @@ export const SearchDialog = memo(
         setIsCaseSensitive,
         setIsRegex,
         setIsWholeWord,
-        performSearch,
         navigateSearchHistory,
-        query,
       ]
     );
 
@@ -428,7 +430,7 @@ export const SearchDialog = memo(
             )}
 
             <div className="flex items-center gap-2">
-              <Search className="h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
+              <Search className="h-icon-md w-icon-md text-muted-foreground" strokeWidth={1.5} />
               <span className="text-sm font-medium">{t('search.title')}</span>
               {matches.length > 0 && (
                 <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
@@ -436,32 +438,46 @@ export const SearchDialog = memo(
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-0.5">
+            <div className="flex items-center gap-1">
               <button
                 type="button"
                 onClick={onPreviousMatch}
                 disabled={matches.length === 0}
-                className="h-7 w-7 rounded hover:bg-muted disabled:opacity-40 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                className={cn(
+                  'h-8 w-8 rounded-md flex items-center justify-center transition-all',
+                  'text-muted-foreground hover:text-foreground hover:bg-muted',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                  'disabled:opacity-40 disabled:pointer-events-none'
+                )}
                 aria-label={`${t('search.actions.previous')} (Shift+Enter)`}
               >
-                <ChevronUp className="h-4 w-4" strokeWidth={1.5} />
+                <ChevronUp className="h-icon-lg w-icon-lg" strokeWidth={1.5} />
               </button>
               <button
                 type="button"
                 onClick={onNextMatch}
                 disabled={matches.length === 0}
-                className="h-7 w-7 rounded hover:bg-muted disabled:opacity-40 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                className={cn(
+                  'h-8 w-8 rounded-md flex items-center justify-center transition-all',
+                  'text-muted-foreground hover:text-foreground hover:bg-muted',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                  'disabled:opacity-40 disabled:pointer-events-none'
+                )}
                 aria-label={`${t('search.actions.next')} (Enter)`}
               >
-                <ChevronDown className="h-4 w-4" strokeWidth={1.5} />
+                <ChevronDown className="h-icon-lg w-icon-lg" strokeWidth={1.5} />
               </button>
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
-                className="h-7 w-7 rounded hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors ml-1"
+                className={cn(
+                  'h-8 w-8 rounded-md flex items-center justify-center transition-all ml-1',
+                  'text-muted-foreground hover:text-foreground hover:bg-muted',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+                )}
                 aria-label={`${t('search.close')} (Esc)`}
               >
-                <X className="h-4 w-4" strokeWidth={1.5} />
+                <X className="h-icon-lg w-icon-lg" strokeWidth={1.5} />
               </button>
             </div>
           </div>
@@ -493,40 +509,31 @@ export const SearchDialog = memo(
                   }
                 }}
                 placeholder={t('search.placeholder')}
-                className="h-9 text-sm pr-20"
+                className="h-9 text-sm pr-[104px]"
                 autoComplete="off"
                 spellCheck={false}
                 autoCapitalize="off"
                 autoCorrect="off"
                 aria-label={`${t('search.searchInput')} (${t('search.previousHistory')}: Alt+↑, ${t('search.nextHistory')}: Alt+↓)`}
               />
-              <div className="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5">
+              <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex gap-1">
                 <OptionButton
                   active={isCaseSensitive}
-                  onClick={() => {
-                    setIsCaseSensitive(!isCaseSensitive);
-                    performSearch(query, true);
-                  }}
+                  onClick={() => setIsCaseSensitive(!isCaseSensitive)}
                   icon={CaseSensitive}
                   label={t('search.options.caseSensitive')}
                   shortcut="Alt+C"
                 />
                 <OptionButton
                   active={isWholeWord}
-                  onClick={() => {
-                    setIsWholeWord(!isWholeWord);
-                    performSearch(query, true);
-                  }}
+                  onClick={() => setIsWholeWord(!isWholeWord)}
                   icon={WholeWord}
                   label={t('search.options.wholeWord')}
                   shortcut="Alt+W"
                 />
                 <OptionButton
                   active={isRegex}
-                  onClick={() => {
-                    setIsRegex(!isRegex);
-                    performSearch(query, true);
-                  }}
+                  onClick={() => setIsRegex(!isRegex)}
                   icon={Regex}
                   label={t('search.options.useRegex')}
                   shortcut="Alt+R"
@@ -539,16 +546,19 @@ export const SearchDialog = memo(
                 type="button"
                 onClick={() => setShowReplace((prev) => !prev)}
                 className={cn(
-                  'text-xs px-2 py-1 rounded transition-colors',
+                  'text-[13px] px-2.5 py-1.5 rounded-md transition-all',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                   showReplace
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-muted-foreground hover:bg-muted'
+                    ? 'bg-primary/10 text-primary font-medium'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 )}
               >
                 {showReplace ? t('search.hideReplace') : t('search.showReplace')}
               </button>
               {query && matches.length === 0 && (
-                <span className="text-xs text-muted-foreground">{t('search.results.empty')}</span>
+                <span className="text-[13px] text-muted-foreground">
+                  {t('search.results.empty')}
+                </span>
               )}
             </div>
 
@@ -575,7 +585,7 @@ export const SearchDialog = memo(
                     size="sm"
                     onClick={onReplaceClick}
                     disabled={!canReplace}
-                    className="h-8 flex-1 text-xs"
+                    className="h-9 flex-1 text-sm font-medium"
                   >
                     {t('search.actions.replace')}
                   </Button>
@@ -583,7 +593,7 @@ export const SearchDialog = memo(
                     size="sm"
                     onClick={onReplaceAllClick}
                     disabled={!canReplaceAll}
-                    className="h-8 flex-1 text-xs"
+                    className="h-9 flex-1 text-sm font-medium"
                   >
                     {canReplaceAll
                       ? t('search.actions.replaceAllWithCount', { count: matches.length })
@@ -600,11 +610,18 @@ export const SearchDialog = memo(
               <button
                 type="button"
                 onClick={() => setShowResults((prev) => !prev)}
-                className="flex items-center justify-between w-full px-3 py-2 text-xs text-muted-foreground hover:bg-muted/50 transition-colors"
+                className={cn(
+                  'flex items-center justify-between w-full px-3 py-2.5 text-[13px] text-muted-foreground',
+                  'hover:bg-muted/50 transition-colors',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset'
+                )}
               >
                 <span>{t('search.results.found', { count: matches.length })}</span>
                 <ChevronRight
-                  className={cn('h-3.5 w-3.5 transition-transform', showResults && 'rotate-90')}
+                  className={cn(
+                    'h-icon-md w-icon-md transition-transform',
+                    showResults && 'rotate-90'
+                  )}
                   strokeWidth={1.5}
                 />
               </button>
