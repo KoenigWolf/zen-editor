@@ -409,7 +409,7 @@ export const SearchDialog = memo(
           aria-modal="true"
           className={cn(
             'z-50 bg-background border shadow-lg flex flex-col',
-            'transition-opacity duration-150',
+            'transition-opacity',
             isVisible ? 'opacity-100' : 'opacity-0',
             isMobile ? 'rounded-t-xl' : 'rounded-lg',
             !isVisible && isMobile && 'translate-y-full',

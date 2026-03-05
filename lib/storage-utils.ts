@@ -13,11 +13,3 @@ export const safeLocalStorageSet = (key: string, value: string): void => {
     return;
   }
 };
-
-export const safeLocalStorageRemove = (key: string): void => {
-  try {
-    localStorage.removeItem(key);
-  } catch {
-    return;
-  }
-};

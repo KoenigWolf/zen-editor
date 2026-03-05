@@ -186,7 +186,7 @@ export function usePWAManager() {
   };
 }
 
-export type PWAContextType = ReturnType<typeof usePWAManager>;
+type PWAContextType = ReturnType<typeof usePWAManager>;
 import { createContext, useContext } from 'react';
 export const PWAContext = createContext<PWAContextType | null>(null);
 

@@ -64,7 +64,7 @@ const ToolbarButton = ({
           )}
         >
           <Icon
-            className="h-icon-sm w-icon-sm transition-transform duration-150 group-hover:scale-110 group-active:scale-95"
+            className="h-icon-sm w-icon-sm transition-transform group-hover:scale-110 group-active:scale-95"
             strokeWidth={1.5}
           />
         </button>

@@ -3,43 +3,9 @@
 import { memo, useCallback, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFileStore, type FileData } from '@/lib/store/file-store';
-import { X, FileCode2, FileJson2, FileType2, FileText, Code2, Braces } from 'lucide-react';
+import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-const FILE_ICON_MAP: Record<string, React.ElementType> = {
-  json: FileJson2,
-  ts: Braces,
-  tsx: Braces,
-  js: Braces,
-  jsx: Braces,
-  html: Code2,
-  xml: Code2,
-  md: FileText,
-  txt: FileText,
-  css: FileType2,
-  scss: FileType2,
-  less: FileType2,
-};
-
-const FILE_COLOR_MAP: Record<string, string> = {
-  ts: 'text-blue-500',
-  tsx: 'text-blue-500',
-  js: 'text-yellow-500',
-  jsx: 'text-yellow-500',
-  json: 'text-green-500',
-  css: 'text-pink-500',
-  scss: 'text-pink-500',
-  html: 'text-orange-500',
-  md: 'text-purple-500',
-};
-
-const getFileExtension = (fileName: string): string =>
-  fileName.split('.').pop()?.toLowerCase() || '';
-
-const getFileIcon = (fileName: string) => FILE_ICON_MAP[getFileExtension(fileName)] || FileCode2;
-
-const getFileColor = (fileName: string): string =>
-  FILE_COLOR_MAP[getFileExtension(fileName)] || 'text-muted-foreground';
+import { getFileIcon, getFileColor } from '@/lib/file-types';
 
 interface FileTabItemProps {
   file: FileData;
