@@ -4,6 +4,7 @@ import { memo, useEffect, useRef, useCallback, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, Copy, Pencil, XCircle, ChevronsLeft, ChevronsRight, Trash2 } from 'lucide-react';
 import { useGlobalKeydown } from '@/hooks/core/use-global-keydown';
+import { constrainToViewport, browserDocument } from '@/lib/utils';
 
 interface TabContextMenuProps {
   isOpen: boolean;
@@ -27,8 +28,6 @@ interface TabContextMenuProps {
   closeOtherCount: number;
   closeAllCount: number;
 }
-
-const browserDocument = typeof document === 'undefined' ? undefined : document;
 
 export const TabContextMenu = memo(function TabContextMenu({
   isOpen,
@@ -176,15 +175,14 @@ export const TabContextMenu = memo(function TabContextMenu({
       const menuEl = menuRef.current;
       if (!menuEl || typeof window === 'undefined') return;
 
-      const safeMargin = 8;
       const menuRect = menuEl.getBoundingClientRect();
-      const maxX = Math.max(safeMargin, window.innerWidth - menuRect.width - safeMargin);
-      const maxY = Math.max(safeMargin, window.innerHeight - menuRect.height - safeMargin);
-
-      setMenuPosition({
-        x: Math.min(Math.max(position.x, safeMargin), maxX),
-        y: Math.min(Math.max(position.y, safeMargin), maxY),
-      });
+      setMenuPosition(
+        constrainToViewport(
+          position,
+          { width: menuRect.width, height: menuRect.height },
+          { margin: 8 }
+        )
+      );
     };
 
     const rafId = requestAnimationFrame(adjustPosition);

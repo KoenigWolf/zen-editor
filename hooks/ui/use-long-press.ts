@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useRef } from 'react';
+import { getEventCoordinates, getDelta, exceedsThreshold } from '@/lib/utils';
 
 interface LongPressOptions {
   /** 長押しと判定するまでの時間（ミリ秒） */
@@ -39,14 +40,7 @@ export const useLongPress = ({
   const start = useCallback(
     (event: React.TouchEvent | React.MouseEvent) => {
       isLongPressRef.current = false;
-
-      // タッチイベントの場合
-      if ('touches' in event) {
-        const touch = event.touches[0];
-        startPosRef.current = { x: touch.clientX, y: touch.clientY };
-      } else {
-        startPosRef.current = { x: event.clientX, y: event.clientY };
-      }
+      startPosRef.current = getEventCoordinates(event);
 
       timerRef.current = setTimeout(() => {
         isLongPressRef.current = true;
@@ -60,23 +54,10 @@ export const useLongPress = ({
     (event: React.TouchEvent | React.MouseEvent) => {
       if (!startPosRef.current || !timerRef.current) return;
 
-      let currentX: number;
-      let currentY: number;
+      const current = getEventCoordinates(event);
+      const delta = getDelta(current, startPosRef.current);
 
-      if ('touches' in event) {
-        const touch = event.touches[0];
-        currentX = touch.clientX;
-        currentY = touch.clientY;
-      } else {
-        currentX = event.clientX;
-        currentY = event.clientY;
-      }
-
-      const deltaX = Math.abs(currentX - startPosRef.current.x);
-      const deltaY = Math.abs(currentY - startPosRef.current.y);
-
-      // 移動が閾値を超えたらキャンセル
-      if (deltaX > moveThreshold || deltaY > moveThreshold) {
+      if (exceedsThreshold(delta, moveThreshold)) {
         if (timerRef.current) {
           clearTimeout(timerRef.current);
           timerRef.current = null;

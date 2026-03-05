@@ -6,8 +6,13 @@ import { useTranslation } from 'react-i18next';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useSearchStore, type SearchMatch } from '@/lib/store/search-store';
-import { cn } from '@/lib/utils';
-import { safeLocalStorageGet, safeLocalStorageSet } from '@/lib/utils';
+import {
+  cn,
+  constrainToViewport,
+  safeLocalStorageGet,
+  safeLocalStorageSet,
+  browserDocument,
+} from '@/lib/utils';
 import { useFocusTrap } from '@/hooks/core/use-focus-trap';
 import { useSearchLogic, type SearchOptions } from '@/hooks/editor/use-search-logic';
 import { useDialogDrag } from '@/hooks/ui/use-dialog-drag';
@@ -23,7 +28,6 @@ import {
   ChevronRight,
 } from 'lucide-react';
 
-const browserDocument = typeof document === 'undefined' ? undefined : document;
 const SEARCH_HISTORY_KEY = 'zen-editor-search-history';
 const MAX_SEARCH_HISTORY = 20;
 
@@ -141,10 +145,7 @@ export const SearchDialog = memo(
       enabled: !isMobile,
       position,
       onPositionChange: setPosition,
-      clamp: (next) => ({
-        x: Math.max(0, Math.min(window.innerWidth - 400, next.x)),
-        y: Math.max(0, Math.min(window.innerHeight - 200, next.y)),
-      }),
+      clamp: (next) => constrainToViewport(next, { width: 400, height: 200 }),
     });
 
     useEffect(() => {

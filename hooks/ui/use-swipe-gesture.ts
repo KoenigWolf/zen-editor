@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useRef } from 'react';
+import { getDelta, isVerticalDominant } from '@/lib/utils';
 
 interface SwipeGestureOptions {
   /** スワイプと判定する最小距離（ピクセル） */
@@ -42,11 +43,9 @@ export const useSwipeGesture = ({
       if (!startPosRef.current || isCancelledRef.current) return;
 
       const touch = event.touches[0];
-      const deltaX = touch.clientX - startPosRef.current.x;
-      const deltaY = touch.clientY - startPosRef.current.y;
+      const delta = getDelta({ x: touch.clientX, y: touch.clientY }, startPosRef.current);
 
-      // 垂直方向の移動が水平移動より大きい場合はスワイプをキャンセル
-      if (preventVertical && Math.abs(deltaY) > Math.abs(deltaX)) {
+      if (preventVertical && isVerticalDominant(delta)) {
         isCancelledRef.current = true;
       }
     },
@@ -61,19 +60,16 @@ export const useSwipeGesture = ({
       }
 
       const touch = event.changedTouches[0];
-      const deltaX = touch.clientX - startPosRef.current.x;
-      const deltaY = touch.clientY - startPosRef.current.y;
+      const delta = getDelta({ x: touch.clientX, y: touch.clientY }, startPosRef.current);
 
-      // 垂直方向の移動が水平移動より大きい場合は無視
-      if (preventVertical && Math.abs(deltaY) > Math.abs(deltaX)) {
+      if (preventVertical && isVerticalDominant(delta)) {
         startPosRef.current = null;
         return;
       }
 
-      // スワイプ判定
-      if (deltaX > threshold) {
+      if (delta.x > threshold) {
         onSwipeRight?.();
-      } else if (deltaX < -threshold) {
+      } else if (delta.x < -threshold) {
         onSwipeLeft?.();
       }
 
