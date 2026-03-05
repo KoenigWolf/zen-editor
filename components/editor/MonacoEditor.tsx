@@ -1,7 +1,3 @@
-/**
- * Monaco Editorをラップしたコンポーネント
- * 高機能エディタを提供し、様々な機能を統合する
- */
 'use client';
 
 import { useEffect, useRef, useCallback } from 'react';
@@ -64,14 +60,12 @@ export function MonacoEditor({ fileId, isSecondary = false }: MonacoEditorProps)
 
   const languageMode = getLanguageFromFilename(activeFile?.name || null);
 
-  // クリーンアップ: コンポーネントアンマウント時にリソースを解放
   useEffect(() => {
     return () => {
       disposablesRef.current.forEach((d) => d.dispose());
       disposablesRef.current = [];
       cleanupFullWidthSpace();
 
-      // getState() でアクション関数を取得（サブスクリプション不要）
       const { setEditorInstance, setSecondaryEditorInstance } = useEditorInstanceStore.getState();
       if (isSecondary) {
         setSecondaryEditorInstance(null);
@@ -96,7 +90,6 @@ export function MonacoEditor({ fileId, isSecondary = false }: MonacoEditorProps)
       editorRef.current = editor;
       monacoRef.current = monaco as Monaco;
 
-      // getState() でアクション関数を取得（依存配列を削減）
       const { setEditorInstance, setSecondaryEditorInstance, updateStatusInfo } =
         useEditorInstanceStore.getState();
 
@@ -164,13 +157,11 @@ export function MonacoEditor({ fileId, isSecondary = false }: MonacoEditorProps)
     [settings.theme, isDarkTheme, isSecondary, updateDecorations, applyEditorTheme]
   );
 
-  // テーマ変更時の適用
   useEffect(() => {
     if (!editorRef.current || !monacoRef.current) return;
     applyEditorTheme(monacoRef.current, editorRef.current, settings.theme, isDarkTheme);
   }, [settings.theme, resolvedTheme, applyEditorTheme, isDarkTheme]);
 
-  // 設定変更時のオプション更新
   useEffect(() => {
     if (editorRef.current) {
       editorRef.current.updateOptions({
@@ -196,7 +187,6 @@ export function MonacoEditor({ fileId, isSecondary = false }: MonacoEditorProps)
     updateDecorations,
   ]);
 
-  // 言語モード変更
   useEffect(() => {
     if (editorRef.current && activeFile && monacoRef.current) {
       const model = editorRef.current.getModel();

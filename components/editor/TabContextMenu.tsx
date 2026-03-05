@@ -56,7 +56,6 @@ export const TabContextMenu = memo(function TabContextMenu({
   const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const [menuPosition, setMenuPosition] = useState(position);
 
-  // 外側クリックで閉じる
   useEffect(() => {
     if (!isOpen) return;
 
@@ -79,7 +78,6 @@ export const TabContextMenu = memo(function TabContextMenu({
     };
   }, [isOpen, onClose]);
 
-  // ESCキーで閉じる
   const handleEscape = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === 'Escape') {

@@ -137,13 +137,11 @@ export const FileTabs = memo(function FileTabs({ onTabContextMenu }: FileTabsPro
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
 
-  // data-file-id から id を取得するヘルパー
   const getFileIdFromEvent = useCallback((e: React.SyntheticEvent): string | null => {
     const target = e.currentTarget as HTMLElement;
     return target.dataset.fileId || null;
   }, []);
 
-  // 安定したコールバック（インライン関数を避けて memo を有効化）
   const handleSelect = useCallback(
     (e: React.MouseEvent) => {
       const fileId = getFileIdFromEvent(e);
