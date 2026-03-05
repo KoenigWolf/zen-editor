@@ -6,6 +6,7 @@ import { useEditorInstanceStore } from '@/lib/store/editor-instance-store';
 import { useSplitViewStore } from '@/lib/store/split-view-store';
 import { useFileOperations } from '@/hooks/editor/use-file-operations';
 import { useGlobalKeydown } from '@/hooks/core/use-global-keydown';
+import { getNextIndex, getPrevIndex } from '@/lib/utils';
 
 interface UseKeyboardShortcutsOptions {
   onOpenSettings?: () => void;
@@ -29,7 +30,7 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
     if (files.length <= 1) return;
 
     const currentIndex = files.findIndex((f) => f.id === activeFileId);
-    const nextIndex = (currentIndex + 1) % files.length;
+    const nextIndex = getNextIndex(currentIndex, files.length);
     setActiveFileId(files[nextIndex].id);
   }, [files, activeFileId, setActiveFileId]);
 
@@ -37,7 +38,7 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
     if (files.length <= 1) return;
 
     const currentIndex = files.findIndex((f) => f.id === activeFileId);
-    const prevIndex = (currentIndex - 1 + files.length) % files.length;
+    const prevIndex = getPrevIndex(currentIndex, files.length);
     setActiveFileId(files[prevIndex].id);
   }, [files, activeFileId, setActiveFileId]);
 

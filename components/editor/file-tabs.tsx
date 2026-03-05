@@ -4,8 +4,7 @@ import { memo, useCallback, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFileStore, type FileData } from '@/lib/store/file-store';
 import { X } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { getFileIcon, getFileColor } from '@/lib/utils';
+import { cn, getFileIcon, getFileColor, reorderArray } from '@/lib/utils';
 
 interface FileTabItemProps {
   file: FileData;
@@ -192,11 +191,7 @@ export const FileTabs = memo(function FileTabs({ onTabContextMenu }: FileTabsPro
 
       if (draggedIndex === -1 || targetIndex === -1) return;
 
-      const newFiles = [...currentFiles];
-      const [removed] = newFiles.splice(draggedIndex, 1);
-      newFiles.splice(targetIndex, 0, removed);
-
-      useFileStore.setState({ files: newFiles });
+      useFileStore.setState({ files: reorderArray(currentFiles, draggedIndex, targetIndex) });
     },
     [draggedId, getFileIdFromEvent]
   );

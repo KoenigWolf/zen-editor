@@ -1,6 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
+import { clamp } from '@/lib/utils';
 
 export type SplitDirection = 'horizontal' | 'vertical';
 
@@ -160,7 +161,7 @@ export const useSplitViewStore = create<SplitViewState>((set, get) => ({
   },
 
   setRatio: (splitId, ratio) => {
-    const clamped = Math.max(MIN_RATIO, Math.min(MAX_RATIO, ratio));
+    const clamped = clamp(ratio, MIN_RATIO, MAX_RATIO);
     set((state) => ({
       root: mapTree(state.root, (node) =>
         node.id === splitId && node.type === 'split' ? { ...node, ratio: clamped } : node

@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { cn } from '@/lib/utils';
+import { cn, clamp } from '@/lib/utils';
 import { useMouseDrag } from '@/hooks/ui/use-mouse-drag';
 
 const CM_TO_PX = 37.795275591;
@@ -175,7 +175,7 @@ export const IndentRuler = memo(({ className }: IndentRulerProps) => {
       const maxWidth = rulerWidth;
 
       let newCm = snapToGrid(pixelsToCm(mouseX));
-      newCm = Math.max(0, Math.min(newCm, pixelsToCm(maxWidth)));
+      newCm = clamp(newCm, 0, pixelsToCm(maxWidth));
 
       switch (context.type) {
         case 'firstLine':
@@ -291,10 +291,7 @@ export const IndentRuler = memo(({ className }: IndentRulerProps) => {
                 ? maxCm - settings.leftMargin
                 : snapToGrid(settings.firstLineIndent + delta);
           updateSettings({
-            firstLineIndent: Math.max(
-              -settings.leftMargin,
-              Math.min(newValue, maxCm - settings.leftMargin)
-            ),
+            firstLineIndent: clamp(newValue, -settings.leftMargin, maxCm - settings.leftMargin),
           });
           break;
         }
@@ -306,10 +303,7 @@ export const IndentRuler = memo(({ className }: IndentRulerProps) => {
                 ? maxCm - settings.leftMargin
                 : snapToGrid(settings.hangingIndent + delta);
           updateSettings({
-            hangingIndent: Math.max(
-              -settings.leftMargin,
-              Math.min(newValue, maxCm - settings.leftMargin)
-            ),
+            hangingIndent: clamp(newValue, -settings.leftMargin, maxCm - settings.leftMargin),
           });
           break;
         }
@@ -320,7 +314,7 @@ export const IndentRuler = memo(({ className }: IndentRulerProps) => {
               : delta === Infinity
                 ? maxCm
                 : snapToGrid(settings.leftMargin + delta);
-          updateSettings({ leftMargin: Math.max(0, Math.min(newValue, maxCm)) });
+          updateSettings({ leftMargin: clamp(newValue, 0, maxCm) });
           break;
         }
         case 'rightMargin': {
@@ -330,7 +324,7 @@ export const IndentRuler = memo(({ className }: IndentRulerProps) => {
               : delta === Infinity
                 ? maxCm
                 : snapToGrid(settings.rightMargin - delta);
-          updateSettings({ rightMargin: Math.max(0, Math.min(newValue, maxCm)) });
+          updateSettings({ rightMargin: clamp(newValue, 0, maxCm) });
           break;
         }
         case 'tabStop': {
@@ -343,7 +337,7 @@ export const IndentRuler = memo(({ className }: IndentRulerProps) => {
                   ? maxCm
                   : snapToGrid(currentValue + delta);
             const newTabStops = [...settings.tabStops];
-            newTabStops[tabIndex] = Math.max(0, Math.min(newValue, maxCm));
+            newTabStops[tabIndex] = clamp(newValue, 0, maxCm);
             newTabStops.sort((a, b) => a - b);
             updateSettings({ tabStops: newTabStops });
           }
