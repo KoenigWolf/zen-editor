@@ -4,6 +4,7 @@ export const en = {
     tryAgain: 'Try again',
     refresh: 'Refresh',
     home: 'Home',
+    copySuffix: '(copy)',
   },
   errorBoundary: {
     title: 'Something went wrong',

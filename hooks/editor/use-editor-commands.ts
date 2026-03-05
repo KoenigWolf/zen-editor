@@ -67,14 +67,14 @@ export const useEditorCommands = ({
     (direction: 'vertical' | 'horizontal') => {
       if (!activeFile) return;
       const newFileId = addFile({
-        name: `${activeFile.name} (copy)`,
+        name: `${activeFile.name} ${t('common.copySuffix')}`,
         content: activeFile.content,
         path: '',
         lastModified: Date.now(),
       });
       splitActive(direction, newFileId);
     },
-    [activeFile, addFile, splitActive]
+    [activeFile, addFile, splitActive, t]
   );
 
   const splitVertical = useCallback(() => splitWithCopy('vertical'), [splitWithCopy]);

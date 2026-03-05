@@ -43,53 +43,55 @@ export const useTabActions = () => {
   }, [contextMenu.fileId]);
 
   const handleCloseLeftTabs = useCallback(() => {
-    const allFiles = useFileStore.getState().files;
-    const targetIndex = allFiles.findIndex((file) => file.id === contextMenu.fileId);
+    const store = useFileStore.getState();
+    const targetIndex = store.files.findIndex((file) => file.id === contextMenu.fileId);
     if (targetIndex <= 0) return;
 
-    allFiles.slice(0, targetIndex).forEach((file) => {
-      useFileStore.getState().removeFile(file.id);
+    store.files.slice(0, targetIndex).forEach((file) => {
+      store.removeFile(file.id);
     });
   }, [contextMenu.fileId]);
 
   const handleCloseRightTabs = useCallback(() => {
-    const allFiles = useFileStore.getState().files;
-    const targetIndex = allFiles.findIndex((file) => file.id === contextMenu.fileId);
-    if (targetIndex < 0 || targetIndex >= allFiles.length - 1) return;
+    const store = useFileStore.getState();
+    const targetIndex = store.files.findIndex((file) => file.id === contextMenu.fileId);
+    if (targetIndex < 0 || targetIndex >= store.files.length - 1) return;
 
-    allFiles.slice(targetIndex + 1).forEach((file) => {
-      useFileStore.getState().removeFile(file.id);
+    store.files.slice(targetIndex + 1).forEach((file) => {
+      store.removeFile(file.id);
     });
   }, [contextMenu.fileId]);
 
   const handleCloseOtherTabs = useCallback(() => {
-    const allFiles = useFileStore.getState().files;
-    allFiles.forEach((file) => {
+    const store = useFileStore.getState();
+    store.files.forEach((file) => {
       if (file.id !== contextMenu.fileId) {
-        useFileStore.getState().removeFile(file.id);
+        store.removeFile(file.id);
       }
     });
   }, [contextMenu.fileId]);
 
   const handleCloseAllTabs = useCallback(() => {
-    useFileStore.getState().files.forEach((file) => {
-      useFileStore.getState().removeFile(file.id);
+    const store = useFileStore.getState();
+    store.files.forEach((file) => {
+      store.removeFile(file.id);
     });
   }, []);
 
   const handleDuplicateTab = useCallback(() => {
     if (contextMenu.fileId) {
-      const file = useFileStore.getState().files.find((f) => f.id === contextMenu.fileId);
+      const store = useFileStore.getState();
+      const file = store.files.find((f) => f.id === contextMenu.fileId);
       if (file) {
-        useFileStore.getState().addFile({
-          name: `${file.name} (copy)`,
+        store.addFile({
+          name: `${file.name} ${t('common.copySuffix')}`,
           content: file.content,
           path: '',
           lastModified: Date.now(),
         });
       }
     }
-  }, [contextMenu.fileId]);
+  }, [contextMenu.fileId, t]);
 
   const handleRenameTab = useCallback(() => {
     if (contextMenu.fileId) {
