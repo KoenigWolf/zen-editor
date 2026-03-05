@@ -140,36 +140,41 @@ ANALYZE=true npm run build  # バンドルサイズを可視化
 
 ```
 <project-root>/
-├── app/                    # Next.js App Router
-│   ├── layout.tsx         # ルートレイアウト
-│   ├── page.tsx           # メインページ
-│   ├── providers.tsx      # クライアントプロバイダー
-│   ├── error.tsx          # エラーページ
-│   ├── metadata.ts        # SEOメタデータ
-│   └── sitemap.ts         # サイトマップ生成
+├── app/                       # Next.js App Router
+│   ├── layout.tsx             # ルートレイアウト
+│   ├── page.tsx               # メインページ
+│   ├── providers.tsx          # クライアントプロバイダー
+│   ├── error.tsx              # エラーページ
+│   ├── metadata.ts            # SEOメタデータ
+│   └── sitemap.ts             # サイトマップ生成
 ├── components/
-│   ├── editor/            # エディタ関連
-│   ├── settings/          # 設定ダイアログ
-│   ├── pwa/               # PWA関連
-│   ├── ui/                # 共通UIコンポーネント
-│   ├── ErrorBoundary.tsx  # エラー境界
-│   └── LiveAnnouncer.tsx  # スクリーンリーダー通知
-├── hooks/                 # カスタムフック
-│   ├── use-focus-trap.ts  # フォーカストラップ
-│   ├── use-mounted.ts     # マウント判定
-│   ├── use-mouse-drag.ts  # マウスドラッグ操作処理
-│   ├── use-global-keydown.ts # グローバルキーボードショートカット
-│   ├── usePWA.ts          # PWA状態管理
-│   └── use-web-vitals.ts  # Web Vitals計測
+│   ├── editor/                # エディタ関連
+│   │   ├── indent/            # インデントルーラー
+│   │   └── search/            # 検索ダイアログ
+│   ├── settings/              # 設定ダイアログ
+│   ├── providers/             # プロバイダー（Theme, PWA, Root）
+│   ├── layout/                # レイアウト補助
+│   ├── pwa/                   # PWA関連
+│   └── ui/                    # 共通UIコンポーネント
+├── hooks/                     # カスタムフック（ドメイン別）
+│   ├── core/                  # 基本フック（useMounted, useFocusTrap）
+│   ├── editor/                # エディタ固有フック
+│   ├── ui/                    # UI操作フック（ドラッグ、スワイプ）
+│   └── platform/              # プラットフォーム検出（PWA、モバイル）
 ├── lib/
-│   ├── i18n/              # 国際化
-│   ├── store/             # Zustand ストア
-│   ├── themes/            # カスタムテーマ定義
-│   └── types/             # 型定義
-├── __tests__/             # テストファイル
-├── .github/workflows/     # GitHub Actions CI/CD
-├── public/                # 静的ファイル
-└── docs/                  # ドキュメント
+│   ├── config/                # 設定・定数・環境変数
+│   ├── utils/                 # ユーティリティ関数
+│   │   ├── data/              # データ操作（array, math, object）
+│   │   ├── dom/               # DOM操作（event, gesture, ssr, viewport）
+│   │   └── editor/            # エディタ固有（indent, file-download）
+│   ├── store/                 # Zustand ストア
+│   ├── themes/                # カスタムテーマ定義
+│   ├── types/                 # 型定義
+│   └── i18n/                  # 国際化
+├── __tests__/                 # テストファイル（hooks/, lib/）
+├── .github/workflows/         # GitHub Actions CI/CD
+├── public/                    # 静的ファイル
+└── docs/                      # ドキュメント
 ```
 
 ## キーボードショートカット
